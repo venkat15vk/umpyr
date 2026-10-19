@@ -1,0 +1,184 @@
+{
+  "$defs": {
+    "BagStatus": {
+      "enum": [
+        "delivered",
+        "delayed",
+        "lost",
+        "damaged",
+        "pilfered"
+      ],
+      "title": "BagStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bag_tag": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Bag tag number",
+      "title": "Bag Tag"
+    },
+    "checked": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Bag was checked (not carry-on)",
+      "title": "Checked"
+    },
+    "damage_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Damage type: structural, wheel, handle, zipper, cosmetic, contents, none",
+      "title": "Damage Type"
+    },
+    "declared_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Declared excess value, if any",
+      "title": "Declared Value"
+    },
+    "delay_days": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days the bag was delayed",
+      "title": "Delay Days"
+    },
+    "fee_paid": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Checked-bag fee paid for this bag",
+      "title": "Fee Paid"
+    },
+    "guarantee_claim_filed_within_hours": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Hours after arrival at which a bag-guarantee claim was filed",
+      "title": "Guarantee Claim Filed Within Hours"
+    },
+    "interim_expenses": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Interim expenses claimed while delayed",
+      "title": "Interim Expenses"
+    },
+    "minutes_to_carousel": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Minutes from aircraft door open to bag on carousel (bag service guarantee)",
+      "title": "Minutes To Carousel"
+    },
+    "report_filed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "A delayed/damaged bag report is on file with the airline",
+      "title": "Report Filed"
+    },
+    "report_filed_within_hours": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Hours after arrival the report was filed",
+      "title": "Report Filed Within Hours"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BagStatus"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Bag status"
+    }
+  },
+  "title": "Bag",
+  "type": "object"
+}

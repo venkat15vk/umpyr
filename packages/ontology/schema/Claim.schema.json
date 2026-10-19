@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "Remedy": {
+      "enum": [
+        "refund",
+        "partial_refund",
+        "replacement",
+        "reship",
+        "repair",
+        "return_label",
+        "store_credit",
+        "travel_credit",
+        "rebook",
+        "points",
+        "voucher",
+        "expense_reimbursement",
+        "bag_delivery",
+        "cancel_order",
+        "none"
+      ],
+      "title": "Remedy",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "What the customer is asking for and what they have provided.\n\nThese are facts extracted from the conversation rather than from merchant systems.",
+  "properties": {
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Short masked description of the issue",
+      "title": "Description"
+    },
+    "has_photos": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer has provided photos of damage/defect",
+      "title": "Has Photos"
+    },
+    "has_receipt": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer has proof of purchase",
+      "title": "Has Receipt"
+    },
+    "item_unopened": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item is in original unopened packaging",
+      "title": "Item Unopened"
+    },
+    "item_used": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item has been used",
+      "title": "Item Used"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Primary reason: damaged_on_arrival, defective, wrong_item, missing_item, change_of_mind, lifetime_guarantee, backorder, order_change, cancel_order, flight_cancelled, flight_delayed, schedule_change, refund_request, credit_request, bag_delayed, bag_damaged, bag_lost, bag_guarantee, seat_refund, ancillary_refund, loyalty_points, other",
+      "title": "Reason"
+    },
+    "reported_within_days": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days after delivery/arrival the issue was reported",
+      "title": "Reported Within Days"
+    },
+    "requested_amount": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Amount the customer asked for, if stated",
+      "title": "Requested Amount"
+    },
+    "requested_remedy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Remedy"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Remedy the customer asked for"
+    },
+    "wants_credit_instead_of_refund": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer prefers credit",
+      "title": "Wants Credit Instead Of Refund"
+    }
+  },
+  "title": "Claim",
+  "type": "object"
+}

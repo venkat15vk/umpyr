@@ -1,0 +1,338 @@
+{
+  "$defs": {
+    "CaseOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Amount issued",
+          "title": "Amount"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Decision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Decision reached"
+        },
+        "fault": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Fault"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fault assignment"
+        },
+        "remedy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Remedy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Remedy issued"
+        }
+      },
+      "title": "CaseOutcome",
+      "type": "object"
+    },
+    "Decision": {
+      "description": "Outcome of the rule engine for a case.",
+      "enum": [
+        "approve",
+        "partial",
+        "deny",
+        "needs_fact",
+        "needs_approval",
+        "escalate"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "Fault": {
+      "enum": [
+        "merchant",
+        "carrier",
+        "vendor",
+        "customer",
+        "airline",
+        "uncontrollable",
+        "unknown"
+      ],
+      "title": "Fault",
+      "type": "string"
+    },
+    "Remedy": {
+      "enum": [
+        "refund",
+        "partial_refund",
+        "replacement",
+        "reship",
+        "repair",
+        "return_label",
+        "store_credit",
+        "travel_credit",
+        "rebook",
+        "points",
+        "voucher",
+        "expense_reimbursement",
+        "bag_delivery",
+        "cancel_order",
+        "none"
+      ],
+      "title": "Remedy",
+      "type": "string"
+    },
+    "StaffAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "description": "Normalised action verb, e.g. request_photos, issue_refund, send_label",
+          "title": "Action",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Amount if the action moved money",
+          "title": "Amount"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the action happened",
+          "title": "At"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Masked free-text detail",
+          "title": "Detail"
+        },
+        "seq": {
+          "description": "Order of the action in the thread",
+          "title": "Seq",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "action"
+      ],
+      "title": "StaffAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A mined or live case: the unit of learning and resolution.",
+  "properties": {
+    "case_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Umpyr case identifier",
+      "title": "Case Id"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Taxonomy category key",
+      "title": "Category"
+    },
+    "drift_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Why it is drift",
+      "title": "Drift Reason"
+    },
+    "hours_to_resolve": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Hours from open to resolution",
+      "title": "Hours To Resolve"
+    },
+    "is_drift": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Staff outcome contradicts compiled policy",
+      "title": "Is Drift"
+    },
+    "is_synthetic": {
+      "default": true,
+      "description": "Synthetic data flag (POC data is synthetic)",
+      "title": "Is Synthetic",
+      "type": "boolean"
+    },
+    "opened_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the case opened",
+      "title": "Opened At"
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CaseOutcome"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Outcome of the case"
+    },
+    "resolved_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the case resolved",
+      "title": "Resolved At"
+    },
+    "staff_actions": {
+      "description": "Ordered staff actions",
+      "items": {
+        "$ref": "#/$defs/StaffAction"
+      },
+      "title": "Staff Actions",
+      "type": "array"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "open, resolved, escalated",
+      "title": "Status"
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "One-line masked summary",
+      "title": "Summary"
+    },
+    "ticket_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source ticket identifier",
+      "title": "Ticket Id"
+    }
+  },
+  "title": "Case",
+  "type": "object"
+}

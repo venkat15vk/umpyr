@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #f7f8f8;
+  --panel: #ffffff;
+  --border: #d7dcdf;
+  --text: #141c22;
+  --muted: #6b7a84;
+  --accent: #0f766e;
+  --accent-soft: #ccfbf1;
+  --warn: #d97706;
+  --warn-soft: #fef3c7;
+}
+.dark {
+  color-scheme: dark;
+  --bg: #0b1115;
+  --panel: #141c22;
+  --border: #243038;
+  --text: #eceff1;
+  --muted: #b3bcc2;
+  --accent: #14b8a6;
+  --accent-soft: #134e4a;
+  --warn: #fbbf24;
+  --warn-soft: #3b2a08;
+}
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14px; }
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+.muted { color: var(--muted); }
+.btn { @apply inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.btn:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.08); }
+.badge { @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium; background: var(--accent-soft); color: var(--accent); }
+.badge-amber { background: var(--warn-soft); color: var(--warn); }
+.input { @apply w-full rounded-md px-3 py-2 text-sm; background: var(--panel); border: 1px solid var(--border); color: var(--text); }
+.input:focus { outline: 2px solid var(--accent); outline-offset: 0; }

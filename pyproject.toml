@@ -1,0 +1,39 @@
+[project]
+name = "umpyr-workspace"
+version = "0.1.0"
+description = "Umpyr Resolve POC - workspace root"
+requires-python = ">=3.12"
+dependencies = [
+  "umpyr-ontology",
+  "umpyr-rules",
+  "umpyr-engine",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1,<10",
+  "pytest-asyncio>=1.0",
+  "ruff>=0.17,<1",
+  "pgserver>=0.1.4",
+]
+
+[tool.uv.workspace]
+members = ["packages/ontology", "packages/rules", "services/engine"]
+
+[tool.uv.sources]
+umpyr-ontology = { workspace = true }
+umpyr-rules = { workspace = true }
+umpyr-engine = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["packages/ontology/tests", "packages/rules/tests", "services/engine/tests"]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]  # FastAPI Depends() in defaults

@@ -1,0 +1,621 @@
+{
+  "$defs": {
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Brand, e.g. SawStop, Laguna, Rockler",
+          "title": "Brand"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product category, e.g. power_tool, machinery, router_bit, drawer_slide, hardware, lumber, finish, clearance, gift_card, plan, class",
+          "title": "Category"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ItemCondition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Condition reported for the item"
+        },
+        "freight_required": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ships by LTL freight rather than parcel",
+          "title": "Freight Required"
+        },
+        "has_lifetime_guarantee": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is covered by a lifetime guarantee",
+          "title": "Has Lifetime Guarantee"
+        },
+        "is_custom": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Custom or made-to-order item",
+          "title": "Is Custom"
+        },
+        "is_final_sale": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clearance / final-sale item, not returnable",
+          "title": "Is Final Sale"
+        },
+        "is_machinery": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is stationary machinery",
+          "title": "Is Machinery"
+        },
+        "is_non_returnable": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item class that the merchant never accepts back (e.g. certain machinery brands)",
+          "title": "Is Non Returnable"
+        },
+        "is_power_tool": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is a power tool",
+          "title": "Is Power Tool"
+        },
+        "item_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Line item identifier",
+          "title": "Item Id"
+        },
+        "line_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "price x quantity",
+          "title": "Line Total"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product name",
+          "title": "Name"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit price paid",
+          "title": "Price"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quantity ordered",
+          "title": "Quantity"
+        },
+        "sku": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchant SKU (opaque)",
+          "title": "Sku"
+        }
+      },
+      "title": "Item",
+      "type": "object"
+    },
+    "ItemCondition": {
+      "enum": [
+        "new_unopened",
+        "opened_unused",
+        "used",
+        "damaged",
+        "defective",
+        "unknown"
+      ],
+      "title": "ItemCondition",
+      "type": "string"
+    },
+    "PaymentMethod": {
+      "enum": [
+        "card",
+        "rewards_card",
+        "paypal",
+        "gift_card",
+        "store_credit",
+        "travel_credit",
+        "points",
+        "other"
+      ],
+      "title": "PaymentMethod",
+      "type": "string"
+    },
+    "Shipment": {
+      "additionalProperties": false,
+      "properties": {
+        "carrier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Carrier name (UPS, FedEx, USPS, freight carrier)",
+          "title": "Carrier"
+        },
+        "damage_noted_on_delivery": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Damage was noted on the delivery receipt (freight)",
+          "title": "Damage Noted On Delivery"
+        },
+        "days_since_delivery": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days between delivery and today",
+          "title": "Days Since Delivery"
+        },
+        "delivered_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the carrier recorded delivery",
+          "title": "Delivered At"
+        },
+        "is_freight": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Delivered by LTL freight",
+          "title": "Is Freight"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping method: ground, expedited, freight",
+          "title": "Method"
+        },
+        "shipment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipment identifier",
+          "title": "Shipment Id"
+        },
+        "shipped_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the shipment left the warehouse",
+          "title": "Shipped At"
+        },
+        "shipping_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping charge paid by the customer",
+          "title": "Shipping Paid"
+        },
+        "signed_for": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Delivery was signed for",
+          "title": "Signed For"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShipmentStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current shipment status"
+        }
+      },
+      "title": "Shipment",
+      "type": "object"
+    },
+    "ShipmentStatus": {
+      "enum": [
+        "pending",
+        "in_transit",
+        "delivered",
+        "lost",
+        "damaged",
+        "returned"
+      ],
+      "title": "ShipmentStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "backorder_eta_days": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days until backordered item is expected",
+      "title": "Backorder Eta Days"
+    },
+    "days_since_order": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days between order placement and today",
+      "title": "Days Since Order"
+    },
+    "has_shipped": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Any part of the order has shipped",
+      "title": "Has Shipped"
+    },
+    "is_backordered": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "At least one item is on backorder",
+      "title": "Is Backordered"
+    },
+    "items": {
+      "description": "Line items",
+      "items": {
+        "$ref": "#/$defs/Item"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "order_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Merchant order number",
+      "title": "Order Id"
+    },
+    "payment_method": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PaymentMethod"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How the order was paid"
+    },
+    "placed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the order was placed",
+      "title": "Placed At"
+    },
+    "rewards_discount": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Discount applied from a rewards card or program at purchase",
+      "title": "Rewards Discount"
+    },
+    "shipments": {
+      "description": "Shipments",
+      "items": {
+        "$ref": "#/$defs/Shipment"
+      },
+      "title": "Shipments",
+      "type": "array"
+    },
+    "shipping_total": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shipping charged",
+      "title": "Shipping Total"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Order status: pending, processing, shipped, delivered, backordered, cancelled",
+      "title": "Status"
+    },
+    "subtotal": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Merchandise subtotal",
+      "title": "Subtotal"
+    },
+    "tax_total": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Tax charged",
+      "title": "Tax Total"
+    },
+    "total": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Grand total paid",
+      "title": "Total"
+    }
+  },
+  "title": "Order",
+  "type": "object"
+}

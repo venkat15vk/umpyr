@@ -1,0 +1,732 @@
+{
+  "$defs": {
+    "Bag": {
+      "additionalProperties": false,
+      "properties": {
+        "bag_tag": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag tag number",
+          "title": "Bag Tag"
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag was checked (not carry-on)",
+          "title": "Checked"
+        },
+        "damage_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Damage type: structural, wheel, handle, zipper, cosmetic, contents, none",
+          "title": "Damage Type"
+        },
+        "declared_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Declared excess value, if any",
+          "title": "Declared Value"
+        },
+        "delay_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days the bag was delayed",
+          "title": "Delay Days"
+        },
+        "fee_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Checked-bag fee paid for this bag",
+          "title": "Fee Paid"
+        },
+        "guarantee_claim_filed_within_hours": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours after arrival at which a bag-guarantee claim was filed",
+          "title": "Guarantee Claim Filed Within Hours"
+        },
+        "interim_expenses": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Interim expenses claimed while delayed",
+          "title": "Interim Expenses"
+        },
+        "minutes_to_carousel": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minutes from aircraft door open to bag on carousel (bag service guarantee)",
+          "title": "Minutes To Carousel"
+        },
+        "report_filed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A delayed/damaged bag report is on file with the airline",
+          "title": "Report Filed"
+        },
+        "report_filed_within_hours": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours after arrival the report was filed",
+          "title": "Report Filed Within Hours"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BagStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag status"
+        }
+      },
+      "title": "Bag",
+      "type": "object"
+    },
+    "BagStatus": {
+      "enum": [
+        "delivered",
+        "delayed",
+        "lost",
+        "damaged",
+        "pilfered"
+      ],
+      "title": "BagStatus",
+      "type": "string"
+    },
+    "DelayCause": {
+      "enum": [
+        "controllable",
+        "uncontrollable",
+        "unknown"
+      ],
+      "title": "DelayCause",
+      "type": "string"
+    },
+    "Flight": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_departure": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Actual departure, if departed",
+          "title": "Actual Departure"
+        },
+        "arrival_delay_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Arrival delay in minutes",
+          "title": "Arrival Delay Minutes"
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DelayCause"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the delay/cancellation was airline-controllable"
+        },
+        "cause_detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Specific cause: weather, atc, crew, maintenance, it",
+          "title": "Cause Detail"
+        },
+        "customer_accepted_alternative": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer accepted rebooking or alternative transportation",
+          "title": "Customer Accepted Alternative"
+        },
+        "delay_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Departure delay in minutes (0 if on time)",
+          "title": "Delay Minutes"
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Destination airport code",
+          "title": "Destination"
+        },
+        "flight_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Segment identifier",
+          "title": "Flight Id"
+        },
+        "flight_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Marketing flight number",
+          "title": "Flight Number"
+        },
+        "is_cancelled_by_airline": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Airline cancelled the flight",
+          "title": "Is Cancelled By Airline"
+        },
+        "is_domestic": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Both airports in the US",
+          "title": "Is Domestic"
+        },
+        "is_significant_change": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Change meets the DOT 'significant change' definition (e.g. >= 3h domestic)",
+          "title": "Is Significant Change"
+        },
+        "origin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Origin airport code",
+          "title": "Origin"
+        },
+        "overnight_required": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Disruption required an overnight stay",
+          "title": "Overnight Required"
+        },
+        "schedule_change_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minutes the schedule moved after purchase",
+          "title": "Schedule Change Minutes"
+        },
+        "scheduled_departure": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scheduled departure",
+          "title": "Scheduled Departure"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlightStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flight status"
+        }
+      },
+      "title": "Flight",
+      "type": "object"
+    },
+    "FlightStatus": {
+      "enum": [
+        "scheduled",
+        "on_time",
+        "delayed",
+        "cancelled",
+        "diverted",
+        "completed"
+      ],
+      "title": "FlightStatus",
+      "type": "string"
+    },
+    "PaymentMethod": {
+      "enum": [
+        "card",
+        "rewards_card",
+        "paypal",
+        "gift_card",
+        "store_credit",
+        "travel_credit",
+        "points",
+        "other"
+      ],
+      "title": "PaymentMethod",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ancillary_bag_fee": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Paid checked-bag fees",
+      "title": "Ancillary Bag Fee"
+    },
+    "ancillary_other_fee": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Other paid optional services",
+      "title": "Ancillary Other Fee"
+    },
+    "ancillary_seat_fee": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Paid seat selection fee",
+      "title": "Ancillary Seat Fee"
+    },
+    "bags": {
+      "description": "Checked bags",
+      "items": {
+        "$ref": "#/$defs/Bag"
+      },
+      "title": "Bags",
+      "type": "array"
+    },
+    "currency": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Currency code",
+      "title": "Currency"
+    },
+    "customer_cancelled": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer initiated the cancellation",
+      "title": "Customer Cancelled"
+    },
+    "days_until_departure_at_purchase": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days between purchase and first departure",
+      "title": "Days Until Departure At Purchase"
+    },
+    "fare_class": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fare family: saver, main, first, premium",
+      "title": "Fare Class"
+    },
+    "flights": {
+      "description": "Segments",
+      "items": {
+        "$ref": "#/$defs/Flight"
+      },
+      "title": "Flights",
+      "type": "array"
+    },
+    "hours_since_purchase": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Hours between purchase and the request",
+      "title": "Hours Since Purchase"
+    },
+    "hours_until_departure": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Hours between the request and first departure",
+      "title": "Hours Until Departure"
+    },
+    "is_refundable_fare": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Fare is refundable to original form of payment",
+      "title": "Is Refundable Fare"
+    },
+    "loyalty_number": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Loyalty account number (masked)",
+      "title": "Loyalty Number"
+    },
+    "paid_with_credit_amount": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Portion paid with travel credit",
+      "title": "Paid With Credit Amount"
+    },
+    "payment_method": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PaymentMethod"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Original form of payment"
+    },
+    "pnr": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Confirmation code",
+      "title": "Pnr"
+    },
+    "purchased_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the ticket was purchased",
+      "title": "Purchased At"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "active, flown, cancelled_by_customer, cancelled_by_airline, no_show",
+      "title": "Status"
+    },
+    "ticket_number": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "E-ticket number",
+      "title": "Ticket Number"
+    },
+    "total_paid": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Total fare paid including taxes and fees",
+      "title": "Total Paid"
+    },
+    "travel_completed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "All segments flown",
+      "title": "Travel Completed"
+    }
+  },
+  "title": "Booking",
+  "type": "object"
+}

@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "Channel": {
+      "enum": [
+        "email",
+        "chat",
+        "phone",
+        "web_form",
+        "agent"
+      ],
+      "title": "Channel",
+      "type": "string"
+    },
+    "TicketMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Timestamp",
+          "title": "At"
+        },
+        "role": {
+          "description": "customer or staff",
+          "title": "Role",
+          "type": "string"
+        },
+        "text": {
+          "description": "Masked message text",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "text"
+      ],
+      "title": "TicketMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Canonical ticket schema. Matches samples/ticket_template.csv.",
+  "properties": {
+    "agent_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Agent Actions",
+      "type": "array"
+    },
+    "amount": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Amount"
+    },
+    "channel": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Channel"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "created_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Created At"
+    },
+    "is_synthetic": {
+      "default": true,
+      "title": "Is Synthetic",
+      "type": "boolean"
+    },
+    "order_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Order Id"
+    },
+    "resolution": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resolution"
+    },
+    "subject": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Subject"
+    },
+    "thread": {
+      "items": {
+        "$ref": "#/$defs/TicketMessage"
+      },
+      "title": "Thread",
+      "type": "array"
+    },
+    "ticket_id": {
+      "title": "Ticket Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "ticket_id"
+  ],
+  "title": "Ticket",
+  "type": "object"
+}

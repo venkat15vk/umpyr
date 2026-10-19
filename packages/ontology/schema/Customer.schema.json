@@ -1,0 +1,72 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "account_age_days": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days since the customer account was created",
+      "title": "Account Age Days"
+    },
+    "customer_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Merchant customer identifier (masked if PII)",
+      "title": "Customer Id"
+    },
+    "loyalty_member": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Is the customer enrolled in the loyalty program",
+      "title": "Loyalty Member"
+    },
+    "loyalty_tier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Loyalty tier name, e.g. 'MVP Gold' or 'none'",
+      "title": "Loyalty Tier"
+    },
+    "prior_claims_12m": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Number of prior claims in the last 12 months",
+      "title": "Prior Claims 12M"
+    }
+  },
+  "title": "Customer",
+  "type": "object"
+}

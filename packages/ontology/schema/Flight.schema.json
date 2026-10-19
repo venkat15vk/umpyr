@@ -1,0 +1,251 @@
+{
+  "$defs": {
+    "DelayCause": {
+      "enum": [
+        "controllable",
+        "uncontrollable",
+        "unknown"
+      ],
+      "title": "DelayCause",
+      "type": "string"
+    },
+    "FlightStatus": {
+      "enum": [
+        "scheduled",
+        "on_time",
+        "delayed",
+        "cancelled",
+        "diverted",
+        "completed"
+      ],
+      "title": "FlightStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actual_departure": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Actual departure, if departed",
+      "title": "Actual Departure"
+    },
+    "arrival_delay_minutes": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Arrival delay in minutes",
+      "title": "Arrival Delay Minutes"
+    },
+    "cause": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DelayCause"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Whether the delay/cancellation was airline-controllable"
+    },
+    "cause_detail": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Specific cause: weather, atc, crew, maintenance, it",
+      "title": "Cause Detail"
+    },
+    "customer_accepted_alternative": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer accepted rebooking or alternative transportation",
+      "title": "Customer Accepted Alternative"
+    },
+    "delay_minutes": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Departure delay in minutes (0 if on time)",
+      "title": "Delay Minutes"
+    },
+    "destination": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Destination airport code",
+      "title": "Destination"
+    },
+    "flight_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Segment identifier",
+      "title": "Flight Id"
+    },
+    "flight_number": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Marketing flight number",
+      "title": "Flight Number"
+    },
+    "is_cancelled_by_airline": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Airline cancelled the flight",
+      "title": "Is Cancelled By Airline"
+    },
+    "is_domestic": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Both airports in the US",
+      "title": "Is Domestic"
+    },
+    "is_significant_change": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Change meets the DOT 'significant change' definition (e.g. >= 3h domestic)",
+      "title": "Is Significant Change"
+    },
+    "origin": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Origin airport code",
+      "title": "Origin"
+    },
+    "overnight_required": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Disruption required an overnight stay",
+      "title": "Overnight Required"
+    },
+    "schedule_change_minutes": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Minutes the schedule moved after purchase",
+      "title": "Schedule Change Minutes"
+    },
+    "scheduled_departure": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Scheduled departure",
+      "title": "Scheduled Departure"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FlightStatus"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Flight status"
+    }
+  },
+  "title": "Flight",
+  "type": "object"
+}

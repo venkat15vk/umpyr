@@ -1,0 +1,2 @@
+ticket_id,created_at,channel,subject,thread,agent_actions,resolution,amount,order_id
+T-0001,2026-03-02T14:05:00Z,email,Router bit arrived chipped,"[{""role"":""customer"",""at"":""2026-03-02T14:05:00Z"",""text"":""Hi, my 1/2in flush trim bit arrived with a chipped carbide edge. Order R-1001. Photos attached.""},{""role"":""staff"",""at"":""2026-03-02T16:20:00Z"",""text"":""Sorry about that. I have sent a replacement at no charge; no need to return the damaged bit.""}]","[""review_photos"",""issue_replacement""]",replacement,0.00,R-1001

@@ -1,0 +1,39 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.swp
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# node
+node_modules/
+apps/web/dist/
+.vite/
+
+# data / uploads / local state
+data/
+uploads/
+samples/**/raw_uploads/
+services/engine/data/
+*.sqlite
+*.db
+
+# os / editors
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# embedded dev postgres
+.pgdata/

@@ -1,0 +1,842 @@
+[
+  {
+    "path": "customer.customer_id",
+    "type": "string",
+    "description": "Merchant customer identifier (masked if PII)",
+    "enum": []
+  },
+  {
+    "path": "customer.loyalty_member",
+    "type": "bool",
+    "description": "Is the customer enrolled in the loyalty program",
+    "enum": []
+  },
+  {
+    "path": "customer.loyalty_tier",
+    "type": "string",
+    "description": "Loyalty tier name, e.g. 'MVP Gold' or 'none'",
+    "enum": []
+  },
+  {
+    "path": "customer.account_age_days",
+    "type": "int",
+    "description": "Days since the customer account was created",
+    "enum": []
+  },
+  {
+    "path": "customer.prior_claims_12m",
+    "type": "int",
+    "description": "Number of prior claims in the last 12 months",
+    "enum": []
+  },
+  {
+    "path": "order.order_id",
+    "type": "string",
+    "description": "Merchant order number",
+    "enum": []
+  },
+  {
+    "path": "order.placed_at",
+    "type": "datetime",
+    "description": "When the order was placed",
+    "enum": []
+  },
+  {
+    "path": "order.status",
+    "type": "string",
+    "description": "Order status: pending, processing, shipped, delivered, backordered, cancelled",
+    "enum": []
+  },
+  {
+    "path": "order.days_since_order",
+    "type": "int",
+    "description": "Days between order placement and today",
+    "enum": []
+  },
+  {
+    "path": "order.subtotal",
+    "type": "decimal",
+    "description": "Merchandise subtotal",
+    "enum": []
+  },
+  {
+    "path": "order.shipping_total",
+    "type": "decimal",
+    "description": "Shipping charged",
+    "enum": []
+  },
+  {
+    "path": "order.tax_total",
+    "type": "decimal",
+    "description": "Tax charged",
+    "enum": []
+  },
+  {
+    "path": "order.total",
+    "type": "decimal",
+    "description": "Grand total paid",
+    "enum": []
+  },
+  {
+    "path": "order.payment_method",
+    "type": "enum",
+    "description": "How the order was paid",
+    "enum": [
+      "card",
+      "rewards_card",
+      "paypal",
+      "gift_card",
+      "store_credit",
+      "travel_credit",
+      "points",
+      "other"
+    ]
+  },
+  {
+    "path": "order.rewards_discount",
+    "type": "decimal",
+    "description": "Discount applied from a rewards card or program at purchase",
+    "enum": []
+  },
+  {
+    "path": "order.is_backordered",
+    "type": "bool",
+    "description": "At least one item is on backorder",
+    "enum": []
+  },
+  {
+    "path": "order.backorder_eta_days",
+    "type": "int",
+    "description": "Days until backordered item is expected",
+    "enum": []
+  },
+  {
+    "path": "order.has_shipped",
+    "type": "bool",
+    "description": "Any part of the order has shipped",
+    "enum": []
+  },
+  {
+    "path": "order.items",
+    "type": "list[Item]",
+    "description": "Line items",
+    "enum": []
+  },
+  {
+    "path": "order.shipments",
+    "type": "list[Shipment]",
+    "description": "Shipments",
+    "enum": []
+  },
+  {
+    "path": "item.item_id",
+    "type": "string",
+    "description": "Line item identifier",
+    "enum": []
+  },
+  {
+    "path": "item.sku",
+    "type": "string",
+    "description": "Merchant SKU (opaque)",
+    "enum": []
+  },
+  {
+    "path": "item.name",
+    "type": "string",
+    "description": "Product name",
+    "enum": []
+  },
+  {
+    "path": "item.category",
+    "type": "string",
+    "description": "Product category, e.g. power_tool, machinery, router_bit, drawer_slide, hardware, lumber, finish, clearance, gift_card, plan, class",
+    "enum": []
+  },
+  {
+    "path": "item.brand",
+    "type": "string",
+    "description": "Brand, e.g. SawStop, Laguna, Rockler",
+    "enum": []
+  },
+  {
+    "path": "item.price",
+    "type": "decimal",
+    "description": "Unit price paid",
+    "enum": []
+  },
+  {
+    "path": "item.quantity",
+    "type": "int",
+    "description": "Quantity ordered",
+    "enum": []
+  },
+  {
+    "path": "item.line_total",
+    "type": "decimal",
+    "description": "price x quantity",
+    "enum": []
+  },
+  {
+    "path": "item.is_final_sale",
+    "type": "bool",
+    "description": "Clearance / final-sale item, not returnable",
+    "enum": []
+  },
+  {
+    "path": "item.is_non_returnable",
+    "type": "bool",
+    "description": "Item class that the merchant never accepts back (e.g. certain machinery brands)",
+    "enum": []
+  },
+  {
+    "path": "item.is_power_tool",
+    "type": "bool",
+    "description": "Item is a power tool",
+    "enum": []
+  },
+  {
+    "path": "item.is_machinery",
+    "type": "bool",
+    "description": "Item is stationary machinery",
+    "enum": []
+  },
+  {
+    "path": "item.is_custom",
+    "type": "bool",
+    "description": "Custom or made-to-order item",
+    "enum": []
+  },
+  {
+    "path": "item.has_lifetime_guarantee",
+    "type": "bool",
+    "description": "Item is covered by a lifetime guarantee",
+    "enum": []
+  },
+  {
+    "path": "item.condition",
+    "type": "enum",
+    "description": "Condition reported for the item",
+    "enum": [
+      "new_unopened",
+      "opened_unused",
+      "used",
+      "damaged",
+      "defective",
+      "unknown"
+    ]
+  },
+  {
+    "path": "item.freight_required",
+    "type": "bool",
+    "description": "Ships by LTL freight rather than parcel",
+    "enum": []
+  },
+  {
+    "path": "shipment.shipment_id",
+    "type": "string",
+    "description": "Shipment identifier",
+    "enum": []
+  },
+  {
+    "path": "shipment.carrier",
+    "type": "string",
+    "description": "Carrier name (UPS, FedEx, USPS, freight carrier)",
+    "enum": []
+  },
+  {
+    "path": "shipment.method",
+    "type": "string",
+    "description": "Shipping method: ground, expedited, freight",
+    "enum": []
+  },
+  {
+    "path": "shipment.is_freight",
+    "type": "bool",
+    "description": "Delivered by LTL freight",
+    "enum": []
+  },
+  {
+    "path": "shipment.shipped_at",
+    "type": "datetime",
+    "description": "When the shipment left the warehouse",
+    "enum": []
+  },
+  {
+    "path": "shipment.delivered_at",
+    "type": "datetime",
+    "description": "When the carrier recorded delivery",
+    "enum": []
+  },
+  {
+    "path": "shipment.status",
+    "type": "enum",
+    "description": "Current shipment status",
+    "enum": [
+      "pending",
+      "in_transit",
+      "delivered",
+      "lost",
+      "damaged",
+      "returned"
+    ]
+  },
+  {
+    "path": "shipment.days_since_delivery",
+    "type": "int",
+    "description": "Days between delivery and today",
+    "enum": []
+  },
+  {
+    "path": "shipment.signed_for",
+    "type": "bool",
+    "description": "Delivery was signed for",
+    "enum": []
+  },
+  {
+    "path": "shipment.damage_noted_on_delivery",
+    "type": "bool",
+    "description": "Damage was noted on the delivery receipt (freight)",
+    "enum": []
+  },
+  {
+    "path": "shipment.shipping_paid",
+    "type": "decimal",
+    "description": "Shipping charge paid by the customer",
+    "enum": []
+  },
+  {
+    "path": "booking.pnr",
+    "type": "string",
+    "description": "Confirmation code",
+    "enum": []
+  },
+  {
+    "path": "booking.ticket_number",
+    "type": "string",
+    "description": "E-ticket number",
+    "enum": []
+  },
+  {
+    "path": "booking.fare_class",
+    "type": "string",
+    "description": "Fare family: saver, main, first, premium",
+    "enum": []
+  },
+  {
+    "path": "booking.is_refundable_fare",
+    "type": "bool",
+    "description": "Fare is refundable to original form of payment",
+    "enum": []
+  },
+  {
+    "path": "booking.purchased_at",
+    "type": "datetime",
+    "description": "When the ticket was purchased",
+    "enum": []
+  },
+  {
+    "path": "booking.hours_since_purchase",
+    "type": "int",
+    "description": "Hours between purchase and the request",
+    "enum": []
+  },
+  {
+    "path": "booking.days_until_departure_at_purchase",
+    "type": "int",
+    "description": "Days between purchase and first departure",
+    "enum": []
+  },
+  {
+    "path": "booking.hours_until_departure",
+    "type": "int",
+    "description": "Hours between the request and first departure",
+    "enum": []
+  },
+  {
+    "path": "booking.total_paid",
+    "type": "decimal",
+    "description": "Total fare paid including taxes and fees",
+    "enum": []
+  },
+  {
+    "path": "booking.currency",
+    "type": "string",
+    "description": "Currency code",
+    "enum": []
+  },
+  {
+    "path": "booking.payment_method",
+    "type": "enum",
+    "description": "Original form of payment",
+    "enum": [
+      "card",
+      "rewards_card",
+      "paypal",
+      "gift_card",
+      "store_credit",
+      "travel_credit",
+      "points",
+      "other"
+    ]
+  },
+  {
+    "path": "booking.paid_with_credit_amount",
+    "type": "decimal",
+    "description": "Portion paid with travel credit",
+    "enum": []
+  },
+  {
+    "path": "booking.ancillary_seat_fee",
+    "type": "decimal",
+    "description": "Paid seat selection fee",
+    "enum": []
+  },
+  {
+    "path": "booking.ancillary_bag_fee",
+    "type": "decimal",
+    "description": "Paid checked-bag fees",
+    "enum": []
+  },
+  {
+    "path": "booking.ancillary_other_fee",
+    "type": "decimal",
+    "description": "Other paid optional services",
+    "enum": []
+  },
+  {
+    "path": "booking.status",
+    "type": "string",
+    "description": "active, flown, cancelled_by_customer, cancelled_by_airline, no_show",
+    "enum": []
+  },
+  {
+    "path": "booking.customer_cancelled",
+    "type": "bool",
+    "description": "Customer initiated the cancellation",
+    "enum": []
+  },
+  {
+    "path": "booking.travel_completed",
+    "type": "bool",
+    "description": "All segments flown",
+    "enum": []
+  },
+  {
+    "path": "booking.loyalty_number",
+    "type": "string",
+    "description": "Loyalty account number (masked)",
+    "enum": []
+  },
+  {
+    "path": "booking.flights",
+    "type": "list[Flight]",
+    "description": "Segments",
+    "enum": []
+  },
+  {
+    "path": "booking.bags",
+    "type": "list[Bag]",
+    "description": "Checked bags",
+    "enum": []
+  },
+  {
+    "path": "flight.flight_id",
+    "type": "string",
+    "description": "Segment identifier",
+    "enum": []
+  },
+  {
+    "path": "flight.flight_number",
+    "type": "string",
+    "description": "Marketing flight number",
+    "enum": []
+  },
+  {
+    "path": "flight.origin",
+    "type": "string",
+    "description": "Origin airport code",
+    "enum": []
+  },
+  {
+    "path": "flight.destination",
+    "type": "string",
+    "description": "Destination airport code",
+    "enum": []
+  },
+  {
+    "path": "flight.scheduled_departure",
+    "type": "datetime",
+    "description": "Scheduled departure",
+    "enum": []
+  },
+  {
+    "path": "flight.actual_departure",
+    "type": "datetime",
+    "description": "Actual departure, if departed",
+    "enum": []
+  },
+  {
+    "path": "flight.status",
+    "type": "enum",
+    "description": "Flight status",
+    "enum": [
+      "scheduled",
+      "on_time",
+      "delayed",
+      "cancelled",
+      "diverted",
+      "completed"
+    ]
+  },
+  {
+    "path": "flight.delay_minutes",
+    "type": "int",
+    "description": "Departure delay in minutes (0 if on time)",
+    "enum": []
+  },
+  {
+    "path": "flight.arrival_delay_minutes",
+    "type": "int",
+    "description": "Arrival delay in minutes",
+    "enum": []
+  },
+  {
+    "path": "flight.cause",
+    "type": "enum",
+    "description": "Whether the delay/cancellation was airline-controllable",
+    "enum": [
+      "controllable",
+      "uncontrollable",
+      "unknown"
+    ]
+  },
+  {
+    "path": "flight.cause_detail",
+    "type": "string",
+    "description": "Specific cause: weather, atc, crew, maintenance, it",
+    "enum": []
+  },
+  {
+    "path": "flight.is_cancelled_by_airline",
+    "type": "bool",
+    "description": "Airline cancelled the flight",
+    "enum": []
+  },
+  {
+    "path": "flight.schedule_change_minutes",
+    "type": "int",
+    "description": "Minutes the schedule moved after purchase",
+    "enum": []
+  },
+  {
+    "path": "flight.is_significant_change",
+    "type": "bool",
+    "description": "Change meets the DOT 'significant change' definition (e.g. >= 3h domestic)",
+    "enum": []
+  },
+  {
+    "path": "flight.customer_accepted_alternative",
+    "type": "bool",
+    "description": "Customer accepted rebooking or alternative transportation",
+    "enum": []
+  },
+  {
+    "path": "flight.overnight_required",
+    "type": "bool",
+    "description": "Disruption required an overnight stay",
+    "enum": []
+  },
+  {
+    "path": "flight.is_domestic",
+    "type": "bool",
+    "description": "Both airports in the US",
+    "enum": []
+  },
+  {
+    "path": "bag.bag_tag",
+    "type": "string",
+    "description": "Bag tag number",
+    "enum": []
+  },
+  {
+    "path": "bag.status",
+    "type": "enum",
+    "description": "Bag status",
+    "enum": [
+      "delivered",
+      "delayed",
+      "lost",
+      "damaged",
+      "pilfered"
+    ]
+  },
+  {
+    "path": "bag.checked",
+    "type": "bool",
+    "description": "Bag was checked (not carry-on)",
+    "enum": []
+  },
+  {
+    "path": "bag.fee_paid",
+    "type": "decimal",
+    "description": "Checked-bag fee paid for this bag",
+    "enum": []
+  },
+  {
+    "path": "bag.minutes_to_carousel",
+    "type": "int",
+    "description": "Minutes from aircraft door open to bag on carousel (bag service guarantee)",
+    "enum": []
+  },
+  {
+    "path": "bag.guarantee_claim_filed_within_hours",
+    "type": "int",
+    "description": "Hours after arrival at which a bag-guarantee claim was filed",
+    "enum": []
+  },
+  {
+    "path": "bag.report_filed",
+    "type": "bool",
+    "description": "A delayed/damaged bag report is on file with the airline",
+    "enum": []
+  },
+  {
+    "path": "bag.report_filed_within_hours",
+    "type": "int",
+    "description": "Hours after arrival the report was filed",
+    "enum": []
+  },
+  {
+    "path": "bag.delay_days",
+    "type": "int",
+    "description": "Days the bag was delayed",
+    "enum": []
+  },
+  {
+    "path": "bag.damage_type",
+    "type": "string",
+    "description": "Damage type: structural, wheel, handle, zipper, cosmetic, contents, none",
+    "enum": []
+  },
+  {
+    "path": "bag.declared_value",
+    "type": "decimal",
+    "description": "Declared excess value, if any",
+    "enum": []
+  },
+  {
+    "path": "bag.interim_expenses",
+    "type": "decimal",
+    "description": "Interim expenses claimed while delayed",
+    "enum": []
+  },
+  {
+    "path": "claim.reason",
+    "type": "string",
+    "description": "Primary reason: damaged_on_arrival, defective, wrong_item, missing_item, change_of_mind, lifetime_guarantee, backorder, order_change, cancel_order, flight_cancelled, flight_delayed, schedule_change, refund_request, credit_request, bag_delayed, bag_damaged, bag_lost, bag_guarantee, seat_refund, ancillary_refund, loyalty_points, other",
+    "enum": []
+  },
+  {
+    "path": "claim.requested_remedy",
+    "type": "enum",
+    "description": "Remedy the customer asked for",
+    "enum": [
+      "refund",
+      "partial_refund",
+      "replacement",
+      "reship",
+      "repair",
+      "return_label",
+      "store_credit",
+      "travel_credit",
+      "rebook",
+      "points",
+      "voucher",
+      "expense_reimbursement",
+      "bag_delivery",
+      "cancel_order",
+      "none"
+    ]
+  },
+  {
+    "path": "claim.requested_amount",
+    "type": "decimal",
+    "description": "Amount the customer asked for, if stated",
+    "enum": []
+  },
+  {
+    "path": "claim.has_photos",
+    "type": "bool",
+    "description": "Customer has provided photos of damage/defect",
+    "enum": []
+  },
+  {
+    "path": "claim.has_receipt",
+    "type": "bool",
+    "description": "Customer has proof of purchase",
+    "enum": []
+  },
+  {
+    "path": "claim.reported_within_days",
+    "type": "int",
+    "description": "Days after delivery/arrival the issue was reported",
+    "enum": []
+  },
+  {
+    "path": "claim.item_unopened",
+    "type": "bool",
+    "description": "Item is in original unopened packaging",
+    "enum": []
+  },
+  {
+    "path": "claim.item_used",
+    "type": "bool",
+    "description": "Item has been used",
+    "enum": []
+  },
+  {
+    "path": "claim.wants_credit_instead_of_refund",
+    "type": "bool",
+    "description": "Customer prefers credit",
+    "enum": []
+  },
+  {
+    "path": "claim.description",
+    "type": "string",
+    "description": "Short masked description of the issue",
+    "enum": []
+  },
+  {
+    "path": "case.case_id",
+    "type": "string",
+    "description": "Umpyr case identifier",
+    "enum": []
+  },
+  {
+    "path": "case.ticket_id",
+    "type": "string",
+    "description": "Source ticket identifier",
+    "enum": []
+  },
+  {
+    "path": "case.category",
+    "type": "string",
+    "description": "Taxonomy category key",
+    "enum": []
+  },
+  {
+    "path": "case.status",
+    "type": "string",
+    "description": "open, resolved, escalated",
+    "enum": []
+  },
+  {
+    "path": "case.summary",
+    "type": "string",
+    "description": "One-line masked summary",
+    "enum": []
+  },
+  {
+    "path": "case.staff_actions",
+    "type": "list[StaffAction]",
+    "description": "Ordered staff actions",
+    "enum": []
+  },
+  {
+    "path": "case.outcome",
+    "type": "CaseOutcome",
+    "description": "Outcome of the case",
+    "enum": []
+  },
+  {
+    "path": "case.outcome.decision",
+    "type": "enum",
+    "description": "Decision reached",
+    "enum": [
+      "approve",
+      "partial",
+      "deny",
+      "needs_fact",
+      "needs_approval",
+      "escalate"
+    ]
+  },
+  {
+    "path": "case.outcome.remedy",
+    "type": "enum",
+    "description": "Remedy issued",
+    "enum": [
+      "refund",
+      "partial_refund",
+      "replacement",
+      "reship",
+      "repair",
+      "return_label",
+      "store_credit",
+      "travel_credit",
+      "rebook",
+      "points",
+      "voucher",
+      "expense_reimbursement",
+      "bag_delivery",
+      "cancel_order",
+      "none"
+    ]
+  },
+  {
+    "path": "case.outcome.amount",
+    "type": "decimal",
+    "description": "Amount issued",
+    "enum": []
+  },
+  {
+    "path": "case.outcome.fault",
+    "type": "enum",
+    "description": "Fault assignment",
+    "enum": [
+      "merchant",
+      "carrier",
+      "vendor",
+      "customer",
+      "airline",
+      "uncontrollable",
+      "unknown"
+    ]
+  },
+  {
+    "path": "case.opened_at",
+    "type": "datetime",
+    "description": "When the case opened",
+    "enum": []
+  },
+  {
+    "path": "case.resolved_at",
+    "type": "datetime",
+    "description": "When the case resolved",
+    "enum": []
+  },
+  {
+    "path": "case.hours_to_resolve",
+    "type": "number",
+    "description": "Hours from open to resolution",
+    "enum": []
+  },
+  {
+    "path": "case.is_drift",
+    "type": "bool",
+    "description": "Staff outcome contradicts compiled policy",
+    "enum": []
+  },
+  {
+    "path": "case.drift_reason",
+    "type": "string",
+    "description": "Why it is drift",
+    "enum": []
+  },
+  {
+    "path": "case.is_synthetic",
+    "type": "bool",
+    "description": "Synthetic data flag (POC data is synthetic)",
+    "enum": []
+  }
+]

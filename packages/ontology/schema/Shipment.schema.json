@@ -1,0 +1,168 @@
+{
+  "$defs": {
+    "ShipmentStatus": {
+      "enum": [
+        "pending",
+        "in_transit",
+        "delivered",
+        "lost",
+        "damaged",
+        "returned"
+      ],
+      "title": "ShipmentStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "carrier": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Carrier name (UPS, FedEx, USPS, freight carrier)",
+      "title": "Carrier"
+    },
+    "damage_noted_on_delivery": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Damage was noted on the delivery receipt (freight)",
+      "title": "Damage Noted On Delivery"
+    },
+    "days_since_delivery": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Days between delivery and today",
+      "title": "Days Since Delivery"
+    },
+    "delivered_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the carrier recorded delivery",
+      "title": "Delivered At"
+    },
+    "is_freight": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Delivered by LTL freight",
+      "title": "Is Freight"
+    },
+    "method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shipping method: ground, expedited, freight",
+      "title": "Method"
+    },
+    "shipment_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shipment identifier",
+      "title": "Shipment Id"
+    },
+    "shipped_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the shipment left the warehouse",
+      "title": "Shipped At"
+    },
+    "shipping_paid": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Shipping charge paid by the customer",
+      "title": "Shipping Paid"
+    },
+    "signed_for": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Delivery was signed for",
+      "title": "Signed For"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ShipmentStatus"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Current shipment status"
+    }
+  },
+  "title": "Shipment",
+  "type": "object"
+}

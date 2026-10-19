@@ -1,0 +1,234 @@
+{
+  "$defs": {
+    "ItemCondition": {
+      "enum": [
+        "new_unopened",
+        "opened_unused",
+        "used",
+        "damaged",
+        "defective",
+        "unknown"
+      ],
+      "title": "ItemCondition",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "brand": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Brand, e.g. SawStop, Laguna, Rockler",
+      "title": "Brand"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Product category, e.g. power_tool, machinery, router_bit, drawer_slide, hardware, lumber, finish, clearance, gift_card, plan, class",
+      "title": "Category"
+    },
+    "condition": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ItemCondition"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Condition reported for the item"
+    },
+    "freight_required": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Ships by LTL freight rather than parcel",
+      "title": "Freight Required"
+    },
+    "has_lifetime_guarantee": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item is covered by a lifetime guarantee",
+      "title": "Has Lifetime Guarantee"
+    },
+    "is_custom": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom or made-to-order item",
+      "title": "Is Custom"
+    },
+    "is_final_sale": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Clearance / final-sale item, not returnable",
+      "title": "Is Final Sale"
+    },
+    "is_machinery": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item is stationary machinery",
+      "title": "Is Machinery"
+    },
+    "is_non_returnable": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item class that the merchant never accepts back (e.g. certain machinery brands)",
+      "title": "Is Non Returnable"
+    },
+    "is_power_tool": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Item is a power tool",
+      "title": "Is Power Tool"
+    },
+    "item_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Line item identifier",
+      "title": "Item Id"
+    },
+    "line_total": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "price x quantity",
+      "title": "Line Total"
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Product name",
+      "title": "Name"
+    },
+    "price": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit price paid",
+      "title": "Price"
+    },
+    "quantity": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Quantity ordered",
+      "title": "Quantity"
+    },
+    "sku": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Merchant SKU (opaque)",
+      "title": "Sku"
+    }
+  },
+  "title": "Item",
+  "type": "object"
+}

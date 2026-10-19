@@ -1,0 +1,1924 @@
+{
+  "$defs": {
+    "Bag": {
+      "additionalProperties": false,
+      "properties": {
+        "bag_tag": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag tag number",
+          "title": "Bag Tag"
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag was checked (not carry-on)",
+          "title": "Checked"
+        },
+        "damage_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Damage type: structural, wheel, handle, zipper, cosmetic, contents, none",
+          "title": "Damage Type"
+        },
+        "declared_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Declared excess value, if any",
+          "title": "Declared Value"
+        },
+        "delay_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days the bag was delayed",
+          "title": "Delay Days"
+        },
+        "fee_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Checked-bag fee paid for this bag",
+          "title": "Fee Paid"
+        },
+        "guarantee_claim_filed_within_hours": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours after arrival at which a bag-guarantee claim was filed",
+          "title": "Guarantee Claim Filed Within Hours"
+        },
+        "interim_expenses": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Interim expenses claimed while delayed",
+          "title": "Interim Expenses"
+        },
+        "minutes_to_carousel": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minutes from aircraft door open to bag on carousel (bag service guarantee)",
+          "title": "Minutes To Carousel"
+        },
+        "report_filed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A delayed/damaged bag report is on file with the airline",
+          "title": "Report Filed"
+        },
+        "report_filed_within_hours": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours after arrival the report was filed",
+          "title": "Report Filed Within Hours"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BagStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bag status"
+        }
+      },
+      "title": "Bag",
+      "type": "object"
+    },
+    "BagStatus": {
+      "enum": [
+        "delivered",
+        "delayed",
+        "lost",
+        "damaged",
+        "pilfered"
+      ],
+      "title": "BagStatus",
+      "type": "string"
+    },
+    "Booking": {
+      "additionalProperties": false,
+      "properties": {
+        "ancillary_bag_fee": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Paid checked-bag fees",
+          "title": "Ancillary Bag Fee"
+        },
+        "ancillary_other_fee": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Other paid optional services",
+          "title": "Ancillary Other Fee"
+        },
+        "ancillary_seat_fee": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Paid seat selection fee",
+          "title": "Ancillary Seat Fee"
+        },
+        "bags": {
+          "description": "Checked bags",
+          "items": {
+            "$ref": "#/$defs/Bag"
+          },
+          "title": "Bags",
+          "type": "array"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Currency code",
+          "title": "Currency"
+        },
+        "customer_cancelled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer initiated the cancellation",
+          "title": "Customer Cancelled"
+        },
+        "days_until_departure_at_purchase": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days between purchase and first departure",
+          "title": "Days Until Departure At Purchase"
+        },
+        "fare_class": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fare family: saver, main, first, premium",
+          "title": "Fare Class"
+        },
+        "flights": {
+          "description": "Segments",
+          "items": {
+            "$ref": "#/$defs/Flight"
+          },
+          "title": "Flights",
+          "type": "array"
+        },
+        "hours_since_purchase": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours between purchase and the request",
+          "title": "Hours Since Purchase"
+        },
+        "hours_until_departure": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours between the request and first departure",
+          "title": "Hours Until Departure"
+        },
+        "is_refundable_fare": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fare is refundable to original form of payment",
+          "title": "Is Refundable Fare"
+        },
+        "loyalty_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Loyalty account number (masked)",
+          "title": "Loyalty Number"
+        },
+        "paid_with_credit_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Portion paid with travel credit",
+          "title": "Paid With Credit Amount"
+        },
+        "payment_method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PaymentMethod"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Original form of payment"
+        },
+        "pnr": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Confirmation code",
+          "title": "Pnr"
+        },
+        "purchased_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the ticket was purchased",
+          "title": "Purchased At"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "active, flown, cancelled_by_customer, cancelled_by_airline, no_show",
+          "title": "Status"
+        },
+        "ticket_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "E-ticket number",
+          "title": "Ticket Number"
+        },
+        "total_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total fare paid including taxes and fees",
+          "title": "Total Paid"
+        },
+        "travel_completed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "All segments flown",
+          "title": "Travel Completed"
+        }
+      },
+      "title": "Booking",
+      "type": "object"
+    },
+    "Case": {
+      "additionalProperties": false,
+      "description": "A mined or live case: the unit of learning and resolution.",
+      "properties": {
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Umpyr case identifier",
+          "title": "Case Id"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Taxonomy category key",
+          "title": "Category"
+        },
+        "drift_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why it is drift",
+          "title": "Drift Reason"
+        },
+        "hours_to_resolve": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hours from open to resolution",
+          "title": "Hours To Resolve"
+        },
+        "is_drift": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Staff outcome contradicts compiled policy",
+          "title": "Is Drift"
+        },
+        "is_synthetic": {
+          "default": true,
+          "description": "Synthetic data flag (POC data is synthetic)",
+          "title": "Is Synthetic",
+          "type": "boolean"
+        },
+        "opened_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the case opened",
+          "title": "Opened At"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Outcome of the case"
+        },
+        "resolved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the case resolved",
+          "title": "Resolved At"
+        },
+        "staff_actions": {
+          "description": "Ordered staff actions",
+          "items": {
+            "$ref": "#/$defs/StaffAction"
+          },
+          "title": "Staff Actions",
+          "type": "array"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "open, resolved, escalated",
+          "title": "Status"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "One-line masked summary",
+          "title": "Summary"
+        },
+        "ticket_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Source ticket identifier",
+          "title": "Ticket Id"
+        }
+      },
+      "title": "Case",
+      "type": "object"
+    },
+    "CaseOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Amount issued",
+          "title": "Amount"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Decision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Decision reached"
+        },
+        "fault": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Fault"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fault assignment"
+        },
+        "remedy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Remedy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Remedy issued"
+        }
+      },
+      "title": "CaseOutcome",
+      "type": "object"
+    },
+    "Claim": {
+      "additionalProperties": false,
+      "description": "What the customer is asking for and what they have provided.\n\nThese are facts extracted from the conversation rather than from merchant systems.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short masked description of the issue",
+          "title": "Description"
+        },
+        "has_photos": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer has provided photos of damage/defect",
+          "title": "Has Photos"
+        },
+        "has_receipt": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer has proof of purchase",
+          "title": "Has Receipt"
+        },
+        "item_unopened": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is in original unopened packaging",
+          "title": "Item Unopened"
+        },
+        "item_used": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item has been used",
+          "title": "Item Used"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary reason: damaged_on_arrival, defective, wrong_item, missing_item, change_of_mind, lifetime_guarantee, backorder, order_change, cancel_order, flight_cancelled, flight_delayed, schedule_change, refund_request, credit_request, bag_delayed, bag_damaged, bag_lost, bag_guarantee, seat_refund, ancillary_refund, loyalty_points, other",
+          "title": "Reason"
+        },
+        "reported_within_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days after delivery/arrival the issue was reported",
+          "title": "Reported Within Days"
+        },
+        "requested_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Amount the customer asked for, if stated",
+          "title": "Requested Amount"
+        },
+        "requested_remedy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Remedy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Remedy the customer asked for"
+        },
+        "wants_credit_instead_of_refund": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer prefers credit",
+          "title": "Wants Credit Instead Of Refund"
+        }
+      },
+      "title": "Claim",
+      "type": "object"
+    },
+    "Customer": {
+      "additionalProperties": false,
+      "properties": {
+        "account_age_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days since the customer account was created",
+          "title": "Account Age Days"
+        },
+        "customer_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchant customer identifier (masked if PII)",
+          "title": "Customer Id"
+        },
+        "loyalty_member": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Is the customer enrolled in the loyalty program",
+          "title": "Loyalty Member"
+        },
+        "loyalty_tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Loyalty tier name, e.g. 'MVP Gold' or 'none'",
+          "title": "Loyalty Tier"
+        },
+        "prior_claims_12m": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of prior claims in the last 12 months",
+          "title": "Prior Claims 12M"
+        }
+      },
+      "title": "Customer",
+      "type": "object"
+    },
+    "Decision": {
+      "description": "Outcome of the rule engine for a case.",
+      "enum": [
+        "approve",
+        "partial",
+        "deny",
+        "needs_fact",
+        "needs_approval",
+        "escalate"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "DelayCause": {
+      "enum": [
+        "controllable",
+        "uncontrollable",
+        "unknown"
+      ],
+      "title": "DelayCause",
+      "type": "string"
+    },
+    "Fault": {
+      "enum": [
+        "merchant",
+        "carrier",
+        "vendor",
+        "customer",
+        "airline",
+        "uncontrollable",
+        "unknown"
+      ],
+      "title": "Fault",
+      "type": "string"
+    },
+    "Flight": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_departure": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Actual departure, if departed",
+          "title": "Actual Departure"
+        },
+        "arrival_delay_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Arrival delay in minutes",
+          "title": "Arrival Delay Minutes"
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DelayCause"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the delay/cancellation was airline-controllable"
+        },
+        "cause_detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Specific cause: weather, atc, crew, maintenance, it",
+          "title": "Cause Detail"
+        },
+        "customer_accepted_alternative": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer accepted rebooking or alternative transportation",
+          "title": "Customer Accepted Alternative"
+        },
+        "delay_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Departure delay in minutes (0 if on time)",
+          "title": "Delay Minutes"
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Destination airport code",
+          "title": "Destination"
+        },
+        "flight_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Segment identifier",
+          "title": "Flight Id"
+        },
+        "flight_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Marketing flight number",
+          "title": "Flight Number"
+        },
+        "is_cancelled_by_airline": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Airline cancelled the flight",
+          "title": "Is Cancelled By Airline"
+        },
+        "is_domestic": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Both airports in the US",
+          "title": "Is Domestic"
+        },
+        "is_significant_change": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Change meets the DOT 'significant change' definition (e.g. >= 3h domestic)",
+          "title": "Is Significant Change"
+        },
+        "origin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Origin airport code",
+          "title": "Origin"
+        },
+        "overnight_required": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Disruption required an overnight stay",
+          "title": "Overnight Required"
+        },
+        "schedule_change_minutes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minutes the schedule moved after purchase",
+          "title": "Schedule Change Minutes"
+        },
+        "scheduled_departure": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scheduled departure",
+          "title": "Scheduled Departure"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlightStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flight status"
+        }
+      },
+      "title": "Flight",
+      "type": "object"
+    },
+    "FlightStatus": {
+      "enum": [
+        "scheduled",
+        "on_time",
+        "delayed",
+        "cancelled",
+        "diverted",
+        "completed"
+      ],
+      "title": "FlightStatus",
+      "type": "string"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "brand": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Brand, e.g. SawStop, Laguna, Rockler",
+          "title": "Brand"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product category, e.g. power_tool, machinery, router_bit, drawer_slide, hardware, lumber, finish, clearance, gift_card, plan, class",
+          "title": "Category"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ItemCondition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Condition reported for the item"
+        },
+        "freight_required": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ships by LTL freight rather than parcel",
+          "title": "Freight Required"
+        },
+        "has_lifetime_guarantee": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is covered by a lifetime guarantee",
+          "title": "Has Lifetime Guarantee"
+        },
+        "is_custom": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Custom or made-to-order item",
+          "title": "Is Custom"
+        },
+        "is_final_sale": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Clearance / final-sale item, not returnable",
+          "title": "Is Final Sale"
+        },
+        "is_machinery": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is stationary machinery",
+          "title": "Is Machinery"
+        },
+        "is_non_returnable": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item class that the merchant never accepts back (e.g. certain machinery brands)",
+          "title": "Is Non Returnable"
+        },
+        "is_power_tool": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Item is a power tool",
+          "title": "Is Power Tool"
+        },
+        "item_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Line item identifier",
+          "title": "Item Id"
+        },
+        "line_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "price x quantity",
+          "title": "Line Total"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product name",
+          "title": "Name"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit price paid",
+          "title": "Price"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quantity ordered",
+          "title": "Quantity"
+        },
+        "sku": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchant SKU (opaque)",
+          "title": "Sku"
+        }
+      },
+      "title": "Item",
+      "type": "object"
+    },
+    "ItemCondition": {
+      "enum": [
+        "new_unopened",
+        "opened_unused",
+        "used",
+        "damaged",
+        "defective",
+        "unknown"
+      ],
+      "title": "ItemCondition",
+      "type": "string"
+    },
+    "Order": {
+      "additionalProperties": false,
+      "properties": {
+        "backorder_eta_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days until backordered item is expected",
+          "title": "Backorder Eta Days"
+        },
+        "days_since_order": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days between order placement and today",
+          "title": "Days Since Order"
+        },
+        "has_shipped": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Any part of the order has shipped",
+          "title": "Has Shipped"
+        },
+        "is_backordered": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "At least one item is on backorder",
+          "title": "Is Backordered"
+        },
+        "items": {
+          "description": "Line items",
+          "items": {
+            "$ref": "#/$defs/Item"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "order_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchant order number",
+          "title": "Order Id"
+        },
+        "payment_method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PaymentMethod"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How the order was paid"
+        },
+        "placed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the order was placed",
+          "title": "Placed At"
+        },
+        "rewards_discount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Discount applied from a rewards card or program at purchase",
+          "title": "Rewards Discount"
+        },
+        "shipments": {
+          "description": "Shipments",
+          "items": {
+            "$ref": "#/$defs/Shipment"
+          },
+          "title": "Shipments",
+          "type": "array"
+        },
+        "shipping_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping charged",
+          "title": "Shipping Total"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Order status: pending, processing, shipped, delivered, backordered, cancelled",
+          "title": "Status"
+        },
+        "subtotal": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Merchandise subtotal",
+          "title": "Subtotal"
+        },
+        "tax_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tax charged",
+          "title": "Tax Total"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Grand total paid",
+          "title": "Total"
+        }
+      },
+      "title": "Order",
+      "type": "object"
+    },
+    "PaymentMethod": {
+      "enum": [
+        "card",
+        "rewards_card",
+        "paypal",
+        "gift_card",
+        "store_credit",
+        "travel_credit",
+        "points",
+        "other"
+      ],
+      "title": "PaymentMethod",
+      "type": "string"
+    },
+    "Remedy": {
+      "enum": [
+        "refund",
+        "partial_refund",
+        "replacement",
+        "reship",
+        "repair",
+        "return_label",
+        "store_credit",
+        "travel_credit",
+        "rebook",
+        "points",
+        "voucher",
+        "expense_reimbursement",
+        "bag_delivery",
+        "cancel_order",
+        "none"
+      ],
+      "title": "Remedy",
+      "type": "string"
+    },
+    "Shipment": {
+      "additionalProperties": false,
+      "properties": {
+        "carrier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Carrier name (UPS, FedEx, USPS, freight carrier)",
+          "title": "Carrier"
+        },
+        "damage_noted_on_delivery": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Damage was noted on the delivery receipt (freight)",
+          "title": "Damage Noted On Delivery"
+        },
+        "days_since_delivery": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Days between delivery and today",
+          "title": "Days Since Delivery"
+        },
+        "delivered_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the carrier recorded delivery",
+          "title": "Delivered At"
+        },
+        "is_freight": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Delivered by LTL freight",
+          "title": "Is Freight"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping method: ground, expedited, freight",
+          "title": "Method"
+        },
+        "shipment_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipment identifier",
+          "title": "Shipment Id"
+        },
+        "shipped_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the shipment left the warehouse",
+          "title": "Shipped At"
+        },
+        "shipping_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shipping charge paid by the customer",
+          "title": "Shipping Paid"
+        },
+        "signed_for": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Delivery was signed for",
+          "title": "Signed For"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShipmentStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current shipment status"
+        }
+      },
+      "title": "Shipment",
+      "type": "object"
+    },
+    "ShipmentStatus": {
+      "enum": [
+        "pending",
+        "in_transit",
+        "delivered",
+        "lost",
+        "damaged",
+        "returned"
+      ],
+      "title": "ShipmentStatus",
+      "type": "string"
+    },
+    "StaffAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "description": "Normalised action verb, e.g. request_photos, issue_refund, send_label",
+          "title": "Action",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Amount if the action moved money",
+          "title": "Amount"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the action happened",
+          "title": "At"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Masked free-text detail",
+          "title": "Detail"
+        },
+        "seq": {
+          "description": "Order of the action in the thread",
+          "title": "Seq",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "action"
+      ],
+      "title": "StaffAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The fact bundle a rule evaluates over. Rules use paths like `order.total` or `claim.has_photos`.",
+  "properties": {
+    "bag": {
+      "$ref": "#/$defs/Bag",
+      "description": "The bag the claim is about"
+    },
+    "booking": {
+      "$ref": "#/$defs/Booking"
+    },
+    "case": {
+      "$ref": "#/$defs/Case"
+    },
+    "claim": {
+      "$ref": "#/$defs/Claim"
+    },
+    "customer": {
+      "$ref": "#/$defs/Customer"
+    },
+    "flight": {
+      "$ref": "#/$defs/Flight",
+      "description": "The segment the claim is about"
+    },
+    "item": {
+      "$ref": "#/$defs/Item",
+      "description": "The item the claim is about"
+    },
+    "order": {
+      "$ref": "#/$defs/Order"
+    },
+    "shipment": {
+      "$ref": "#/$defs/Shipment",
+      "description": "The shipment the claim is about"
+    }
+  },
+  "title": "Facts",
+  "type": "object"
+}
