@@ -5,15 +5,16 @@
  "accuracy": 1.0,
  "macro_f1": 1.0,
  "threshold": 0.7,
- "coverage_at_threshold": 1.0,
+ "coverage_at_threshold": 0.983,
  "accuracy_at_threshold": 1.0,
  "class_counts": {
-  "backorder_eta_inquiry": 21,
-  "change_of_mind_returns": 90,
-  "damaged_or_defective_product": 100,
-  "lifetime_guarantee_replacement_request": 35,
-  "order_cancellation_request": 32,
-  "order_quantity_change_request": 11,
-  "post_shipment_address_change": 11
+  "backorder_eta_inquiry": 17,
+  "cancel_backordered_order": 21,
+  "cancel_shipped_order": 21,
+  "change_of_mind_returns": 91,
+  "damaged_on_arrival": 105,
+  "lifetime_guarantee_wear_failure": 26,
+  "post_shipment_quantity_change": 12,
+  "shipping_address_change_denied": 7
  }
 }

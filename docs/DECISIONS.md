@@ -45,3 +45,9 @@ Short entries, newest last. Each: what we chose, why, and what it rules out.
 **D19. Local hash embeddings when VOYAGE_API_KEY is absent.** `EMBEDDING_PROVIDER=auto` picks Voyage when the key exists, else a deterministic 1024-d HashingVectorizer. Clustering quality is lexical, not semantic, until the key is added; the pipeline and schema are identical.
 
 **D20. ruff ignores E501.** `ruff format` wraps code; long literal strings and prompts are fine.
+
+**D21. `LLM_BATCH=false` runs offline jobs synchronously with 6 concurrent requests.** The Batch API halves the price but queued 10 to 25 minutes per step today; the founder chose speed for the rest of M2. Default stays batch.
+
+**D22. Drift comparison semantics.** `refund`/`partial_refund`/`cancel_order` and `store_credit`/`travel_credit`/`voucher` are treated as the same money movement; an informational ruling (approve/none) is never drift; `needs_approval`/`escalate` are never drift; staff acting on a `needs_fact` ruling counts as drift only when the missing fact is evidence (photos, receipt, bag report). Scored against the hidden truth: Rockler precision/recall 0.95/0.95, Alaska 0.71/0.91.
+
+**D23. Cost of iteration.** M2 spent $1.44 against a $0.78 estimate: mining, synth and eval each ran 2 to 4 times while bugs were fixed (generator cap at 300, un-curated pack used for the first threads, photo-less drift undetectable), and the final runs were synchronous at full price. Cached outputs mean a fresh clone rebuilds both sandboxes for $0.
