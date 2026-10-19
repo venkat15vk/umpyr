@@ -37,7 +37,9 @@ export function Client() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [messages, busy]);
+  useEffect(() => {
+    if (typeof endRef.current?.scrollIntoView === "function") endRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages, busy]);
 
   const send = async (text: string) => {
     if (!session || !text.trim() || busy) return;

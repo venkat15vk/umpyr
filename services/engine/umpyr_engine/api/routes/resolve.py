@@ -168,7 +168,7 @@ def examples(workspace_id: str, n: int = 6, session: Session = Depends(db_sessio
             select(m.EvalScenario)
             .where(m.EvalScenario.workspace_id == workspace_id, m.EvalScenario.split == "test")
             .order_by(m.EvalScenario.scenario_id)
-            .limit(60)
+            .limit(1000)
         )
         .scalars()
         .all()

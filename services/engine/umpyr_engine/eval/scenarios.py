@@ -7,9 +7,9 @@ customer's opening message. The replay harness (M5) runs the pipeline on the mes
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
-import random
 from collections import Counter
 from typing import Any
 
@@ -68,7 +68,6 @@ def generate_eval(
         from ..sandbox.synth import alaska as gen
 
     _records, scenarios, _names = gen.generate(pack, n, seed=seed, id_offset=100000)
-    rng = random.Random(seed)
     plans = [
         {"customer_name": sc.person.name, "merchant": workspace_id, "must_mention": _must_mention(sc)}
         for sc in scenarios
@@ -98,7 +97,7 @@ def generate_eval(
     for i, (sc, t) in enumerate(zip(scenarios, texts, strict=True)):
         if not t:
             continue
-        split = "train" if rng.random() < 0.8 else "test"
+        split = "test" if int(hashlib.md5(f"{workspace_id}-ev-{i:04d}".encode()).hexdigest(), 16) % 5 == 0 else "train"
         expected = {
             "decision": sc.policy["decision"],
             "remedy": sc.policy["remedy"],

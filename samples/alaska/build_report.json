@@ -1,12 +1,6 @@
 {
- "ingest": {
-  "tickets": 300,
-  "masked": {
-   "email": 326,
-   "phone": 304,
-   "name": 1095,
-   "address": 225
-  },
-  "records": 1300
+ "eval": {
+  "scenarios": 1000,
+  "cached": true
  }
 }
