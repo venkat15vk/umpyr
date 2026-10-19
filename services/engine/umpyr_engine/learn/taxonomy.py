@@ -62,10 +62,13 @@ the same issue type (duplicates or near-duplicates). Do not merge categories tha
 (e.g. 'damaged on arrival' vs 'defective after use' stay separate). Return an empty list if nothing should merge."""
 
 
-def case_text(c: Case) -> str:
+def case_text(c: Case, first_message: str | None = None) -> str:
+    """Text embedded for clustering, the router and neighbour search. Includes the customer's opening message so
+    runtime queries (raw customer messages) live in the same space as the cases."""
     claim = (c.facts or {}).get("claim", {}) or {}
     rec = c.record or {}
-    return f"{c.summary or ''} {rec.get('category_hint') or ''} reason={claim.get('reason') or ''} {claim.get('description') or ''}".strip()
+    msg = first_message or rec.get("first_message") or ""
+    return f"{msg[:600]} {c.summary or ''} {rec.get('category_hint') or ''} reason={claim.get('reason') or ''}".strip()
 
 
 def cluster(x: np.ndarray, min_cluster_size: int) -> tuple[np.ndarray, str]:

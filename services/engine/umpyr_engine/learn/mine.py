@@ -198,96 +198,13 @@ def hours_to_resolve(ticket: Ticket) -> float | None:
 
 
 def build_facts(mined: dict[str, Any], order: dict[str, Any] | None, ticket: Ticket, kind: str) -> dict[str, Any]:
-    """Join mined claim facts with the merchant record into an ontology Facts dict."""
-    at = ticket.ticket_created_at.replace(tzinfo=None) if ticket.ticket_created_at else None
-    claim = {k: v for k, v in (mined.get("claim") or {}).items() if v is not None}
-    facts: dict[str, Any] = {"claim": claim}
-    if not order:
-        return facts
-    if kind == "booking":
-        booking = {k: v for k, v in order.items() if k not in ("flights", "bags", "customer") and v is not None}
-        facts["booking"] = booking
-        flights = order.get("flights") or []
-        bags = order.get("bags") or []
-        if flights:
-            facts["flight"] = {k: v for k, v in flights[0].items() if v is not None}
-        if bags:
-            facts["bag"] = {k: v for k, v in bags[0].items() if v is not None}
-        air = {k: v for k, v in (mined.get("airline") or {}).items() if v is not None}
-        f = facts.setdefault("flight", {})
-        for k in (
-            "delay_minutes",
-            "cause",
-            "is_cancelled_by_airline",
-            "customer_accepted_alternative",
-            "overnight_required",
-        ):
-            if k in air:
-                f[k] = air[k]
-        b = facts.setdefault("bag", {})
-        for src, dst in (
-            ("bag_minutes_to_carousel", "minutes_to_carousel"),
-            ("bag_report_filed", "report_filed"),
-            ("bag_report_filed_within_hours", "report_filed_within_hours"),
-            ("bag_delay_days", "delay_days"),
-            ("bag_damage_type", "damage_type"),
-            ("interim_expenses", "interim_expenses"),
-        ):
-            if src in air:
-                b[dst] = air[src]
-        if "customer_cancelled" in air:
-            booking["customer_cancelled"] = air["customer_cancelled"]
-        if "hours_since_purchase" in air and "hours_since_purchase" not in booking:
-            booking["hours_since_purchase"] = air["hours_since_purchase"]
-        purchased = _parse_dt(order.get("purchased_at"))
-        if purchased and at:
-            booking.setdefault("hours_since_purchase", int((at - purchased).total_seconds() // 3600))
-        if flights and at:
-            dep = _parse_dt(flights[0].get("scheduled_departure"))
-            if dep:
-                booking.setdefault("hours_until_departure", int((dep - at).total_seconds() // 3600))
-        if order.get("customer"):
-            facts["customer"] = {
-                k: v for k, v in order["customer"].items() if k in ("customer_id", "loyalty_member", "loyalty_tier")
-            }
-        return facts
-    facts["order"] = {k: v for k, v in order.items() if k not in ("items", "shipments", "customer") and v is not None}
-    placed = _parse_dt(order.get("placed_at"))
-    if placed and at:
-        facts["order"]["days_since_order"] = max(0, (at - placed).days)
-    items = order.get("items") or []
-    hint = (mined.get("item_hint") or "").lower()
-    item = None
-    for it in items:
-        if hint and (
-            str(it.get("sku", "")).lower() in hint
-            or any(w in hint for w in str(it.get("name", "")).lower().split()[:2])
-        ):
-            item = it
-            break
-    item = item or (items[0] if items else None)
-    if item:
-        facts["item"] = {k: v for k, v in item.items() if v is not None}
-        if claim.get("reason") in ("damaged_on_arrival",):
-            facts["item"].setdefault("condition", "damaged")
-        elif claim.get("reason") in ("defective", "lifetime_guarantee"):
-            facts["item"].setdefault("condition", "defective")
-        elif claim.get("item_used"):
-            facts["item"]["condition"] = "used"
-        elif claim.get("item_unopened"):
-            facts["item"]["condition"] = "new_unopened"
-    ships = order.get("shipments") or []
-    if ships:
-        facts["shipment"] = {k: v for k, v in ships[0].items() if v is not None}
-        delivered = _parse_dt(ships[0].get("delivered_at"))
-        if delivered and at:
-            facts["shipment"]["days_since_delivery"] = max(0, (at - delivered).days)
-            claim.setdefault("reported_within_days", max(0, (at - delivered).days))
-    if order.get("customer"):
-        facts["customer"] = {
-            k: v for k, v in order["customer"].items() if k in ("customer_id", "loyalty_member", "loyalty_tier")
-        }
-    return facts
+    """Join mined claim facts with the merchant record into an ontology Facts dict (shared builder)."""
+    from ..resolve.facts import build_facts as _build
+
+    at = ticket.ticket_created_at.replace(tzinfo=None) if ticket.ticket_created_at else datetime.now()
+    return _build(
+        mined.get("claim") or {}, mined.get("airline") or {}, order, at, kind, item_hint=mined.get("item_hint")
+    )
 
 
 def mine_workspace(
@@ -338,6 +255,7 @@ def mine_workspace(
             "summary": res.get("summary"),
             "category_hint": res.get("category_hint"),
             "item_hint": res.get("item_hint"),
+            "first_message": next((m_["text"] for m_ in t.thread if m_.get("role") == "customer"), "")[:800],
             "staff_actions": actions,
             "outcome": outcome,
             "opened_at": t.ticket_created_at.isoformat() if t.ticket_created_at else None,

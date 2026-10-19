@@ -184,7 +184,9 @@ def _ruling_summary(r) -> dict[str, Any]:
     }
 
 
-def generate(pack: RulePack, n: int = 300, seed: int = 11) -> tuple[list[dict], list[Scenario], list[str]]:
+def generate(
+    pack: RulePack, n: int = 300, seed: int = 11, id_offset: int = 0
+) -> tuple[list[dict], list[Scenario], list[str]]:
     rng = random.Random(seed)
     bookings: list[dict] = []
     scenarios: list[Scenario] = []
@@ -193,7 +195,7 @@ def generate(pack: RulePack, n: int = 300, seed: int = 11) -> tuple[list[dict], 
     for i, cat in enumerate(cats):
         person = make_person(rng, 5000 + i)
         names.append(person.name)
-        sc, booking = _scenario(rng, cat, person, pack, i)
+        sc, booking = _scenario(rng, cat, person, pack, id_offset + i)
         booking["order_id"] = booking["pnr"]
         bookings.append(booking)
         scenarios.append(sc)

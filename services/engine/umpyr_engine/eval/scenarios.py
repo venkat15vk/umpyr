@@ -67,7 +67,7 @@ def generate_eval(
     else:
         from ..sandbox.synth import alaska as gen
 
-    _records, scenarios, _names = gen.generate(pack, n, seed=seed)
+    _records, scenarios, _names = gen.generate(pack, n, seed=seed, id_offset=100000)
     rng = random.Random(seed)
     plans = [
         {"customer_name": sc.person.name, "merchant": workspace_id, "must_mention": _must_mention(sc)}

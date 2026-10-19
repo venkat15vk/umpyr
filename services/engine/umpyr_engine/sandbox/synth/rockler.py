@@ -417,7 +417,9 @@ def _ruling_summary(r) -> dict[str, Any]:
     }
 
 
-def generate(pack: RulePack, n: int = 300, seed: int = 7) -> tuple[list[dict], list[Scenario], list[str]]:
+def generate(
+    pack: RulePack, n: int = 300, seed: int = 7, id_offset: int = 0
+) -> tuple[list[dict], list[Scenario], list[str]]:
     rng = random.Random(seed)
     orders: list[dict] = []
     scenarios: list[Scenario] = []
@@ -437,11 +439,11 @@ def generate(pack: RulePack, n: int = 300, seed: int = 7) -> tuple[list[dict], l
         else:
             placed = NOW - timedelta(days=rng.randint(6, 40))
         backorder = cat == "backorder_status" or (cat == "order_cancel_change" and rng.random() < 0.2)
-        order = make_order(rng, i, person, product["sku"], placed, backorder=backorder)
+        order = make_order(rng, id_offset + i, person, product["sku"], placed, backorder=backorder)
         orders.append(order)
         line = next(li for li in order["items"] if li["sku"] == product["sku"])
         item = dict(line)
-        sc = _scenario(rng, cat, order, item, person, pack, i)
+        sc = _scenario(rng, cat, order, item, person, pack, id_offset + i)
         scenarios.append(sc)
     return orders, scenarios, names
 

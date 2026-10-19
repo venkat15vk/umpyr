@@ -123,3 +123,25 @@ def test_non_money_action_ignores_limit():
 def test_authorization_is_deterministic():
     outs = {authorize(AGENT, "refund", res(), {}, ruling(), policy()).model_dump_json() for _ in range(20)}
     assert len(outs) == 1
+
+
+def test_replacement_value_counts_toward_limit():
+    r = Resource(type="order", id="R-1", amount=Decimal("45"))
+    a = authorize(
+        AGENT,
+        Action.replacement,
+        r,
+        {},
+        ruling(remedy="replacement", amount="45"),
+        policy(auto_approve_limit=Decimal("10")),
+    )
+    assert a.decision == PDPDecision.needs_approval
+    a = authorize(
+        AGENT,
+        Action.replacement,
+        r,
+        {},
+        ruling(remedy="replacement", amount="45"),
+        policy(auto_approve_limit=Decimal("100")),
+    )
+    assert a.decision == PDPDecision.allow

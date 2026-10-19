@@ -15,7 +15,7 @@
     ],
     "raw_path": "dot-14-cfr-260.xml",
     "text_path": "dot-14-cfr-260.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-contract-of-carriage",
@@ -34,7 +34,7 @@
     ],
     "raw_path": "ak-contract-of-carriage.pdf",
     "text_path": "ak-contract-of-carriage.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-overview",
@@ -50,7 +50,7 @@
     "notes": [],
     "raw_path": "ak-commitment-overview.html",
     "text_path": "ak-commitment-overview.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-refunds",
@@ -66,7 +66,7 @@
     "notes": [],
     "raw_path": "ak-commitment-refunds.html",
     "text_path": "ak-commitment-refunds.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-baggage",
@@ -82,7 +82,7 @@
     "notes": [],
     "raw_path": "ak-commitment-baggage.html",
     "text_path": "ak-commitment-baggage.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-delay-choices",
@@ -98,7 +98,7 @@
     "notes": [],
     "raw_path": "ak-commitment-delay-choices.html",
     "text_path": "ak-commitment-delay-choices.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-extended-delays",
@@ -114,7 +114,7 @@
     "notes": [],
     "raw_path": "ak-commitment-extended-delays.html",
     "text_path": "ak-commitment-extended-delays.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-commitment-flexibility",
@@ -130,7 +130,7 @@
     "notes": [],
     "raw_path": "ak-commitment-flexibility.html",
     "text_path": "ak-commitment-flexibility.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-baggage-delayed-damaged",
@@ -146,7 +146,7 @@
     "notes": [],
     "raw_path": "ak-baggage-delayed-damaged.html",
     "text_path": "ak-baggage-delayed-damaged.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-optional-services-fees",
@@ -162,7 +162,7 @@
     "notes": [],
     "raw_path": "ak-optional-services-fees.html",
     "text_path": "ak-optional-services-fees.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-fee-changes",
@@ -178,7 +178,7 @@
     "notes": [],
     "raw_path": "ak-fee-changes.html",
     "text_path": "ak-fee-changes.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "ak-bonus-travel-terms",
@@ -194,6 +194,6 @@
     "notes": [],
     "raw_path": "ak-bonus-travel-terms.html",
     "text_path": "ak-bonus-travel-terms.txt",
-    "cached": false
+    "cached": true
   }
 ]

@@ -202,7 +202,7 @@ def authorize(
         return needs_approval("assist mode: a human approves every action")
     if ruling.decision == Decision.needs_approval:
         return needs_approval("ruling requires approval")
-    if action in MONEY_ACTIONS and amount is not None and amount > policy.auto_approve_limit:
+    if amount is not None and amount > policy.auto_approve_limit:  # any action that moves value, incl. replacements
         return needs_approval(f"amount {amount} exceeds auto-approve limit {policy.auto_approve_limit}")
 
     reasons.append(f"licensed by rule {ruling.winning_rule_id} ({ruling.winning_clause_id})")

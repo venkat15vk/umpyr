@@ -47,6 +47,9 @@ def step_ingest(client: str, emit: Emit) -> dict[str, Any]:
     tickets = read_jsonl(out / "tickets.jsonl")
     records_path = out / ("bookings.json" if client == "alaska" else "orders.json")
     records = json.loads(records_path.read_text()) if records_path.exists() else []
+    eval_records_path = out / ("eval_bookings.json" if client == "alaska" else "eval_orders.json")
+    if eval_records_path.exists():  # eval scenarios reference their own records (distinct id range)
+        records = records + json.loads(eval_records_path.read_text())
     names_path = out / "synthetic_pii_names.json"
     masker = PIIMasker(known_names=json.loads(names_path.read_text()) if names_path.exists() else None)
     with get_session_factory()() as s:

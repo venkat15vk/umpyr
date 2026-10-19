@@ -1,33 +1,12 @@
 {
- "drift": {
-  "cases": 300,
-  "policy_decisions": {
-   "approve": 157,
-   "deny": 106,
-   "needs_fact": 17,
-   "needs_approval": 14,
-   "escalate": 6
+ "ingest": {
+  "tickets": 300,
+  "masked": {
+   "email": 307,
+   "phone": 301,
+   "address": 187,
+   "name": 1020
   },
-  "drift_findings": 38,
-  "unwritten_rule_candidates": 1,
-  "gold": 242,
-  "split": {
-   "train": 193,
-   "test": 49,
-   "held": 38
-  },
-  "rule_pack_version": "2026-10-19.4",
-  "vs_ground_truth": {
-   "scored": 300,
-   "claim_reason_accuracy": 0.997,
-   "policy_decision_agreement": 0.933,
-   "drift_precision": 0.947,
-   "drift_recall": 0.947,
-   "drift_tp_fp_fn": [
-    36,
-    2,
-    2
-   ]
-  }
+  "records": 1300
  }
 }

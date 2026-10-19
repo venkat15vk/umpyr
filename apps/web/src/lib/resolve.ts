@@ -1,0 +1,30 @@
+import { api } from "./api";
+
+export type ChatSession = { id: string; workspace_id: string; channel: "email" | "agent"; mode: "autonomous" | "assist" | "shadow"; auto_approve_limit: number; status: string; turn: number; category_key: string | null };
+export type Step = { step_id: string; name: string; kind: string; tool: string; clause_ids: string[]; clauses: Record<string, string>; fields: Record<string, unknown>; status: string; detail: string };
+export type Neighbour = { ticket_id: string; similarity: number; category_key: string; summary: string; staff_outcome: Record<string, unknown> | null; is_drift: boolean; drift_reason: string | null; hours_to_resolve: number | null };
+export type Ops = {
+  turn: number;
+  status: string;
+  classification: { category_key: string; category_name?: string; confidence: number; source: string; probabilities?: Record<string, number>; multi_issue?: boolean; secondary_category_key?: string | null };
+  neighbours: Neighbour[];
+  procedure: { ref: string | null; name: string | null; steps: Step[] };
+  record: { reference: string | null; found: boolean; summary: string | null };
+  facts: Record<string, Record<string, unknown>>;
+  ruling: { decision?: string; remedy?: string | null; amount?: string | null; fault?: string | null; winning_rule_id?: string | null; winning_clause_id?: string | null; clause_ids?: string[]; missing_facts?: string[]; explanation?: string; conflicts?: string[]; status: string; clause_notes: { clause_id: string; title: string; text: string }[] };
+  checks: { rule_id: string; clause_id: string; tier: string; priority: number; fired: boolean; missing: string[]; fields: Record<string, unknown> }[];
+  authorization: { decision: string; action: string; reasons: string[]; amount: string | null; limit: string | null } | null;
+  supervisor: { approved: boolean; issues: string[]; retried?: boolean; fallback_used?: boolean };
+  governance: { pii_masked: boolean; rule_pack_version: string | null; procedure: string | null; authority: string; supervisor_check: string; audit_hash: string; is_synthetic: boolean };
+  tools: { tool: string; ok: boolean; detail: string }[];
+  agent_message: Record<string, unknown> | null;
+};
+export type Message = { role: "customer" | "assistant"; text: string; ops?: Ops | null };
+export type Example = { category_key: string; text: string; expected: { decision: string; remedy: string | null; amount: string | null } };
+
+export const createSession = (ws: string, body: Partial<ChatSession>) => api<ChatSession>(`/workspaces/${ws}/sessions`, { method: "POST", body: JSON.stringify(body) });
+export const patchSession = (id: string, body: Partial<ChatSession>) => api<ChatSession>(`/sessions/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+export const sendMessage = (id: string, text: string) => api<{ reply: string; ops: Ops; session: ChatSession }>(`/sessions/${id}/messages`, { method: "POST", body: JSON.stringify({ text }) });
+export const getExamples = (ws: string) => api<Example[]>(`/workspaces/${ws}/examples`);
+export const askMerchant = (ws: string, question: string) => api<{ answer: string }>(`/workspaces/${ws}/merchant-chat`, { method: "POST", body: JSON.stringify({ question }) });
+export const getSummary = (ws: string) => api<Record<string, unknown>>(`/workspaces/${ws}/summary`);

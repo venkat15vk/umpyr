@@ -51,3 +51,17 @@ Short entries, newest last. Each: what we chose, why, and what it rules out.
 **D22. Drift comparison semantics.** `refund`/`partial_refund`/`cancel_order` and `store_credit`/`travel_credit`/`voucher` are treated as the same money movement; an informational ruling (approve/none) is never drift; `needs_approval`/`escalate` are never drift; staff acting on a `needs_fact` ruling counts as drift only when the missing fact is evidence (photos, receipt, bag report). Scored against the hidden truth: Rockler precision/recall 0.95/0.95, Alaska 0.71/0.91.
 
 **D23. Cost of iteration.** M2 spent $1.44 against a $0.78 estimate: mining, synth and eval each ran 2 to 4 times while bugs were fixed (generator cap at 300, un-curated pack used for the first threads, photo-less drift undetectable), and the final runs were synchronous at full price. Cached outputs mean a fresh clone rebuilds both sandboxes for $0.
+
+## 2026-10-19 — M3
+
+**D24. Runtime is a fixed state machine, not a tool-use loop.** `resolve/runtime.py` calls the tools in a fixed order every turn; Haiku is used for classification fallback, fact extraction, reply drafting and the supervisor check only. Rulings come from `umpyr_rules.evaluate`; actions from `umpyr_rules.authorize`. The brief's tool names survive as the ops-view trace.
+
+**D25. No ruling without the merchant record.** If no order/booking matches, the turn returns `needs_fact` asking only for the reference. This prevents rulings on claim facts alone.
+
+**D26. Customer text is masked before storage and before any model call.** Replies therefore address the customer generically; the merchant's own system can personalise on send.
+
+**D27. Supervisor failure falls back to a templated reply.** The draft is regenerated once with the supervisor's issues; if it still fails, a deterministic template built from the ruling is sent and the governance strip shows the failed check.
+
+**D28. Auto-approve limit applies to any action with a value**, including replacements, not only cash movements.
+
+**D29. Cases embed the customer's opening message**, so the router and neighbour search operate in the same text space as live messages. Eval scenarios use a distinct record id range (R-2xxxxx) and their records are loaded alongside the synthetic orders.

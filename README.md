@@ -68,6 +68,29 @@ Results are visible through the API: `GET /workspaces/{id}/summary|categories|pr
 
 Embeddings use Voyage when `VOYAGE_API_KEY` is set; otherwise a local hash embedder keeps the pipeline runnable (lexical quality only).
 
+## Resolve chat (M3)
+
+```bash
+make api      # http://localhost:8000
+make web      # http://localhost:5173  ->  /rockler  or  /alaska
+```
+
+Each customer message runs one turn of the resolve runtime: classify (router, LLM fallback below 0.70) -> neighbour
+cases (pgvector) -> approved procedure -> record lookup -> fact extraction -> **rule engine** -> **PDP** -> reply draft
+-> supervisor check -> audit record (SHA-256). The ops view shows every step; the governance strip shows the pinned
+policy version, procedure@version, authority, supervisor result and audit hash.
+
+- Toggles: mode (Autonomous / Assist / Shadow), reply channel (Email / Customer's AI agent, which renders a
+  `umpyr-resolve/0.1` JSON message), auto-approve limit.
+- Merchant chat tab answers questions about the merchant's own data from computed aggregates.
+- API: `POST /workspaces/{id}/sessions`, `POST /sessions/{id}/messages`, `PATCH /sessions/{id}`,
+  `POST /workspaces/{id}/merchant-chat`, `GET /workspaces/{id}/audit`, `GET /workspaces/{id}/examples`.
+- Cost: about $0.001 per turn (3-4 Haiku calls). At the daily cap the API returns 402 and the UI shows
+  "Demo budget reached for today".
+
+Sandbox clock: synthetic data is dated relative to 2026-10-01 (`workspace.settings.as_of`), so day counts in rulings
+match the scenarios.
+
 ## Tests
 
 ```bash
@@ -81,6 +104,6 @@ Engine tests start an ephemeral embedded Postgres; no services or API keys neede
 
 - [x] **M1 — Skeleton**: ontology, rule engine + PDP with tests, schema + migrations, FastAPI health/spend/jobs, React shell, budget guard.
 - [x] **M2 — Sandboxes**: policy fetch + compile, synthetic data, offline onboarding for Rockler and Alaska.
-- [ ] **M3 — Resolve chat**: `/rockler`, `/alaska` with ops view, toggles, audit.
+- [x] **M3 — Resolve chat**: `/rockler`, `/alaska` with ops view, toggles, audit.
 - [ ] **M4 — Upload flow**: `/try`, column mapping, live onboarding, setup/approve.
 - [ ] **M5 — Eval scoreboard + deploy**.

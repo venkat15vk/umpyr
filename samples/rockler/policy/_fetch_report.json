@@ -13,7 +13,7 @@
     "notes": [],
     "raw_path": "rockler-faq-ordering.html",
     "text_path": "rockler-faq-ordering.txt",
-    "cached": false
+    "cached": true
   },
   {
     "source_id": "rockler-return-policy",
@@ -31,6 +31,6 @@
     ],
     "raw_path": "rockler-return-policy.html",
     "text_path": "rockler-return-policy.txt",
-    "cached": false
+    "cached": true
   }
 ]
