@@ -1,6 +1,4 @@
-import json
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 
 from umpyr_engine.db import models as m
 from umpyr_engine.ingest.mapping import apply_order_mapping, apply_ticket_mapping
@@ -147,3 +145,41 @@ def test_create_workspace_and_upload_policy_file(session_factory):
     assert r.status_code == 400
     ready = c.get(f"/workspaces/{ws['id']}/readiness").json()
     assert ready["ready"] is False and "no approved procedure" in ready["reasons"]
+
+
+def test_adopt_unwritten_rule_adds_goodwill_rule_to_active_pack(session_factory):
+    from umpyr_engine.onboard.pipeline import adopt_unwritten_rule
+    from umpyr_rules import RulePack, evaluate
+
+    with session_factory() as s:
+        if s.get(m.Workspace, "adoptws") is None:
+            s.add(m.Workspace(id="adoptws", name="Adopt", kind="upload"))
+            s.flush()
+            s.add(
+                m.RulePack(
+                    workspace_id="adoptws",
+                    version="a1",
+                    pack={"workspace": "adoptws", "version": "a1", "clauses": [], "rules": [], "conflicts": []},
+                    rule_count=0,
+                    status="active",
+                )
+            )
+            s.commit()
+        f = m.DriftFinding(
+            workspace_id="adoptws",
+            kind="unwritten_rule",
+            category_key="lifetime",
+            staff_outcome={"decision": "approve", "remedy": "replacement"},
+            policy_outcome={},
+            pattern="For claim.reason=lifetime_guarantee in lifetime, staff consistently decide approve/replacement (23/23 cases) but no compiled clause governs it.",
+            support=23,
+        )
+        s.add(f)
+        s.commit()
+        rid = adopt_unwritten_rule(s, "adoptws", f)
+        assert rid == "PRACTICE-1.m1"
+        rp = s.query(m.RulePack).filter_by(workspace_id="adoptws", status="active").one()
+        pack = RulePack.model_validate(rp.pack)
+        r = evaluate(pack, {"claim": {"reason": "lifetime_guarantee"}}, category="lifetime")
+        assert r.decision == "approve" and r.remedy == "replacement" and r.winning_clause_id == "PRACTICE-1"
+        assert evaluate(pack, {"claim": {"reason": "lifetime_guarantee"}}, category="other").decision == "escalate"

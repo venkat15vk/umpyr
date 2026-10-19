@@ -200,7 +200,12 @@ def set_drift_status(
     f.note = note
     session.add(f)
     session.commit()
-    return {"id": finding_id, "status": status}
+    adopted = None
+    if status == "adopt_as_rule" and f.kind == "unwritten_rule":
+        from ...onboard.pipeline import adopt_unwritten_rule
+
+        adopted = adopt_unwritten_rule(session, workspace_id, f)
+    return {"id": finding_id, "status": status, "adopted_rule_id": adopted}
 
 
 @router.get("/cases")

@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 from ..db.models import Case, OrderRecord, Ticket
 from ..llm import LLMProvider
-from ..llm.helpers import json_request, llm_json, llm_json_batch
+from ..llm.helpers import json_request, llm_json_batch, llm_json_concurrent
 from .vocab import CLAIM_REASONS, DECISIONS, FAULTS, REMEDIES, STAFF_ACTIONS
 
 log = logging.getLogger(__name__)
@@ -233,7 +233,7 @@ def mine_workspace(
         for t in tickets
     ]
     log.info("mining %d tickets", len(reqs))
-    results = llm_json_batch(llm, reqs) if use_batch else [llm_json(llm, r) for r in reqs]
+    results = llm_json_batch(llm, reqs) if use_batch else llm_json_concurrent(llm, reqs)
     if replace:
         session.execute(delete(Case).where(Case.workspace_id == workspace_id))
     n = failed = 0

@@ -25,7 +25,7 @@ from umpyr_rules import Clause as RClause
 from umpyr_rules import Effect, JsonLogicError, Rule, RulePack, apply, collect_vars
 
 from ..llm import LLMProvider, LLMRequest
-from ..llm.helpers import json_request, llm_json, llm_json_batch
+from ..llm.helpers import json_request, llm_json, llm_json_batch, llm_json_concurrent
 from .prompts import CLAUSE_SCHEMA, RULE_SCHEMA, SEGMENT_SYSTEM, TOPICS, rule_system_prompt, rule_user, segment_user
 
 log = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ def segment_documents(
             )
             meta.append((d, i))
     log.info("segmenting %d documents in %d chunks (batch=%s)", len(docs), len(reqs), use_batch)
-    results = llm_json_batch(llm, reqs) if use_batch else [llm_json(llm, r) for r in reqs]
+    results = llm_json_batch(llm, reqs) if use_batch else llm_json_concurrent(llm, reqs)
 
     clauses: list[dict] = []
     seen: set[str] = set()
@@ -181,7 +181,7 @@ def convert_clauses(
         for c in todo
     ]
     log.info("converting %d relevant clauses to rules (batch=%s)", len(todo), use_batch)
-    results = llm_json_batch(llm, reqs) if use_batch else [llm_json(llm, r) for r in reqs]
+    results = llm_json_batch(llm, reqs) if use_batch else llm_json_concurrent(llm, reqs)
 
     rules: list[Rule] = []
     report: list[dict] = []

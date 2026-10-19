@@ -314,3 +314,86 @@ def rebuild_active_pack(session: Session, workspace_id: str) -> None:
     rp.rule_count = sum(1 for r in pack.rules if r.enabled)
     session.add(rp)
     session.commit()
+
+
+def adopt_unwritten_rule(session: Session, workspace_id: str, finding: m.DriftFinding) -> str | None:
+    """Merchant adopts a consistent staff practice as a rule. The rule lives at the goodwill tier (below every
+    written clause) scoped to the finding's category and claim reason, and cites a synthetic PRACTICE clause whose
+    text is the observed pattern. Returns the new rule id."""
+    import re
+
+    from umpyr_rules import Clause, Effect, Rule
+
+    rp = (
+        session.execute(
+            select(m.RulePack).where(m.RulePack.workspace_id == workspace_id, m.RulePack.status == "active")
+        )
+        .scalars()
+        .first()
+    )
+    if rp is None or finding.kind != "unwritten_rule":
+        return None
+    pack = RP.model_validate(rp.pack)
+    mobj = re.search(r"claim\.reason=(\w+)", finding.pattern or "")
+    reason = mobj.group(1) if mobj else None
+    n = 1 + sum(1 for c in pack.clauses if c.clause_id.startswith("PRACTICE-"))
+    clause_id = f"PRACTICE-{n}"
+    rule_id = f"{clause_id}.m1"
+    if any(r.rule_id == rule_id for r in pack.rules):
+        return rule_id
+    staff = finding.staff_outcome or {}
+    decision = staff.get("decision") if staff.get("decision") in ("approve", "partial", "deny") else "needs_approval"
+    pack.clauses.append(
+        Clause(
+            clause_id=clause_id,
+            title=f"Adopted practice: {finding.category_key}",
+            text=finding.pattern or "",
+            source_url=f"practice://{workspace_id}/{finding.id}",
+            source_title="Merchant-adopted practice (from drift analysis)",
+            tier="goodwill",
+        )
+    )
+    pack.rules.append(
+        Rule(
+            rule_id=rule_id,
+            clause_id=clause_id,
+            tier="goodwill",
+            priority=0,
+            categories=[finding.category_key] if finding.category_key else [],
+            claim_reasons=[reason] if reason else [],
+            requires=[],
+            when=True,
+            effect=Effect(
+                decision=decision,
+                remedy=staff.get("remedy") or None,
+                note=f"Adopted from practice ({finding.support} consistent cases); no written clause governs this.",
+            ),
+            description=f"Merchant-adopted practice for {finding.category_key} / {reason}: {decision}/{staff.get('remedy')}",
+        )
+    )
+    rp.pack = json.loads(pack.model_dump_json())
+    rp.rule_count = len(pack.rules)
+    session.add(rp)
+    session.add(
+        m.Clause(
+            workspace_id=workspace_id,
+            clause_id=clause_id,
+            title=f"Adopted practice: {finding.category_key}",
+            text=finding.pattern or "",
+            tier="goodwill",
+            source_url=f"practice://{workspace_id}/{finding.id}",
+        )
+    )
+    session.add(
+        m.Rule(
+            workspace_id=workspace_id,
+            rule_pack_id=rp.id,
+            rule_id=rule_id,
+            clause_id=clause_id,
+            tier="goodwill",
+            rule=json.loads(pack.rules[-1].model_dump_json()),
+            enabled=True,
+        )
+    )
+    session.commit()
+    return rule_id
