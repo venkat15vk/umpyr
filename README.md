@@ -91,6 +91,30 @@ policy version, procedure@version, authority, supervisor result and audit hash.
 Sandbox clock: synthetic data is dated relative to 2026-10-01 (`workspace.settings.as_of`), so day counts in rulings
 match the scenarios.
 
+## Upload flow (M4)
+
+```bash
+make api && make worker && make web      # three terminals
+open http://localhost:5173/try
+```
+
+1. **/try** creates a workspace (`POST /workspaces`), deleted automatically after `DATA_RETENTION_DAYS` (14).
+2. **/<id>/onboard**: upload tickets (CSV, XLSX, JSON, JSONL, .eml, .mbox; max 2,000 tickets / 20 MB), policies
+   (PDF, DOCX, Markdown, HTML, or a help-center URL crawled same-domain two levels deep) and optional orders (CSV).
+   The **column-mapping agent** proposes how your columns map to Umpyr's ticket schema with confidence and sample
+   values; you approve or correct it before anything is ingested. "Use Rockler sample files" loads the synthetic
+   export (`samples/rockler/tickets.csv`, `orders.csv`, policy text) for a one-click demo.
+3. **Start onboarding** enqueues `onboard.pipeline` on the worker; progress streams over SSE:
+   ingest (PII masked) → compile → mine → taxonomy → router → procedures → drift.
+4. **/<id>/setup**: approve, rename or merge categories; approve procedures; enable/disable rules (each shows its
+   clause text and source); triage drift findings (policy is right / update policy / adopt as rule / ignore).
+   The chat opens once at least one category and procedure are approved (`GET /workspaces/{id}/readiness`).
+5. **/<id>** is the same resolve chat as the sandboxes.
+
+Uploads are stored on local disk under `services/engine/data/uploads/` (git-ignored) behind a storage interface;
+R2 with presigned URLs is wired in M5. `umpyr retention` (or the worker, hourly) deletes expired upload workspaces
+and their files.
+
 ## Tests
 
 ```bash
@@ -105,5 +129,5 @@ Engine tests start an ephemeral embedded Postgres; no services or API keys neede
 - [x] **M1 — Skeleton**: ontology, rule engine + PDP with tests, schema + migrations, FastAPI health/spend/jobs, React shell, budget guard.
 - [x] **M2 — Sandboxes**: policy fetch + compile, synthetic data, offline onboarding for Rockler and Alaska.
 - [x] **M3 — Resolve chat**: `/rockler`, `/alaska` with ops view, toggles, audit.
-- [ ] **M4 — Upload flow**: `/try`, column mapping, live onboarding, setup/approve.
+- [x] **M4 — Upload flow**: `/try`, column mapping, live onboarding, setup/approve.
 - [ ] **M5 — Eval scoreboard + deploy**.

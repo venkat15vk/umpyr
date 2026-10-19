@@ -47,8 +47,15 @@ def main_loop() -> None:
     settings = get_settings()
     worker_id = f"{socket.gethostname()}-{int(time.time())}"
     log.info("worker %s started (provider=%s model=%s)", worker_id, settings.llm_provider, settings.claude_model)
+    last_sweep = 0.0
     while True:
         try:
+            if time.time() - last_sweep > 3600:
+                last_sweep = time.time()
+                with get_session_factory()() as s:
+                    from ..onboard.retention import sweep
+
+                    sweep(s)
             if not run_one(worker_id):
                 time.sleep(settings.worker_poll_seconds)
         except KeyboardInterrupt:

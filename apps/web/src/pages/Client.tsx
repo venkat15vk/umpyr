@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ApiError } from "../lib/api";
-import { askMerchant, createSession, getExamples, patchSession, sendMessage, type ChatSession, type Example, type Message, type Ops } from "../lib/resolve";
+import { askMerchant, createSession, getExamples, getSummary, patchSession, sendMessage, type ChatSession, type Example, type Message, type Ops } from "../lib/resolve";
+import { Link } from "react-router-dom";
 import { OpsView } from "../components/OpsView";
 
 const NAMES: Record<string, string> = { rockler: "Rockler", alaska: "Alaska Airlines" };
@@ -16,6 +17,8 @@ export function Client() {
   const [budgetHit, setBudgetHit] = useState(false);
   const [examples, setExamples] = useState<Example[]>([]);
   const [tab, setTab] = useState<"customer" | "merchant">("customer");
+  const [wsName, setWsName] = useState<string>(NAMES[client] ?? client);
+  const [isSynthetic, setIsSynthetic] = useState(true);
   const [merchantQ, setMerchantQ] = useState("");
   const [merchantLog, setMerchantLog] = useState<{ q: string; a: string }[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,7 @@ export function Client() {
   useEffect(() => {
     start();
     getExamples(client).then(setExamples).catch(() => setExamples([]));
+    getSummary(client).then((s) => { const w = s.workspace as { name: string; is_synthetic: boolean }; setWsName(w.name); setIsSynthetic(w.is_synthetic); }).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
@@ -85,8 +89,8 @@ export function Client() {
   return (
     <div className="flex flex-col gap-3">
       <div className="panel flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
-        <span className="font-semibold">{NAMES[client] ?? client}</span>
-        <span className="badge badge-amber">synthetic data</span>
+        <span className="font-semibold">{wsName}</span>
+        {isSynthetic ? <span className="badge badge-amber">synthetic data</span> : <Link className="badge" to={`/${client}/setup`}>setup</Link>}
         <span className="muted">·</span>
         <label className="flex items-center gap-1">
           <span className="muted">Mode</span>

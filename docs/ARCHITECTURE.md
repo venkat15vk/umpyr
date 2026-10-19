@@ -52,6 +52,17 @@ cases + rule pack ──drift (replay)──► drift_findings, gold split ─�
 
 Every LLM step runs on the Batch API and caches its output under `samples/<client>/`; `--rebuild` re-spends.
 
+## Upload flow (M4)
+
+```
+/try ──POST /workspaces──► workspace(kind=upload, expires_at=+14d)
+/<id>/onboard ──uploads──► storage (local disk; R2 in prod) ──parse──► mapping agent (Haiku) ──approve──► uploads.mapping
+            ──policy URL/file──► policy_documents
+            ──Start──► job onboard.pipeline ──SSE──► ingest → compile → mine → taxonomy → router → procedures → drift
+/<id>/setup ──approve/merge/toggle──► categories, procedures, rules, drift_findings ──readiness──► /<id> chat
+worker (hourly) ──retention.sweep──► delete expired upload workspaces + files
+```
+
 ## Runtime flow (M3)
 
 ```

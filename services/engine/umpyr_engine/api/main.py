@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 
 from ..config import get_settings
 from ..llm.budget import BudgetExceeded
-from .routes import admin, health, jobs, resolve, sandbox, workspaces
+from .routes import admin, health, jobs, onboard, resolve, sandbox, workspaces
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logging.getLogger("pgserver").setLevel(logging.WARNING)
@@ -45,6 +45,7 @@ def create_app() -> FastAPI:
     app.include_router(workspaces.router)
     app.include_router(sandbox.router)
     app.include_router(resolve.router)
+    app.include_router(onboard.router)
     return app
 
 

@@ -78,6 +78,15 @@ def cmd_spend(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_retention(_: argparse.Namespace) -> int:
+    from .db.base import get_session_factory
+    from .onboard.retention import sweep
+
+    with get_session_factory()() as session:
+        print(json.dumps({"deleted": sweep(session)}))
+    return 0
+
+
 def cmd_llm(args: argparse.Namespace) -> int:
     from .llm import LLMRequest, get_llm
 
@@ -173,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("worker").set_defaults(fn=cmd_worker)
     sub.add_parser("spend").set_defaults(fn=cmd_spend)
+
+    sub.add_parser("retention").set_defaults(fn=cmd_retention)
 
     llm = sub.add_parser("llm")
     llms = llm.add_subparsers(dest="llm_cmd", required=True)

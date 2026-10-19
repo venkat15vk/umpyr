@@ -65,3 +65,17 @@ Short entries, newest last. Each: what we chose, why, and what it rules out.
 **D28. Auto-approve limit applies to any action with a value**, including replacements, not only cash movements.
 
 **D29. Cases embed the customer's opening message**, so the router and neighbour search operate in the same text space as live messages. Eval scenarios use a distinct record id range (R-2xxxxx) and their records are loaded alongside the synthetic orders.
+
+## 2026-10-19 — M4
+
+**D30. Uploads go through the API to local disk in dev.** The brief's R2 presigned URLs need an R2 bucket and keys the founder must create; `storage.py` keeps the interface (`put/get/delete_prefix`) so R2 is a drop-in in M5. Per-workspace caps: 2,000 tickets, 20 MB.
+
+**D31. Column mapping is proposed by Haiku and approved by a human.** The agent sees headers and five sample rows and returns target→source with confidence; thread format (JSON list / plain text / split customer+staff columns) is detected and editable. Nothing is ingested until the mapping is approved. Mail files (.eml/.mbox) skip mapping: threads are grouped by normalised subject and roles are inferred from staff domains or alternation.
+
+**D32. Uploaded workspaces compile without curation and start in review.** The compiler output goes live as-is (no `rule_overrides.json`); categories and procedures are created pending/draft; the setup page is the approval step and the chat is gated on it. Rule toggles rewrite the active pack so they take effect immediately.
+
+**D33. Live onboarding runs synchronously inside one worker job.** Batch latency would make "minutes, not an FDE engagement" feel like hours; sync Haiku on 300 tickets takes about three minutes and under $0.40.
+
+**D34. Retention is a hard delete.** The sweeper deletes the workspace row (cascades through every tenant table) and its stored files once `expires_at` passes; sandboxes never expire.
+
+**D35. The dev API runs without auto-reload during demos.** Uvicorn's reloader hung after a burst of file changes; `ENGINE_ENV=prod` disables it.

@@ -1,0 +1,530 @@
+Order #,Order Date,Status,Grand Total,Subtotal,Shipping,Payment,Customer ID,Product,SKU,Category,Unit Price,Qty,Ship Date,Delivered,Carrier
+R-100000,2026-09-15,delivered,1175.93,1099.00,0.00,paypal,C-10000,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-18,2026-09-23,UPS SurePost
+R-100001,2026-09-23,shipped,180.48,149.99,19.99,paypal,C-10001,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-26,2026-10-02,UPS Ground
+R-100002,2024-04-20,delivered,215.65,223.98,25.99,paypal,C-10002,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2024-04-21,2024-04-26,UPS Ground
+R-100002,2024-04-20,delivered,215.65,223.98,25.99,paypal,C-10002,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2024-04-21,2024-04-26,UPS Ground
+R-100002,2024-04-20,delivered,215.65,223.98,25.99,paypal,C-10002,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2024-04-21,2024-04-26,UPS Ground
+R-100003,2026-08-26,delivered,2048.93,1799.00,149.00,card,C-10003,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-08-29,2026-09-10,Estes Freight
+R-100004,2026-05-11,delivered,117.62,94.98,15.99,card,C-10004,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-05-12,2026-05-17,UPS SurePost
+R-100004,2026-05-11,delivered,117.62,94.98,15.99,card,C-10004,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2026-05-12,2026-05-17,UPS SurePost
+R-100005,2026-09-12,delivered,202.80,168.98,21.99,card,C-10005,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-13,2026-09-20,UPS Ground
+R-100005,2026-09-12,delivered,202.80,168.98,21.99,card,C-10005,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-13,2026-09-20,UPS Ground
+R-100005,2026-09-12,delivered,202.80,168.98,21.99,card,C-10005,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-13,2026-09-20,UPS Ground
+R-100006,2026-09-11,delivered,72.83,54.99,13.99,card,C-10006,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-14,2026-09-17,UPS SurePost
+R-100007,2026-08-21,delivered,101.57,79.98,15.99,card,C-10007,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,2,2026-08-23,2026-08-29,USPS
+R-100008,2026-08-25,delivered,94.21,74.97,13.99,card,C-10008,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-08-26,2026-08-30,UPS SurePost
+R-100008,2026-08-25,delivered,94.21,74.97,13.99,card,C-10008,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,2,2026-08-26,2026-08-30,UPS SurePost
+R-100009,2026-09-09,delivered,1197.31,1118.98,0.00,card,C-10009,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,2,2026-09-11,2026-09-17,UPS SurePost
+R-100009,2026-09-09,delivered,1197.31,1118.98,0.00,card,C-10009,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-11,2026-09-17,UPS SurePost
+R-100010,2026-09-21,delivered,248.55,208.00,25.99,card,C-10010,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-09-22,2026-09-27,USPS
+R-100010,2026-09-21,delivered,248.55,208.00,25.99,card,C-10010,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-22,2026-09-27,USPS
+R-100011,2026-09-17,delivered,3356.86,2998.00,149.00,gift_card,C-10011,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-09-20,2026-09-27,Estes Freight
+R-100011,2026-09-17,delivered,3356.86,2998.00,149.00,gift_card,C-10011,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-20,2026-09-27,Estes Freight
+R-100012,2026-08-26,delivered,2276.16,1988.00,149.00,card,C-10012,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-08-27,2026-09-03,Estes Freight
+R-100012,2026-08-26,delivered,2276.16,1988.00,149.00,card,C-10012,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-27,2026-09-03,Estes Freight
+R-100013,2026-09-22,backordered,1379.21,1288.98,0.00,gift_card,C-10013,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,,,
+R-100013,2026-09-22,backordered,1379.21,1288.98,0.00,gift_card,C-10013,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,,,
+R-100013,2026-09-22,backordered,1379.21,1288.98,0.00,gift_card,C-10013,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,,,
+R-100014,2026-09-10,delivered,2180.93,1899.00,149.00,card,C-10014,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-09-13,2026-09-19,Estes Freight
+R-100015,2026-08-23,delivered,348.05,300.99,25.99,paypal,C-10015,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-08-24,2026-08-31,UPS SurePost
+R-100015,2026-08-23,delivered,348.05,300.99,25.99,paypal,C-10015,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-08-24,2026-08-31,UPS SurePost
+R-100015,2026-08-23,delivered,348.05,300.99,25.99,paypal,C-10015,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-24,2026-08-31,UPS SurePost
+R-100016,2026-08-25,delivered,337.66,309.97,25.99,card,C-10016,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-08-27,2026-08-30,UPS Ground
+R-100016,2026-08-25,delivered,337.66,309.97,25.99,card,C-10016,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-08-27,2026-08-30,UPS Ground
+R-100017,2026-09-29,shipped,398.34,347.99,25.99,card,C-10017,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-10-01,2026-10-04,UPS Ground
+R-100017,2026-09-29,shipped,398.34,347.99,25.99,card,C-10017,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-10-01,2026-10-04,UPS Ground
+R-100017,2026-09-29,shipped,398.34,347.99,25.99,card,C-10017,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-10-01,2026-10-04,UPS Ground
+R-100018,2026-06-13,delivered,336.97,299.98,25.99,paypal,C-10018,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-06-15,2026-06-18,UPS Ground
+R-100019,2026-09-16,delivered,112.28,89.99,15.99,card,C-10019,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-18,2026-09-21,UPS SurePost
+R-100020,2026-09-15,backordered,65.47,49.98,11.99,card,C-10020,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,,,
+R-100020,2026-09-15,backordered,65.47,49.98,11.99,card,C-10020,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,,,
+R-100021,2026-08-30,delivered,97.28,75.97,15.99,card,C-10021,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-09-01,2026-09-08,USPS
+R-100021,2026-08-30,delivered,97.28,75.97,15.99,card,C-10021,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-09-01,2026-09-08,USPS
+R-100022,2026-09-22,backordered,165.52,179.00,23.99,card,C-10022,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,,,
+R-100023,2026-09-02,delivered,1307.52,1221.98,0.00,card,C-10023,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-05,2026-09-10,UPS Ground
+R-100023,2026-09-02,delivered,1307.52,1221.98,0.00,card,C-10023,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-09-05,2026-09-10,UPS Ground
+R-100023,2026-09-02,delivered,1307.52,1221.98,0.00,card,C-10023,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-05,2026-09-10,UPS Ground
+R-100024,2026-08-25,delivered,231.68,238.96,25.99,card,C-10024,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,2026-08-28,2026-09-01,UPS SurePost
+R-100024,2026-08-25,delivered,231.68,238.96,25.99,card,C-10024,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-08-28,2026-09-01,UPS SurePost
+R-100024,2026-08-25,delivered,231.68,238.96,25.99,card,C-10024,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,2,2026-08-28,2026-09-01,UPS SurePost
+R-100025,2026-09-15,delivered,2722.67,2423.99,149.00,card,C-10025,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-09-17,2026-09-24,Estes Freight
+R-100025,2026-09-15,delivered,2722.67,2423.99,149.00,card,C-10025,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-17,2026-09-24,Estes Freight
+R-100026,2026-08-25,delivered,215.52,179.00,23.99,card,C-10026,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-08-26,2026-08-31,UPS Ground
+R-100027,2026-09-27,backordered,180.48,149.99,19.99,card,C-10027,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,,,
+R-100028,2026-08-28,delivered,2073.93,1799.00,149.00,card,C-10028,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-08-30,2026-09-07,Estes Freight
+R-100029,2026-07-21,delivered,49.43,34.99,11.99,gift_card,C-10029,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-07-24,2026-07-28,UPS Ground
+R-100030,2022-11-19,delivered,117.62,94.98,15.99,card,C-10030,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2022-11-20,2022-11-26,UPS Ground
+R-100030,2022-11-19,delivered,117.62,94.98,15.99,card,C-10030,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2022-11-20,2022-11-26,UPS Ground
+R-100031,2026-05-12,delivered,60.13,44.99,11.99,card,C-10031,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-05-13,2026-05-17,UPS Ground
+R-100032,2026-09-17,delivered,18.68,9.99,7.99,card,C-10032,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-09-18,2026-09-23,UPS SurePost
+R-100033,2026-09-08,delivered,122.97,99.98,15.99,card,C-10033,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-11,2026-09-18,USPS
+R-100033,2026-09-08,delivered,122.97,99.98,15.99,card,C-10033,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-11,2026-09-18,USPS
+R-100034,2026-09-14,delivered,258.43,263.96,25.99,card,C-10034,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-09-16,2026-09-19,USPS
+R-100034,2026-09-14,delivered,258.43,263.96,25.99,card,C-10034,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-16,2026-09-19,USPS
+R-100034,2026-09-14,delivered,258.43,263.96,25.99,card,C-10034,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,2,2026-09-16,2026-09-19,USPS
+R-100035,2026-09-12,delivered,40.87,26.99,11.99,card,C-10035,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-13,2026-09-17,USPS
+R-100036,2025-03-29,delivered,54.78,39.99,11.99,card,C-10036,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2025-03-30,2025-04-03,UPS SurePost
+R-100037,2026-08-28,delivered,47.29,32.99,11.99,paypal,C-10037,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-08-31,2026-09-05,UPS SurePost
+R-100038,2026-08-23,delivered,111.22,89.00,15.99,card,C-10038,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-26,2026-09-02,USPS
+R-100039,2026-05-26,delivered,24.03,14.99,7.99,paypal,C-10039,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-05-29,2026-06-04,UPS Ground
+R-100040,2026-07-16,delivered,104.26,103.99,17.99,card,C-10040,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-07-19,2026-07-22,UPS SurePost
+R-100040,2026-07-16,delivered,104.26,103.99,17.99,card,C-10040,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-07-19,2026-07-22,UPS SurePost
+R-100041,2026-09-06,delivered,106.92,84.98,15.99,card,C-10041,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-08,2026-09-12,UPS SurePost
+R-100041,2026-09-06,delivered,106.92,84.98,15.99,card,C-10041,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-09-08,2026-09-12,UPS SurePost
+R-100042,2026-09-16,backordered,215.52,179.00,23.99,card,C-10042,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,,,
+R-100043,2023-10-12,delivered,187.81,154.97,21.99,paypal,C-10043,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2023-10-15,2023-10-19,UPS SurePost
+R-100043,2023-10-12,delivered,187.81,154.97,21.99,paypal,C-10043,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,2,2023-10-15,2023-10-19,UPS SurePost
+R-100044,2026-09-13,delivered,336.94,313.97,25.99,card,C-10044,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,2026-09-16,2026-09-23,UPS SurePost
+R-100044,2026-09-13,delivered,336.94,313.97,25.99,card,C-10044,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-16,2026-09-23,UPS SurePost
+R-100044,2026-09-13,delivered,336.94,313.97,25.99,card,C-10044,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-16,2026-09-23,UPS SurePost
+R-100045,2026-08-26,delivered,220.84,183.97,23.99,card,C-10045,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,2,2026-08-27,2026-08-31,UPS SurePost
+R-100045,2026-08-26,delivered,220.84,183.97,23.99,card,C-10045,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-08-27,2026-08-31,UPS SurePost
+R-100045,2026-08-26,delivered,220.84,183.97,23.99,card,C-10045,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-27,2026-08-31,UPS SurePost
+R-100046,2026-08-31,delivered,303.81,268.99,25.99,card,C-10046,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-09-02,2026-09-05,USPS
+R-100046,2026-08-31,delivered,303.81,268.99,25.99,card,C-10046,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-02,2026-09-05,USPS
+R-100047,2026-09-26,shipped,1781.43,1549.00,149.00,card,C-10047,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-09-27,2026-10-08,Estes Freight
+R-100048,2025-07-16,delivered,202.81,168.99,21.99,card,C-10048,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2025-07-19,2025-07-25,UPS SurePost
+R-100048,2025-07-16,delivered,202.81,168.99,21.99,card,C-10048,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2025-07-19,2025-07-25,UPS SurePost
+R-100049,2026-08-30,delivered,111.22,89.00,15.99,card,C-10049,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-01,2026-09-04,UPS Ground
+R-100050,2026-09-17,delivered,114.41,91.98,15.99,card,C-10050,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-19,2026-09-24,USPS
+R-100050,2026-09-17,delivered,114.41,91.98,15.99,card,C-10050,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-19,2026-09-24,USPS
+R-100051,2026-09-22,delivered,575.96,513.99,25.99,card,C-10051,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-24,2026-09-27,USPS
+R-100051,2026-09-22,delivered,575.96,513.99,25.99,card,C-10051,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-24,2026-09-27,USPS
+R-100052,2026-05-20,delivered,325.56,279.97,25.99,card,C-10052,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-05-22,2026-05-29,UPS Ground
+R-100052,2026-05-20,delivered,325.56,279.97,25.99,card,C-10052,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,2,2026-05-22,2026-05-29,UPS Ground
+R-100053,2026-09-26,backordered,84.59,65.98,13.99,card,C-10053,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,,,
+R-100054,2026-08-25,delivered,260.31,218.99,25.99,paypal,C-10054,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-08-26,2026-08-29,USPS
+R-100054,2026-08-25,delivered,260.31,218.99,25.99,paypal,C-10054,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-08-26,2026-08-29,USPS
+R-100055,2026-09-03,delivered,1326.42,1248.99,0.00,card,C-10055,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-04,2026-09-11,UPS SurePost
+R-100055,2026-09-03,delivered,1326.42,1248.99,0.00,card,C-10055,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-04,2026-09-11,UPS SurePost
+R-100056,2026-09-08,delivered,245.32,204.98,25.99,paypal,C-10056,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-11,2026-09-16,USPS
+R-100056,2026-09-08,delivered,245.32,204.98,25.99,paypal,C-10056,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-11,2026-09-16,USPS
+R-100057,2023-08-17,delivered,151.90,141.97,19.99,card,C-10057,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2023-08-19,2023-08-24,UPS SurePost
+R-100057,2023-08-17,delivered,151.90,141.97,19.99,card,C-10057,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2023-08-19,2023-08-24,UPS SurePost
+R-100057,2023-08-17,delivered,151.90,141.97,19.99,card,C-10057,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2023-08-19,2023-08-24,UPS SurePost
+R-100058,2026-09-19,backordered,141.02,114.98,17.99,card,C-10058,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,,,
+R-100058,2026-09-19,backordered,141.02,114.98,17.99,card,C-10058,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,,,
+R-100059,2026-08-29,delivered,88.88,69.99,13.99,card,C-10059,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-01,2026-09-07,UPS SurePost
+R-100060,2026-09-23,backordered,306.61,308.99,25.99,gift_card,C-10060,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,,,
+R-100060,2026-09-23,backordered,306.61,308.99,25.99,gift_card,C-10060,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,,,
+R-100061,2026-09-02,delivered,114.96,113.99,17.99,card,C-10061,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-03,2026-09-06,UPS SurePost
+R-100061,2026-09-02,delivered,114.96,113.99,17.99,card,C-10061,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-03,2026-09-06,UPS SurePost
+R-100062,2025-07-22,delivered,101.57,79.98,15.99,paypal,C-10062,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2025-07-23,2025-07-30,UPS Ground
+R-100062,2025-07-22,delivered,101.57,79.98,15.99,paypal,C-10062,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2025-07-23,2025-07-30,UPS Ground
+R-100063,2026-07-20,delivered,261.00,228.98,25.99,card,C-10063,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-07-22,2026-07-26,UPS Ground
+R-100063,2026-07-20,delivered,261.00,228.98,25.99,card,C-10063,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-07-22,2026-07-26,UPS Ground
+R-100063,2026-07-20,delivered,261.00,228.98,25.99,card,C-10063,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-07-22,2026-07-26,UPS Ground
+R-100064,2026-07-30,delivered,180.48,149.99,19.99,card,C-10064,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-07-31,2026-08-04,USPS
+R-100065,2026-09-16,delivered,112.26,89.97,15.99,card,C-10065,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,2,2026-09-18,2026-09-23,UPS Ground
+R-100065,2026-09-16,delivered,112.26,89.97,15.99,card,C-10065,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2026-09-18,2026-09-23,UPS Ground
+R-100066,2026-09-27,backordered,1195.47,1163.99,0.00,paypal,C-10066,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,,,
+R-100066,2026-09-27,backordered,1195.47,1163.99,0.00,paypal,C-10066,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,,,
+R-100067,2026-09-23,shipped,2705.93,2399.00,149.00,gift_card,C-10067,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-09-26,2026-10-01,Estes Freight
+R-100068,2026-08-04,delivered,82.44,63.97,13.99,card,C-10068,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,2,2026-08-05,2026-08-10,UPS SurePost
+R-100068,2026-08-04,delivered,82.44,63.97,13.99,card,C-10068,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-08-05,2026-08-10,UPS SurePost
+R-100069,2025-02-25,delivered,54.78,39.99,11.99,card,C-10069,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2025-02-28,2025-03-03,UPS Ground
+R-100070,2026-09-18,delivered,356.60,308.98,25.99,card,C-10070,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-20,2026-09-24,UPS Ground
+R-100070,2026-09-18,delivered,356.60,308.98,25.99,card,C-10070,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-20,2026-09-24,UPS Ground
+R-100070,2026-09-18,delivered,356.60,308.98,25.99,card,C-10070,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-20,2026-09-24,UPS Ground
+R-100071,2022-04-22,delivered,144.75,139.96,19.99,gift_card,C-10071,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2022-04-24,2022-04-30,UPS SurePost
+R-100071,2022-04-22,delivered,144.75,139.96,19.99,gift_card,C-10071,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2022-04-24,2022-04-30,UPS SurePost
+R-100071,2022-04-22,delivered,144.75,139.96,19.99,gift_card,C-10071,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2022-04-24,2022-04-30,UPS SurePost
+R-100072,2024-12-28,delivered,101.72,124.98,17.99,card,C-10072,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2024-12-30,2025-01-02,USPS
+R-100072,2024-12-28,delivered,101.72,124.98,17.99,card,C-10072,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2024-12-30,2025-01-02,USPS
+R-100073,2026-09-15,delivered,71.75,53.98,13.99,gift_card,C-10073,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,2,2026-09-16,2026-09-23,USPS
+R-100074,2026-09-14,backordered,376.94,327.99,25.99,paypal,C-10074,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,,,
+R-100074,2026-09-14,backordered,376.94,327.99,25.99,paypal,C-10074,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,,,
+R-100074,2026-09-14,backordered,376.94,327.99,25.99,paypal,C-10074,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100075,2026-09-22,shipped,91.01,114.97,17.99,paypal,C-10075,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,2,2026-09-25,2026-10-01,USPS
+R-100075,2026-09-22,shipped,91.01,114.97,17.99,paypal,C-10075,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-25,2026-10-01,USPS
+R-100076,2026-08-30,delivered,118.71,138.99,19.99,paypal,C-10076,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-08-31,2026-09-05,UPS SurePost
+R-100076,2026-08-30,delivered,118.71,138.99,19.99,paypal,C-10076,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-08-31,2026-09-05,UPS SurePost
+R-100077,2022-09-02,delivered,203.85,169.96,21.99,paypal,C-10077,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2022-09-04,2022-09-07,UPS SurePost
+R-100077,2022-09-02,delivered,203.85,169.96,21.99,paypal,C-10077,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2022-09-04,2022-09-07,UPS SurePost
+R-100077,2022-09-02,delivered,203.85,169.96,21.99,paypal,C-10077,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2022-09-04,2022-09-07,UPS SurePost
+R-100078,2026-08-24,delivered,2073.93,1799.00,149.00,card,C-10078,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-08-25,2026-09-06,Estes Freight
+R-100079,2026-09-17,delivered,1304.31,1218.98,0.00,card,C-10079,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-18,2026-09-22,UPS SurePost
+R-100079,2026-09-17,delivered,1304.31,1218.98,0.00,card,C-10079,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-18,2026-09-22,UPS SurePost
+R-100079,2026-09-17,delivered,1304.31,1218.98,0.00,card,C-10079,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-18,2026-09-22,UPS SurePost
+R-100080,2026-09-14,delivered,112.28,89.99,15.99,card,C-10080,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-15,2026-09-21,USPS
+R-100081,2026-09-08,delivered,49.43,34.99,11.99,paypal,C-10081,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-09,2026-09-12,UPS Ground
+R-100082,2026-08-28,delivered,396.17,345.96,25.99,gift_card,C-10082,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-08-29,2026-09-05,UPS Ground
+R-100082,2026-08-28,delivered,396.17,345.96,25.99,gift_card,C-10082,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-08-29,2026-09-05,UPS Ground
+R-100082,2026-08-28,delivered,396.17,345.96,25.99,gift_card,C-10082,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-08-29,2026-09-05,UPS Ground
+R-100083,2026-09-21,backordered,2715.93,2399.00,149.00,paypal,C-10083,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,,,
+R-100084,2026-08-27,delivered,125.67,109.98,17.99,gift_card,C-10084,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,2,2026-08-28,2026-09-02,UPS Ground
+R-100085,2026-08-29,delivered,297.75,253.98,25.99,gift_card,C-10085,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-01,2026-09-04,UPS Ground
+R-100085,2026-08-29,delivered,297.75,253.98,25.99,gift_card,C-10085,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-01,2026-09-04,UPS Ground
+R-100085,2026-08-29,delivered,297.75,253.98,25.99,gift_card,C-10085,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-01,2026-09-04,UPS Ground
+R-100086,2026-09-17,delivered,3934.65,3537.99,149.00,gift_card,C-10086,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-09-20,2026-09-27,Estes Freight
+R-100086,2026-09-17,delivered,3934.65,3537.99,149.00,gift_card,C-10086,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-09-20,2026-09-27,Estes Freight
+R-100086,2026-09-17,delivered,3934.65,3537.99,149.00,gift_card,C-10086,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-20,2026-09-27,Estes Freight
+R-100087,2026-09-14,delivered,44.08,29.99,11.99,paypal,C-10087,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-15,2026-09-22,USPS
+R-100088,2026-09-12,delivered,1806.43,1549.00,149.00,gift_card,C-10088,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-09-14,2026-09-20,Estes Freight
+R-100089,2026-06-04,delivered,145.31,118.99,17.99,card,C-10089,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-06-07,2026-06-12,USPS
+R-100089,2026-06-04,delivered,145.31,118.99,17.99,card,C-10089,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-06-07,2026-06-12,USPS
+R-100090,2026-08-09,delivered,549.21,488.99,25.99,card,C-10090,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-08-10,2026-08-17,USPS
+R-100090,2026-08-09,delivered,549.21,488.99,25.99,card,C-10090,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-08-10,2026-08-17,USPS
+R-100091,2026-09-15,backordered,142.11,158.99,21.99,card,C-10091,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,,,
+R-100091,2026-09-15,backordered,142.11,158.99,21.99,card,C-10091,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,,,
+R-100092,2026-09-20,backordered,2364.19,2117.00,149.00,gift_card,C-10092,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,,,
+R-100092,2026-09-20,backordered,2364.19,2117.00,149.00,gift_card,C-10092,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,,,
+R-100092,2026-09-20,backordered,2364.19,2117.00,149.00,gift_card,C-10092,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100093,2026-09-23,backordered,57.98,42.98,11.99,card,C-10093,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,,,
+R-100093,2026-09-23,backordered,57.98,42.98,11.99,card,C-10093,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,,,
+R-100094,2026-08-25,delivered,112.27,89.98,15.99,card,C-10094,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,2,2026-08-28,2026-09-04,USPS
+R-100095,2026-09-16,delivered,180.48,149.99,19.99,card,C-10095,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-19,2026-09-25,UPS SurePost
+R-100096,2026-07-18,delivered,2705.93,2399.00,149.00,card,C-10096,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-07-21,2026-07-27,Estes Freight
+R-100097,2026-09-18,delivered,278.48,235.97,25.99,card,C-10097,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-09-19,2026-09-26,UPS SurePost
+R-100097,2026-09-18,delivered,278.48,235.97,25.99,card,C-10097,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,2,2026-09-19,2026-09-26,UPS SurePost
+R-100097,2026-09-18,delivered,278.48,235.97,25.99,card,C-10097,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-19,2026-09-26,UPS SurePost
+R-100098,2026-09-26,shipped,83.53,64.99,13.99,card,C-10098,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-28,2026-10-03,USPS
+R-100099,2026-09-09,delivered,2102.81,1825.99,149.00,gift_card,C-10099,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-09-10,2026-09-21,Estes Freight
+R-100099,2026-09-09,delivered,2102.81,1825.99,149.00,gift_card,C-10099,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-10,2026-09-21,Estes Freight
+R-100100,2026-09-05,delivered,133.54,107.99,17.99,paypal,C-10100,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-07,2026-09-11,UPS Ground
+R-100100,2026-09-05,delivered,133.54,107.99,17.99,paypal,C-10100,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-09-07,2026-09-11,UPS Ground
+R-100101,2026-09-03,delivered,2166.62,1908.99,149.00,card,C-10101,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-09-04,2026-09-13,Estes Freight
+R-100101,2026-09-03,delivered,2166.62,1908.99,149.00,card,C-10101,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-09-04,2026-09-13,Estes Freight
+R-100102,2026-09-17,delivered,88.88,69.99,13.99,card,C-10102,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-20,2026-09-25,UPS Ground
+R-100103,2026-07-13,delivered,159.07,129.98,19.99,card,C-10103,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-07-14,2026-07-21,UPS Ground
+R-100103,2026-07-13,delivered,159.07,129.98,19.99,card,C-10103,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2026-07-14,2026-07-21,UPS Ground
+R-100104,2026-05-01,delivered,666.91,598.99,25.99,card,C-10104,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-05-04,2026-05-07,USPS
+R-100104,2026-05-01,delivered,666.91,598.99,25.99,card,C-10104,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-05-04,2026-05-07,USPS
+R-100105,2026-08-23,delivered,72.83,54.99,13.99,paypal,C-10105,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-08-24,2026-08-30,UPS Ground
+R-100106,2026-09-24,shipped,357.66,309.97,25.99,card,C-10106,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-09-26,2026-10-01,UPS SurePost
+R-100106,2026-09-24,shipped,357.66,309.97,25.99,card,C-10106,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-09-26,2026-10-01,UPS SurePost
+R-100107,2026-09-17,delivered,84.59,65.98,13.99,card,C-10107,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-09-18,2026-09-21,UPS Ground
+R-100108,2026-09-22,delivered,204.92,170.96,21.99,gift_card,C-10108,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-09-24,2026-09-27,UPS Ground
+R-100108,2026-09-22,delivered,204.92,170.96,21.99,gift_card,C-10108,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,1,2026-09-24,2026-09-27,UPS Ground
+R-100108,2026-09-22,delivered,204.92,170.96,21.99,gift_card,C-10108,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-24,2026-09-27,UPS Ground
+R-100109,2026-09-01,delivered,84.60,108.98,17.99,card,C-10109,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-09-04,2026-09-09,UPS Ground
+R-100109,2026-09-01,delivered,84.60,108.98,17.99,card,C-10109,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-04,2026-09-09,UPS Ground
+R-100110,2026-09-26,shipped,111.22,89.00,15.99,card,C-10110,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-29,2026-10-06,USPS
+R-100111,2022-01-07,delivered,81.37,62.97,13.99,card,C-10111,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2022-01-10,2022-01-15,USPS
+R-100111,2022-01-07,delivered,81.37,62.97,13.99,card,C-10111,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,2,2022-01-10,2022-01-15,USPS
+R-100112,2026-05-13,delivered,54.78,39.99,11.99,paypal,C-10112,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-05-14,2026-05-18,UPS Ground
+R-100113,2026-07-19,delivered,125.32,119.00,17.99,card,C-10113,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-07-21,2026-07-27,USPS
+R-100114,2022-11-22,delivered,44.08,29.99,11.99,paypal,C-10114,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2022-11-24,2022-11-29,UPS Ground
+R-100115,2026-08-29,delivered,3085.05,2743.97,149.00,gift_card,C-10115,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-08-30,2026-09-09,Estes Freight
+R-100115,2026-08-29,delivered,3085.05,2743.97,149.00,gift_card,C-10115,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-08-30,2026-09-09,Estes Freight
+R-100115,2026-08-29,delivered,3085.05,2743.97,149.00,gift_card,C-10115,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-08-30,2026-09-09,Estes Freight
+R-100116,2026-09-18,delivered,216.90,198.98,23.99,card,C-10116,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-21,2026-09-28,UPS SurePost
+R-100116,2026-09-18,delivered,216.90,198.98,23.99,card,C-10116,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-21,2026-09-28,UPS SurePost
+R-100116,2026-09-18,delivered,216.90,198.98,23.99,card,C-10116,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-09-21,2026-09-28,UPS SurePost
+R-100117,2026-09-13,backordered,175.11,144.97,19.99,gift_card,C-10117,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,,,
+R-100117,2026-09-13,backordered,175.11,144.97,19.99,gift_card,C-10117,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,2,,,
+R-100118,2026-09-23,shipped,114.41,91.98,15.99,card,C-10118,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-24,2026-10-01,USPS
+R-100118,2026-09-23,shipped,114.41,91.98,15.99,card,C-10118,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-24,2026-10-01,USPS
+R-100119,2026-09-22,backordered,88.87,69.98,13.99,card,C-10119,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,,,
+R-100120,2026-09-22,delivered,72.83,54.99,13.99,paypal,C-10120,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-25,2026-09-29,USPS
+R-100121,2026-07-28,delivered,117.61,94.97,15.99,card,C-10121,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-07-29,2026-08-02,UPS SurePost
+R-100121,2026-07-28,delivered,117.61,94.97,15.99,card,C-10121,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-07-29,2026-08-02,UPS SurePost
+R-100121,2026-07-28,delivered,117.61,94.97,15.99,card,C-10121,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-07-29,2026-08-02,UPS SurePost
+R-100122,2026-09-12,delivered,435.78,382.98,25.99,paypal,C-10122,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-14,2026-09-18,UPS SurePost
+R-100122,2026-09-12,delivered,435.78,382.98,25.99,paypal,C-10122,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,2,2026-09-14,2026-09-18,UPS SurePost
+R-100122,2026-09-12,delivered,435.78,382.98,25.99,paypal,C-10122,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-14,2026-09-18,UPS SurePost
+R-100123,2025-12-03,delivered,112.28,89.99,15.99,card,C-10123,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2025-12-05,2025-12-10,USPS
+R-100124,2026-09-17,delivered,2744.81,2425.99,149.00,card,C-10124,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-09-20,2026-09-30,Estes Freight
+R-100124,2026-09-17,delivered,2744.81,2425.99,149.00,card,C-10124,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-20,2026-09-30,Estes Freight
+R-100125,2026-08-22,delivered,135.32,119.00,17.99,gift_card,C-10125,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-08-24,2026-08-31,UPS Ground
+R-100126,2026-08-23,delivered,1175.93,1099.00,0.00,card,C-10126,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-08-24,2026-08-31,UPS Ground
+R-100127,2026-08-30,delivered,2715.93,2399.00,149.00,paypal,C-10127,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-08-31,2026-09-07,Estes Freight
+R-100128,2026-08-08,delivered,116.54,93.97,15.99,paypal,C-10128,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-08-11,2026-08-15,UPS SurePost
+R-100128,2026-08-08,delivered,116.54,93.97,15.99,paypal,C-10128,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,2,2026-08-11,2026-08-15,UPS SurePost
+R-100129,2026-09-10,delivered,515.30,475.99,25.99,card,C-10129,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-12,2026-09-17,UPS SurePost
+R-100129,2026-09-10,delivered,515.30,475.99,25.99,card,C-10129,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-12,2026-09-17,UPS SurePost
+R-100130,2026-09-03,delivered,1272.22,1188.99,0.00,card,C-10130,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-05,2026-09-11,UPS SurePost
+R-100130,2026-09-03,delivered,1272.22,1188.99,0.00,card,C-10130,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-05,2026-09-11,UPS SurePost
+R-100131,2026-08-24,delivered,250.66,209.97,25.99,gift_card,C-10131,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-25,2026-08-31,USPS
+R-100131,2026-08-24,delivered,250.66,209.97,25.99,gift_card,C-10131,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-08-25,2026-08-31,USPS
+R-100131,2026-08-24,delivered,250.66,209.97,25.99,gift_card,C-10131,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-08-25,2026-08-31,USPS
+R-100132,2026-09-01,delivered,367.98,328.96,25.99,paypal,C-10132,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-02,2026-09-05,USPS
+R-100132,2026-09-01,delivered,367.98,328.96,25.99,paypal,C-10132,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,2,2026-09-02,2026-09-05,USPS
+R-100132,2026-09-01,delivered,367.98,328.96,25.99,paypal,C-10132,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,2026-09-02,2026-09-05,USPS
+R-100133,2026-05-22,delivered,486.42,449.00,25.99,card,C-10133,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-05-24,2026-05-27,USPS
+R-100134,2026-09-06,delivered,72.83,54.99,13.99,gift_card,C-10134,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-08,2026-09-13,UPS SurePost
+R-100135,2026-09-25,shipped,543.86,483.99,25.99,paypal,C-10135,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-27,2026-10-04,USPS
+R-100135,2026-09-25,shipped,543.86,483.99,25.99,paypal,C-10135,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-27,2026-10-04,USPS
+R-100136,2026-06-16,delivered,65.47,49.98,11.99,card,C-10136,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-06-17,2026-06-20,UPS SurePost
+R-100136,2026-06-16,delivered,65.47,49.98,11.99,card,C-10136,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-06-17,2026-06-20,UPS SurePost
+R-100137,2026-08-24,delivered,112.28,89.99,15.99,card,C-10137,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-08-26,2026-09-02,USPS
+R-100138,2026-09-11,delivered,76.03,57.98,13.99,card,C-10138,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-09-14,2026-09-17,UPS Ground
+R-100138,2026-09-11,delivered,76.03,57.98,13.99,card,C-10138,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-14,2026-09-17,UPS Ground
+R-100139,2026-05-17,delivered,630.81,611.98,25.99,paypal,C-10139,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-05-18,2026-05-21,USPS
+R-100139,2026-05-17,delivered,630.81,611.98,25.99,paypal,C-10139,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-05-18,2026-05-21,USPS
+R-100139,2026-05-17,delivered,630.81,611.98,25.99,paypal,C-10139,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-05-18,2026-05-21,USPS
+R-100140,2026-07-24,delivered,538.50,478.98,25.99,card,C-10140,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-07-25,2026-07-31,UPS Ground
+R-100140,2026-07-24,delivered,538.50,478.98,25.99,card,C-10140,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,2,2026-07-25,2026-07-31,UPS Ground
+R-100141,2026-08-22,delivered,74.96,56.98,13.99,card,C-10141,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-08-24,2026-08-29,UPS Ground
+R-100141,2026-08-22,delivered,74.96,56.98,13.99,card,C-10141,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-08-24,2026-08-29,UPS Ground
+R-100142,2026-09-12,backordered,2970.59,2637.00,149.00,card,C-10142,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,,,
+R-100142,2026-09-12,backordered,2970.59,2637.00,149.00,card,C-10142,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,2,,,
+R-100143,2026-09-30,shipped,78.17,59.98,13.99,paypal,C-10143,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,2,2026-10-01,2026-10-08,UPS Ground
+R-100144,2026-05-01,delivered,122.42,120.96,17.99,card,C-10144,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-05-04,2026-05-08,USPS
+R-100144,2026-05-01,delivered,122.42,120.96,17.99,card,C-10144,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-05-04,2026-05-08,USPS
+R-100144,2026-05-01,delivered,122.42,120.96,17.99,card,C-10144,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-05-04,2026-05-08,USPS
+R-100145,2026-09-23,delivered,84.59,65.98,13.99,card,C-10145,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-09-24,2026-09-27,USPS
+R-100146,2026-09-24,delivered,134.06,129.97,19.99,card,C-10146,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-25,2026-09-29,UPS Ground
+R-100146,2026-09-24,delivered,134.06,129.97,19.99,card,C-10146,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-09-25,2026-09-29,UPS Ground
+R-100146,2026-09-24,delivered,134.06,129.97,19.99,card,C-10146,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-25,2026-09-29,UPS Ground
+R-100147,2026-09-08,delivered,231.56,193.99,23.99,card,C-10147,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-11,2026-09-15,UPS Ground
+R-100147,2026-09-08,delivered,231.56,193.99,23.99,card,C-10147,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-11,2026-09-15,UPS Ground
+R-100148,2026-07-30,delivered,276.35,233.98,25.99,paypal,C-10148,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-08-01,2026-08-06,UPS SurePost
+R-100148,2026-07-30,delivered,276.35,233.98,25.99,paypal,C-10148,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-08-01,2026-08-06,UPS SurePost
+R-100148,2026-07-30,delivered,276.35,233.98,25.99,paypal,C-10148,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-08-01,2026-08-06,UPS SurePost
+R-100149,2026-09-25,shipped,88.88,69.99,13.99,paypal,C-10149,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-28,2026-10-01,UPS Ground
+R-100150,2026-09-30,backordered,174.06,143.99,19.99,card,C-10150,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,,,
+R-100150,2026-09-30,backordered,174.06,143.99,19.99,card,C-10150,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100151,2026-09-06,delivered,1175.93,1099.00,0.00,paypal,C-10151,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-09,2026-09-12,UPS SurePost
+R-100152,2026-09-12,delivered,111.22,89.00,15.99,card,C-10152,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-13,2026-09-17,UPS SurePost
+R-100153,2026-09-28,shipped,60.13,44.99,11.99,card,C-10153,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-29,2026-10-03,UPS SurePost
+R-100154,2026-08-26,delivered,31.37,19.98,9.99,card,C-10154,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,2,2026-08-27,2026-08-30,USPS
+R-100155,2026-09-18,delivered,49.43,34.99,11.99,card,C-10155,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-20,2026-09-24,UPS SurePost
+R-100156,2026-07-26,delivered,112.27,89.98,15.99,card,C-10156,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,2,2026-07-27,2026-08-01,USPS
+R-100157,2026-09-23,shipped,158.01,128.99,19.99,card,C-10157,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-25,2026-10-01,UPS Ground
+R-100157,2026-09-23,shipped,158.01,128.99,19.99,card,C-10157,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-09-25,2026-10-01,UPS Ground
+R-100158,2026-06-01,delivered,2715.93,2399.00,149.00,gift_card,C-10158,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-06-02,2026-06-14,Estes Freight
+R-100159,2026-09-23,delivered,208.16,173.99,21.99,gift_card,C-10159,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-24,2026-09-29,UPS Ground
+R-100159,2026-09-23,delivered,208.16,173.99,21.99,gift_card,C-10159,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-24,2026-09-29,UPS Ground
+R-100160,2026-09-27,backordered,111.22,89.00,15.99,gift_card,C-10160,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100161,2023-01-27,delivered,101.57,79.98,15.99,card,C-10161,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2023-01-29,2023-02-04,UPS Ground
+R-100162,2026-09-04,delivered,1150.93,1099.00,0.00,gift_card,C-10162,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-05,2026-09-08,UPS Ground
+R-100163,2026-08-03,delivered,62.25,46.97,11.99,card,C-10163,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,2,2026-08-05,2026-08-11,UPS SurePost
+R-100163,2026-08-03,delivered,62.25,46.97,11.99,card,C-10163,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-08-05,2026-08-11,UPS SurePost
+R-100164,2026-08-27,delivered,336.25,289.96,25.99,card,C-10164,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-08-28,2026-08-31,USPS
+R-100164,2026-08-27,delivered,336.25,289.96,25.99,card,C-10164,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,2026-08-28,2026-08-31,USPS
+R-100164,2026-08-27,delivered,336.25,289.96,25.99,card,C-10164,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-08-28,2026-08-31,USPS
+R-100165,2026-09-15,backordered,192.11,158.99,21.99,card,C-10165,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100165,2026-09-15,backordered,192.11,158.99,21.99,card,C-10165,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,,,
+R-100166,2026-09-21,delivered,159.07,129.98,19.99,card,C-10166,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,2,2026-09-22,2026-09-28,UPS SurePost
+R-100167,2026-09-13,backordered,2726.62,2408.99,149.00,card,C-10167,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,,,
+R-100167,2026-09-13,backordered,2726.62,2408.99,149.00,card,C-10167,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,,,
+R-100168,2026-09-06,delivered,251.37,219.98,25.99,card,C-10168,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-07,2026-09-14,UPS Ground
+R-100168,2026-09-06,delivered,251.37,219.98,25.99,card,C-10168,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-07,2026-09-14,UPS Ground
+R-100169,2026-08-24,delivered,125.67,109.98,17.99,gift_card,C-10169,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,2,2026-08-27,2026-09-01,USPS
+R-100170,2026-09-28,backordered,2695.93,2399.00,149.00,paypal,C-10170,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,,,
+R-100171,2026-09-23,shipped,330.89,284.95,25.99,gift_card,C-10171,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-26,2026-10-02,UPS SurePost
+R-100171,2026-09-23,shipped,330.89,284.95,25.99,gift_card,C-10171,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2026-09-26,2026-10-02,UPS SurePost
+R-100171,2026-09-23,shipped,330.89,284.95,25.99,gift_card,C-10171,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,2,2026-09-26,2026-10-02,UPS SurePost
+R-100172,2026-09-20,backordered,135.67,109.98,17.99,paypal,C-10172,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,,,
+R-100173,2026-09-27,backordered,83.53,64.99,13.99,gift_card,C-10173,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,,,
+R-100174,2026-09-13,backordered,203.87,169.98,21.99,gift_card,C-10174,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,,,
+R-100174,2026-09-13,backordered,203.87,169.98,21.99,gift_card,C-10174,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,,,
+R-100175,2024-05-15,delivered,44.08,29.99,11.99,card,C-10175,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2024-05-16,2024-05-19,UPS SurePost
+R-100176,2026-08-23,delivered,52.63,37.98,11.99,card,C-10176,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,2,2026-08-24,2026-08-28,UPS Ground
+R-100177,2026-08-08,delivered,193.16,159.97,21.99,card,C-10177,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-08-10,2026-08-14,UPS SurePost
+R-100177,2026-08-08,delivered,193.16,159.97,21.99,card,C-10177,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,2,2026-08-10,2026-08-14,UPS SurePost
+R-100178,2026-06-01,delivered,65.47,49.98,11.99,card,C-10178,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-06-03,2026-06-09,UPS Ground
+R-100178,2026-06-01,delivered,65.47,49.98,11.99,card,C-10178,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-06-03,2026-06-09,UPS Ground
+R-100179,2026-09-14,delivered,30.31,18.99,9.99,paypal,C-10179,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-09-17,2026-09-21,UPS SurePost
+R-100180,2026-09-10,delivered,2715.93,2399.00,149.00,card,C-10180,"SawStop 10"" Contractor Table Saw",MC-6001,machinery,2399.00,1,2026-09-12,2026-09-23,Estes Freight
+R-100181,2026-09-11,delivered,72.83,54.99,13.99,paypal,C-10181,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-12,2026-09-15,UPS SurePost
+R-100182,2026-09-05,delivered,319.15,273.98,25.99,card,C-10182,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-07,2026-09-11,UPS SurePost
+R-100182,2026-09-05,delivered,319.15,273.98,25.99,card,C-10182,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-07,2026-09-11,UPS SurePost
+R-100182,2026-09-05,delivered,319.15,273.98,25.99,card,C-10182,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-09-07,2026-09-11,UPS SurePost
+R-100183,2024-02-16,delivered,72.82,54.98,13.99,card,C-10183,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2024-02-18,2024-02-24,UPS Ground
+R-100183,2024-02-16,delivered,72.82,54.98,13.99,card,C-10183,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2024-02-18,2024-02-24,UPS Ground
+R-100184,2026-09-13,delivered,2180.93,1899.00,149.00,card,C-10184,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-09-14,2026-09-26,Estes Freight
+R-100185,2026-07-26,delivered,36.73,24.99,9.99,card,C-10185,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-07-29,2026-08-03,UPS Ground
+R-100186,2026-09-12,backordered,2193.02,1928.99,149.00,card,C-10186,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,,,
+R-100186,2026-09-12,backordered,2193.02,1928.99,149.00,card,C-10186,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,,,
+R-100187,2026-09-12,delivered,1368.50,1278.97,0.00,gift_card,C-10187,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-13,2026-09-20,UPS Ground
+R-100187,2026-09-12,delivered,1368.50,1278.97,0.00,gift_card,C-10187,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,2026-09-13,2026-09-20,UPS Ground
+R-100187,2026-09-12,delivered,1368.50,1278.97,0.00,gift_card,C-10187,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-13,2026-09-20,UPS Ground
+R-100188,2026-09-28,shipped,166.55,136.97,19.99,card,C-10188,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,2,2026-09-29,2026-10-05,UPS SurePost
+R-100188,2026-09-28,shipped,166.55,136.97,19.99,card,C-10188,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-29,2026-10-05,UPS SurePost
+R-100189,2026-08-21,delivered,456.42,449.00,25.99,gift_card,C-10189,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-08-24,2026-08-31,USPS
+R-100190,2026-09-23,shipped,3249.86,2898.00,149.00,card,C-10190,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-09-24,2026-10-06,Estes Freight
+R-100190,2026-09-23,shipped,3249.86,2898.00,149.00,card,C-10190,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-24,2026-10-06,Estes Freight
+R-100191,2026-09-09,delivered,130.32,104.98,17.99,gift_card,C-10191,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-10,2026-09-16,USPS
+R-100191,2026-09-09,delivered,130.32,104.98,17.99,gift_card,C-10191,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-10,2026-09-16,USPS
+R-100192,2026-09-05,delivered,540.26,503.99,25.99,card,C-10192,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-07,2026-09-12,UPS Ground
+R-100192,2026-09-05,delivered,540.26,503.99,25.99,card,C-10192,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-07,2026-09-12,UPS Ground
+R-100193,2026-09-18,shipped,2308.96,2028.00,149.00,card,C-10193,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-09-21,2026-10-03,Estes Freight
+R-100193,2026-09-18,shipped,2308.96,2028.00,149.00,card,C-10193,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-21,2026-10-03,Estes Freight
+R-100194,2026-08-24,delivered,72.83,54.99,13.99,paypal,C-10194,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-08-27,2026-08-30,UPS SurePost
+R-100195,2026-09-22,delivered,443.24,389.95,25.99,card,C-10195,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,2,2026-09-25,2026-09-28,USPS
+R-100195,2026-09-22,delivered,443.24,389.95,25.99,card,C-10195,Rockler Dust Right Separator,HW-4044,hardware,149.99,2,2026-09-25,2026-09-28,USPS
+R-100195,2026-09-22,delivered,443.24,389.95,25.99,card,C-10195,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-09-25,2026-09-28,USPS
+R-100196,2026-09-13,backordered,60.13,44.99,11.99,card,C-10196,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,,,
+R-100197,2026-08-24,delivered,139.06,129.97,19.99,card,C-10197,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-08-26,2026-08-30,USPS
+R-100197,2026-08-24,delivered,139.06,129.97,19.99,card,C-10197,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,2,2026-08-26,2026-08-30,USPS
+R-100198,2022-05-10,delivered,49.43,34.99,11.99,card,C-10198,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2022-05-12,2022-05-19,UPS SurePost
+R-100199,2026-09-16,backordered,120.32,119.00,17.99,card,C-10199,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,,,
+R-100200,2026-09-21,delivered,112.28,89.99,15.99,gift_card,C-10200,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-24,2026-09-30,USPS
+R-100201,2025-07-27,delivered,94.22,74.98,13.99,card,C-10201,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2025-07-30,2025-08-04,UPS Ground
+R-100201,2025-07-27,delivered,94.22,74.98,13.99,card,C-10201,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2025-07-30,2025-08-04,UPS Ground
+R-100202,2026-09-18,backordered,36.73,24.99,9.99,card,C-10202,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,,,
+R-100203,2026-09-14,backordered,364.41,334.97,25.99,card,C-10203,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,,,
+R-100203,2026-09-14,backordered,364.41,334.97,25.99,card,C-10203,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,,,
+R-100203,2026-09-14,backordered,364.41,334.97,25.99,card,C-10203,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,,,
+R-100204,2026-09-29,backordered,1196.25,1117.99,0.00,paypal,C-10204,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,,,
+R-100204,2026-09-29,backordered,1196.25,1117.99,0.00,paypal,C-10204,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,,,
+R-100205,2026-08-02,delivered,239.59,208.97,25.99,card,C-10205,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-08-05,2026-08-11,UPS Ground
+R-100205,2026-08-02,delivered,239.59,208.97,25.99,card,C-10205,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-08-05,2026-08-11,UPS Ground
+R-100205,2026-08-02,delivered,239.59,208.97,25.99,card,C-10205,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-08-05,2026-08-11,UPS Ground
+R-100206,2026-09-22,delivered,180.48,149.99,19.99,gift_card,C-10206,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-23,2026-09-29,UPS Ground
+R-100207,2026-09-26,backordered,88.88,69.99,13.99,card,C-10207,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,,,
+R-100208,2026-09-10,delivered,65.47,49.98,11.99,card,C-10208,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,2,2026-09-12,2026-09-15,UPS Ground
+R-100209,2026-09-23,backordered,410.08,358.96,25.99,paypal,C-10209,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,,,
+R-100209,2026-09-23,backordered,410.08,358.96,25.99,paypal,C-10209,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,2,,,
+R-100209,2026-09-23,backordered,410.08,358.96,25.99,paypal,C-10209,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,,,
+R-100210,2026-09-19,delivered,83.53,64.99,13.99,card,C-10210,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-21,2026-09-26,UPS SurePost
+R-100211,2026-07-17,delivered,192.11,158.99,21.99,card,C-10211,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-07-19,2026-07-25,UPS Ground
+R-100211,2026-07-17,delivered,192.11,158.99,21.99,card,C-10211,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-07-19,2026-07-25,UPS Ground
+R-100212,2026-06-03,delivered,2180.93,1899.00,149.00,card,C-10212,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-06-06,2026-06-15,Estes Freight
+R-100213,2026-09-24,delivered,468.58,422.98,25.99,card,C-10213,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,2,2026-09-27,2026-09-30,USPS
+R-100213,2026-09-24,delivered,468.58,422.98,25.99,card,C-10213,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-09-27,2026-09-30,USPS
+R-100213,2026-09-24,delivered,468.58,422.98,25.99,card,C-10213,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-09-27,2026-09-30,USPS
+R-100214,2025-09-18,delivered,69.61,51.98,13.99,card,C-10214,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2025-09-21,2025-09-28,UPS Ground
+R-100214,2025-09-18,delivered,69.61,51.98,13.99,card,C-10214,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2025-09-21,2025-09-28,UPS Ground
+R-100215,2026-09-08,delivered,105.84,83.97,15.99,card,C-10215,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-09-11,2026-09-17,USPS
+R-100215,2026-09-08,delivered,105.84,83.97,15.99,card,C-10215,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-11,2026-09-17,USPS
+R-100215,2026-09-08,delivered,105.84,83.97,15.99,card,C-10215,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-09-11,2026-09-17,USPS
+R-100216,2026-08-28,delivered,1195.47,1163.99,0.00,card,C-10216,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-08-31,2026-09-06,UPS Ground
+R-100216,2026-08-28,delivered,1195.47,1163.99,0.00,card,C-10216,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-08-31,2026-09-06,UPS Ground
+R-100217,2026-09-18,delivered,303.10,258.98,25.99,card,C-10217,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-19,2026-09-24,UPS Ground
+R-100217,2026-09-18,delivered,303.10,258.98,25.99,card,C-10217,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,2,2026-09-19,2026-09-24,UPS Ground
+R-100218,2026-09-17,delivered,506.42,449.00,25.99,card,C-10218,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-20,2026-09-24,UPS SurePost
+R-100219,2026-09-11,backordered,506.42,449.00,25.99,card,C-10219,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,,,
+R-100220,2026-08-25,delivered,180.48,149.99,19.99,card,C-10220,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-08-27,2026-09-01,UPS Ground
+R-100221,2026-09-21,backordered,446.75,439.96,25.99,paypal,C-10221,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,2,,,
+R-100221,2026-09-21,backordered,446.75,439.96,25.99,paypal,C-10221,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,2,,,
+R-100222,2026-09-15,delivered,481.42,449.00,25.99,paypal,C-10222,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-17,2026-09-21,UPS Ground
+R-100223,2022-05-06,delivered,54.78,39.99,11.99,card,C-10223,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2022-05-09,2022-05-14,UPS Ground
+R-100224,2026-08-29,delivered,262.75,268.00,25.99,paypal,C-10224,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-08-31,2026-09-07,UPS Ground
+R-100224,2026-08-29,delivered,262.75,268.00,25.99,paypal,C-10224,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-08-31,2026-09-07,UPS Ground
+R-100225,2026-05-21,delivered,60.12,44.98,11.99,gift_card,C-10225,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-05-22,2026-05-27,USPS
+R-100225,2026-05-21,delivered,60.12,44.98,11.99,gift_card,C-10225,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,1,2026-05-22,2026-05-27,USPS
+R-100226,2026-09-10,delivered,261.36,219.97,25.99,card,C-10226,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-09-11,2026-09-17,UPS Ground
+R-100226,2026-09-10,delivered,261.36,219.97,25.99,card,C-10226,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,2026-09-11,2026-09-17,UPS Ground
+R-100227,2026-08-25,delivered,2213.02,1928.99,149.00,card,C-10227,"Jet 8"" Jointer",MC-6030,machinery,1799.00,1,2026-08-28,2026-09-06,Estes Freight
+R-100227,2026-08-25,delivered,2213.02,1928.99,149.00,card,C-10227,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-08-28,2026-09-06,Estes Freight
+R-100228,2026-09-25,shipped,293.46,249.97,25.99,card,C-10228,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,2,2026-09-26,2026-10-02,USPS
+R-100228,2026-09-25,shipped,293.46,249.97,25.99,card,C-10228,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-09-26,2026-10-02,USPS
+R-100228,2026-09-25,shipped,293.46,249.97,25.99,card,C-10228,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-26,2026-10-02,USPS
+R-100229,2024-01-06,delivered,49.43,34.99,11.99,gift_card,C-10229,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2024-01-08,2024-01-11,UPS Ground
+R-100230,2026-09-04,delivered,109.07,129.98,19.99,card,C-10230,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-06,2026-09-11,UPS Ground
+R-100230,2026-09-04,delivered,109.07,129.98,19.99,card,C-10230,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-09-06,2026-09-11,UPS Ground
+R-100231,2026-09-14,backordered,1875.97,1613.99,149.00,card,C-10231,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,,,
+R-100231,2026-09-14,backordered,1875.97,1613.99,149.00,card,C-10231,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,,,
+R-100232,2026-05-17,delivered,196.38,162.98,21.99,gift_card,C-10232,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-05-19,2026-05-22,UPS Ground
+R-100232,2026-05-17,delivered,196.38,162.98,21.99,gift_card,C-10232,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-05-19,2026-05-22,UPS Ground
+R-100233,2026-09-20,backordered,418.68,367.00,25.99,card,C-10233,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,2,,,
+R-100233,2026-09-20,backordered,418.68,367.00,25.99,card,C-10233,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,,,
+R-100234,2026-09-15,backordered,136.76,153.99,21.99,card,C-10234,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,,,
+R-100234,2026-09-15,backordered,136.76,153.99,21.99,card,C-10234,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,,,
+R-100235,2026-09-01,delivered,167.11,158.99,21.99,card,C-10235,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-03,2026-09-09,UPS Ground
+R-100235,2026-09-01,delivered,167.11,158.99,21.99,card,C-10235,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-03,2026-09-09,UPS Ground
+R-100236,2026-08-27,delivered,199.22,174.98,21.99,card,C-10236,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-08-28,2026-09-03,USPS
+R-100236,2026-08-27,delivered,199.22,174.98,21.99,card,C-10236,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-08-28,2026-09-03,USPS
+R-100237,2026-09-09,delivered,135.67,109.98,17.99,paypal,C-10237,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,2026-09-12,2026-09-19,UPS SurePost
+R-100238,2026-08-31,delivered,117.61,94.97,15.99,card,C-10238,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-01,2026-09-08,USPS
+R-100238,2026-08-31,delivered,117.61,94.97,15.99,card,C-10238,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-09-01,2026-09-08,USPS
+R-100238,2026-08-31,delivered,117.61,94.97,15.99,card,C-10238,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-01,2026-09-08,USPS
+R-100239,2026-09-07,delivered,117.61,94.97,15.99,card,C-10239,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-09-09,2026-09-16,UPS Ground
+R-100239,2026-09-07,delivered,117.61,94.97,15.99,card,C-10239,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,2,2026-09-09,2026-09-16,UPS Ground
+R-100240,2026-09-19,delivered,148.02,129.00,19.99,card,C-10240,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-09-20,2026-09-24,UPS Ground
+R-100241,2026-05-01,delivered,53.69,38.97,11.99,card,C-10241,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-05-03,2026-05-08,USPS
+R-100241,2026-05-01,delivered,53.69,38.97,11.99,card,C-10241,Adirondack Chair Plan (Downloadable),PL-9501,plan,9.99,2,2026-05-03,2026-05-08,USPS
+R-100242,2026-09-19,delivered,1125.93,1099.00,0.00,paypal,C-10242,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-22,2026-09-29,UPS SurePost
+R-100243,2026-09-12,delivered,256.00,214.96,25.99,card,C-10243,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-15,2026-09-20,UPS Ground
+R-100243,2026-09-12,delivered,256.00,214.96,25.99,card,C-10243,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-09-15,2026-09-20,UPS Ground
+R-100243,2026-09-12,delivered,256.00,214.96,25.99,card,C-10243,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,2,2026-09-15,2026-09-20,UPS Ground
+R-100244,2026-07-30,delivered,506.42,449.00,25.99,card,C-10244,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-08-02,2026-08-09,USPS
+R-100245,2026-07-13,delivered,1175.93,1099.00,0.00,card,C-10245,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-07-15,2026-07-19,UPS Ground
+R-100246,2026-07-31,delivered,506.42,449.00,25.99,card,C-10246,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-08-01,2026-08-06,UPS SurePost
+R-100247,2026-09-27,shipped,645.51,578.99,25.99,card,C-10247,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,2026-09-30,2026-10-05,UPS SurePost
+R-100247,2026-09-27,shipped,645.51,578.99,25.99,card,C-10247,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-09-30,2026-10-05,UPS SurePost
+R-100248,2026-05-04,delivered,1465.89,1369.99,0.00,card,C-10248,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-05-05,2026-05-10,USPS
+R-100248,2026-05-04,delivered,1465.89,1369.99,0.00,card,C-10248,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-05-05,2026-05-10,USPS
+R-100248,2026-05-04,delivered,1465.89,1369.99,0.00,card,C-10248,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,2,2026-05-05,2026-05-10,USPS
+R-100249,2026-09-17,delivered,72.83,54.99,13.99,paypal,C-10249,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-18,2026-09-23,UPS SurePost
+R-100250,2026-08-29,delivered,106.92,84.98,15.99,card,C-10250,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-08-31,2026-09-04,UPS SurePost
+R-100250,2026-08-29,delivered,106.92,84.98,15.99,card,C-10250,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-08-31,2026-09-04,UPS SurePost
+R-100251,2026-07-22,delivered,1175.93,1099.00,0.00,card,C-10251,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-07-23,2026-07-27,UPS Ground
+R-100252,2026-08-19,delivered,125.12,144.98,19.99,card,C-10252,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-08-21,2026-08-26,UPS Ground
+R-100252,2026-08-19,delivered,125.12,144.98,19.99,card,C-10252,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-08-21,2026-08-26,UPS Ground
+R-100253,2026-09-16,delivered,111.22,89.00,15.99,card,C-10253,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-19,2026-09-24,UPS SurePost
+R-100254,2026-08-10,delivered,54.78,39.99,11.99,card,C-10254,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,2026-08-13,2026-08-20,UPS Ground
+R-100255,2026-09-08,delivered,78.17,59.98,13.99,card,C-10255,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,2,2026-09-09,2026-09-15,USPS
+R-100256,2026-09-10,delivered,206.57,179.98,23.99,card,C-10256,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,2,2026-09-13,2026-09-20,UPS Ground
+R-100257,2026-09-13,backordered,1336.05,1257.99,0.00,card,C-10257,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,,,
+R-100257,2026-09-13,backordered,1336.05,1257.99,0.00,card,C-10257,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,,,
+R-100257,2026-09-13,backordered,1336.05,1257.99,0.00,card,C-10257,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,,,
+R-100258,2026-08-30,delivered,1909.45,1663.97,149.00,card,C-10258,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-08-31,2026-09-10,Estes Freight
+R-100258,2026-08-30,delivered,1909.45,1663.97,149.00,card,C-10258,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-08-31,2026-09-10,Estes Freight
+R-100258,2026-08-30,delivered,1909.45,1663.97,149.00,card,C-10258,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2026-08-31,2026-09-10,Estes Freight
+R-100259,2026-08-18,delivered,30.31,18.99,9.99,gift_card,C-10259,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-08-19,2026-08-24,USPS
+R-100260,2025-06-22,delivered,54.78,39.99,11.99,card,C-10260,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2025-06-23,2025-06-26,USPS
+R-100261,2026-09-01,delivered,111.22,89.00,15.99,card,C-10261,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-03,2026-09-07,UPS Ground
+R-100262,2026-09-04,delivered,84.59,65.98,13.99,paypal,C-10262,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,2,2026-09-06,2026-09-12,UPS SurePost
+R-100263,2026-05-16,delivered,135.66,109.97,17.99,gift_card,C-10263,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,2,2026-05-17,2026-05-20,UPS SurePost
+R-100263,2026-05-16,delivered,135.66,109.97,17.99,gift_card,C-10263,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-05-17,2026-05-20,UPS SurePost
+R-100264,2026-04-27,delivered,1211.23,1131.99,0.00,card,C-10264,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-04-28,2026-05-03,USPS
+R-100264,2026-04-27,delivered,1211.23,1131.99,0.00,card,C-10264,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-04-28,2026-05-03,USPS
+R-100265,2026-09-23,backordered,60.13,44.99,11.99,card,C-10265,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,,,
+R-100266,2026-09-22,shipped,44.08,29.99,11.99,card,C-10266,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-25,2026-10-02,USPS
+R-100267,2026-06-17,delivered,345.90,298.98,25.99,paypal,C-10267,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-06-20,2026-06-27,UPS Ground
+R-100267,2026-06-17,delivered,345.90,298.98,25.99,paypal,C-10267,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,2,2026-06-20,2026-06-27,UPS Ground
+R-100268,2026-09-16,delivered,1240.82,1168.99,0.00,card,C-10268,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-19,2026-09-22,USPS
+R-100268,2026-09-16,delivered,1240.82,1168.99,0.00,card,C-10268,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-09-19,2026-09-22,USPS
+R-100269,2026-08-30,delivered,206.00,171.97,21.99,gift_card,C-10269,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-09-01,2026-09-08,USPS
+R-100269,2026-08-30,delivered,206.00,171.97,21.99,gift_card,C-10269,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-01,2026-09-08,USPS
+R-100269,2026-08-30,delivered,206.00,171.97,21.99,gift_card,C-10269,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-09-01,2026-09-08,USPS
+R-100270,2026-09-19,backordered,101.71,124.97,17.99,card,C-10270,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,2,,,
+R-100270,2026-09-19,backordered,101.71,124.97,17.99,card,C-10270,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,,,
+R-100271,2026-08-03,delivered,1934.81,1668.98,149.00,card,C-10271,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-08-06,2026-08-18,Estes Freight
+R-100271,2026-08-03,delivered,1934.81,1668.98,149.00,card,C-10271,Rockler Router Table Fence (Clearance),CR-9001,clearance,59.99,2,2026-08-06,2026-08-18,Estes Freight
+R-100272,2026-08-03,delivered,44.08,29.99,11.99,card,C-10272,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-08-05,2026-08-12,UPS SurePost
+R-100273,2026-09-23,backordered,266.36,233.99,25.99,card,C-10273,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,,,
+R-100273,2026-09-23,backordered,266.36,233.99,25.99,card,C-10273,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,,,
+R-100274,2026-09-19,delivered,74.96,56.98,13.99,card,C-10274,"Rockler 1/2"" Flush Trim Router Bit",RB-1001,router_bit,29.99,1,2026-09-20,2026-09-27,UPS SurePost
+R-100274,2026-09-19,delivered,74.96,56.98,13.99,card,C-10274,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-20,2026-09-27,UPS SurePost
+R-100275,2026-05-29,delivered,1229.41,1148.98,0.00,card,C-10275,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2026-05-31,2026-06-03,UPS Ground
+R-100275,2026-05-29,delivered,1229.41,1148.98,0.00,card,C-10275,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-05-31,2026-06-03,UPS Ground
+R-100275,2026-05-29,delivered,1229.41,1148.98,0.00,card,C-10275,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2026-05-31,2026-06-03,UPS Ground
+R-100276,2026-07-17,delivered,2235.82,1968.99,149.00,card,C-10276,Laguna Fusion F2 Table Saw,MC-6012,machinery,1899.00,1,2026-07-20,2026-07-31,Estes Freight
+R-100276,2026-07-17,delivered,2235.82,1968.99,149.00,card,C-10276,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-07-20,2026-07-31,Estes Freight
+R-100277,2026-05-29,delivered,112.27,89.98,15.99,card,C-10277,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,2,2026-05-30,2026-06-03,UPS Ground
+R-100278,2026-05-02,delivered,164.06,143.99,19.99,gift_card,C-10278,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-05-03,2026-05-09,UPS SurePost
+R-100278,2026-05-02,delivered,164.06,143.99,19.99,gift_card,C-10278,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-05-03,2026-05-09,UPS SurePost
+R-100279,2023-05-19,delivered,186.76,153.99,21.99,card,C-10279,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2023-05-21,2023-05-24,UPS SurePost
+R-100279,2023-05-19,delivered,186.76,153.99,21.99,card,C-10279,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2023-05-21,2023-05-24,UPS SurePost
+R-100280,2026-06-04,delivered,186.38,162.98,21.99,paypal,C-10280,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,2026-06-07,2026-06-10,USPS
+R-100280,2026-06-04,delivered,186.38,162.98,21.99,paypal,C-10280,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2026-06-07,2026-06-10,USPS
+R-100281,2026-07-17,delivered,151.72,124.98,17.99,paypal,C-10281,Osmo Polyx-Oil 750ml,FN-8010,finish,54.99,1,2026-07-18,2026-07-21,USPS
+R-100281,2026-07-17,delivered,151.72,124.98,17.99,paypal,C-10281,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-07-18,2026-07-21,USPS
+R-100282,2026-05-06,delivered,230.48,192.98,23.99,card,C-10282,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,1,2026-05-08,2026-05-14,UPS Ground
+R-100282,2026-05-06,delivered,230.48,192.98,23.99,card,C-10282,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-05-08,2026-05-14,UPS Ground
+R-100282,2026-05-06,delivered,230.48,192.98,23.99,card,C-10282,Walnut Lumber Pack 4/4 (10 bf),LB-7001,lumber,119.00,1,2026-05-08,2026-05-14,UPS Ground
+R-100283,2026-09-12,delivered,111.22,89.00,15.99,card,C-10283,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-14,2026-09-17,UPS SurePost
+R-100284,2024-09-20,delivered,1190.11,1158.98,0.00,card,C-10284,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2024-09-22,2024-09-29,USPS
+R-100284,2024-09-20,delivered,1190.11,1158.98,0.00,card,C-10284,Festool Domino DF 500 Joiner,PT-5033,power_tool,1099.00,1,2024-09-22,2024-09-29,USPS
+R-100284,2024-09-20,delivered,1190.11,1158.98,0.00,card,C-10284,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2024-09-22,2024-09-29,USPS
+R-100285,2026-09-15,backordered,92.08,72.98,13.99,card,C-10285,"Rockler Sure-Foot 24"" Bar Clamp",CL-3001,hardware,32.99,1,,,
+R-100285,2026-09-15,backordered,92.08,72.98,13.99,card,C-10285,Workbench Caster Set (Clearance),CR-9020,clearance,39.99,1,,,
+R-100286,2026-09-14,delivered,36.73,24.99,9.99,card,C-10286,"Rockler TopSlide 18"" Drawer Slides (pair)",DS-2201,drawer_slide,24.99,1,2026-09-17,2026-09-21,USPS
+R-100287,2026-09-13,delivered,143.36,133.99,19.99,card,C-10287,Rockler Bench Dog Hold-Down,HW-4001,hardware,44.99,1,2026-09-15,2026-09-18,UPS SurePost
+R-100287,2026-09-13,delivered,143.36,133.99,19.99,card,C-10287,"Makita 5"" Random Orbit Sander",PT-5008,power_tool,89.00,1,2026-09-15,2026-09-18,UPS SurePost
+R-100288,2026-08-14,delivered,180.48,149.99,19.99,paypal,C-10288,Rockler Dust Right Separator,HW-4044,hardware,149.99,1,2026-08-17,2026-08-24,UPS Ground
+R-100289,2026-09-18,shipped,1786.43,1549.00,149.00,paypal,C-10289,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-09-19,2026-10-01,Estes Freight
+R-100290,2026-09-15,backordered,456.42,449.00,25.99,gift_card,C-10290,"Rikon 10"" Bandsaw",MC-6040,machinery,449.00,1,,,
+R-100291,2026-09-20,delivered,114.41,91.98,15.99,paypal,C-10291,General Finishes Arm-R-Seal Quart,FN-8001,finish,26.99,1,2026-09-22,2026-09-28,USPS
+R-100291,2026-09-20,delivered,114.41,91.98,15.99,paypal,C-10291,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2026-09-22,2026-09-28,USPS
+R-100292,2026-09-02,delivered,249.60,208.98,25.99,card,C-10292,DeWalt 20V Cordless Drill/Driver Kit,PT-5001,power_tool,179.00,1,2026-09-05,2026-09-09,UPS SurePost
+R-100292,2026-09-02,delivered,249.60,208.98,25.99,card,C-10292,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,2,2026-09-05,2026-09-09,UPS SurePost
+R-100293,2026-07-24,delivered,216.57,179.98,23.99,card,C-10293,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,2,2026-07-25,2026-08-01,UPS SurePost
+R-100294,2026-08-24,delivered,247.45,206.97,25.99,card,C-10294,Hard Maple Turning Blank 3x3x12,LB-7010,lumber,18.99,2,2026-08-27,2026-09-01,UPS SurePost
+R-100294,2026-08-24,delivered,247.45,206.97,25.99,card,C-10294,Bosch Colt Palm Router,PT-5020,power_tool,129.00,1,2026-08-27,2026-09-01,UPS SurePost
+R-100294,2026-08-24,delivered,247.45,206.97,25.99,card,C-10294,"Rockler Centerline 22"" Soft-Close Drawer Slides (pair)",DS-2210,drawer_slide,39.99,1,2026-08-27,2026-09-01,UPS SurePost
+R-100295,2026-08-23,delivered,151.72,124.98,17.99,gift_card,C-10295,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-08-25,2026-09-01,UPS SurePost
+R-100295,2026-08-23,delivered,151.72,124.98,17.99,gift_card,C-10295,"Blum 21"" Undermount Slides (pair)",DS-2290,drawer_slide,54.99,1,2026-08-25,2026-09-01,UPS SurePost
+R-100296,2026-08-28,delivered,1902.72,1638.99,149.00,card,C-10296,Laguna 14|bx Bandsaw,MC-6020,machinery,1549.00,1,2026-08-29,2026-09-03,Estes Freight
+R-100296,2026-08-28,delivered,1902.72,1638.99,149.00,card,C-10296,Rockler Roundover Bit Set (4 pc),RB-1042,router_bit,89.99,1,2026-08-29,2026-09-03,Estes Freight
+R-100297,2024-09-25,delivered,272.06,229.97,25.99,card,C-10297,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,2024-09-28,2024-10-02,USPS
+R-100297,2024-09-25,delivered,272.06,229.97,25.99,card,C-10297,Brusso Solid Brass Box Hinges (pair),HW-4015,hardware,64.99,1,2024-09-28,2024-10-02,USPS
+R-100297,2024-09-25,delivered,272.06,229.97,25.99,card,C-10297,"Bessey 50"" Parallel Clamp (2 pack)",CL-3010,hardware,129.99,1,2024-09-28,2024-10-02,USPS
+R-100298,2026-09-12,backordered,49.43,34.99,11.99,card,C-10298,Rockler 45° Chamfer Router Bit,RB-1017,router_bit,34.99,1,,,
+R-100299,2026-09-13,delivered,106.92,84.98,15.99,card,C-10299,Rockler Pocket-Hole Jig Kit,HW-4030,hardware,69.99,1,2026-09-14,2026-09-17,USPS
+R-100299,2026-09-13,delivered,106.92,84.98,15.99,card,C-10299,"Shop Apron, Canvas (Clearance)",CR-9010,clearance,14.99,1,2026-09-14,2026-09-17,USPS
