@@ -1,0 +1,13 @@
+Fee and policy changes
+Fee and policy changes
+display="700" color="var(--ds-color-ui-active-default)"
+View current baggage rules and fees
+An important reminder for anyone making ticket changes or cancellations:
+We recently updated our
+. If you don't change or cancel your ticket before the time your flight is ticketed to depart:
+We'll cancel your flight reservation and all continuing and return flights.
+The money and/or points you spent on the flight will not be available as a credit toward future flights.
+
+## Block: Fee and policy changes
+
+## [STANDARD PAGE] Fee changes

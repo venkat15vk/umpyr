@@ -38,7 +38,8 @@ def resolve_database_url(url: str) -> str:
     data_dir = Path(raw or ".pgdata")
     if not data_dir.is_absolute():
         data_dir = get_settings().root / data_dir
-    data_dir.mkdir(parents=True, exist_ok=True)
+    data_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    data_dir.chmod(0o700)  # postgres refuses group/world-accessible data dirs
     key = str(data_dir)
     if key not in _pg_servers:
         _pg_servers[key] = pgserver.get_server(key)

@@ -1,0 +1,17 @@
+{
+  "source_id": "dot-14-cfr-260",
+  "url": "https://www.ecfr.gov/current/title-14/chapter-II/subchapter-A/part-260",
+  "final_url": "https://www.ecfr.gov/api/versioner/v1/full/2026-10-01/title-14.xml?part=260",
+  "content_type": "application/xml",
+  "title": "PART 260\u2014REFUNDS FOR AIRLINE FARE AND ANCILLARY SERVICE FEES",
+  "fetched_at": "2026-10-19T20:43:22+00:00",
+  "sha256": "d79cfeb99842a1d79b813a21993bf4a6ded2226855cec30523890bf79fe51ee3",
+  "extractor": "ecfr-api",
+  "chars": 24691,
+  "ok": true,
+  "notes": [
+    "redirected to https://www.ecfr.gov/api/versioner/v1/full/2026-10-01/title-14.xml?part=260"
+  ],
+  "raw_path": "dot-14-cfr-260.xml",
+  "text_path": "dot-14-cfr-260.txt"
+}

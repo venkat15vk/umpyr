@@ -1,0 +1,15 @@
+{
+  "source_id": "ak-baggage-delayed-damaged",
+  "url": "https://www.alaskaair.com/content/travel-info/baggage/baggage-claim/delayed-damaged-missing",
+  "final_url": "https://www.alaskaair.com/content/travel-info/baggage/baggage-claim/delayed-damaged-missing",
+  "content_type": "text/html",
+  "title": "Delayed or damaged baggage policies - Alaska Airlines and Hawaiian Airlines",
+  "fetched_at": "2026-10-19T20:43:29+00:00",
+  "sha256": "db1bc3098faa993c6653866d15eb51a6ae97320801bf8e490ecc6e3da9e681b9",
+  "extractor": "next-data",
+  "chars": 7234,
+  "ok": true,
+  "notes": [],
+  "raw_path": "ak-baggage-delayed-damaged.html",
+  "text_path": "ak-baggage-delayed-damaged.txt"
+}

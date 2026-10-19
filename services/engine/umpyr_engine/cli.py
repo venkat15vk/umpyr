@@ -101,6 +101,57 @@ def cmd_llm(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_sandbox(args: argparse.Namespace) -> int:
+    from .sandbox.fetch import run_fetch
+
+    if args.sb_cmd == "fetch":
+        results = run_fetch(args.client, rebuild=args.rebuild)
+        gaps = [r["source_id"] for r in results if not r.get("ok")]
+        print(json.dumps({"sources": len(results), "ok": len(results) - len(gaps), "gaps": gaps}, indent=2))
+        return 0
+    if args.sb_cmd == "build":
+        from .sandbox.build import run_build
+
+        report = run_build(args.client, steps=args.steps, rebuild=args.rebuild, eval_n=args.eval_n)
+        print(
+            json.dumps(
+                {
+                    k: (
+                        v
+                        if not isinstance(v, dict)
+                        else {
+                            kk: vv for kk, vv in v.items() if kk not in ("rule_coverage", "categories", "by_category")
+                        }
+                    )
+                    for k, v in report.items()
+                },
+                indent=2,
+                default=str,
+            )[:6000]
+        )
+        return 0
+    if args.sb_cmd == "synth":
+        from .sandbox.synth_job import run_synth
+
+        print(json.dumps(run_synth(args.client, n=args.n, rebuild=args.rebuild, limit=args.limit), indent=2))
+        return 0
+    if args.sb_cmd == "compile":
+        from .db.base import get_session_factory
+        from .sandbox.compile_job import run_compile
+
+        with get_session_factory()() as session:
+            report = run_compile(
+                session, args.client, rebuild=args.rebuild, use_batch=not args.no_batch, reassemble=args.reassemble
+            )
+        print(
+            json.dumps(
+                {k: v for k, v in report.items() if k not in ("cannot_encode", "dropped")}, indent=2, default=str
+            )
+        )
+        return 0
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     logging.getLogger("pgserver").setLevel(logging.WARNING)
@@ -127,6 +178,33 @@ def main(argv: list[str] | None = None) -> int:
     llms = llm.add_subparsers(dest="llm_cmd", required=True)
     llms.add_parser("smoke")
     llm.set_defaults(fn=cmd_llm)
+
+    sb = sub.add_parser("sandbox")
+    sbs = sb.add_subparsers(dest="sb_cmd", required=True)
+    f = sbs.add_parser("fetch")
+    f.add_argument("client")
+    f.add_argument("--rebuild", action="store_true")
+    b = sbs.add_parser("build")
+    b.add_argument("client")
+    b.add_argument(
+        "--steps",
+        nargs="*",
+        default=None,
+        help="subset of: fetch compile synth ingest mine taxonomy router procedures drift eval",
+    )
+    b.add_argument("--rebuild", action="store_true")
+    b.add_argument("--eval-n", type=int, default=1000)
+    sy = sbs.add_parser("synth")
+    sy.add_argument("client")
+    sy.add_argument("--n", type=int, default=300)
+    sy.add_argument("--limit", type=int, default=None, help="only write threads for the first N scenarios (dev)")
+    sy.add_argument("--rebuild", action="store_true")
+    c = sbs.add_parser("compile")
+    c.add_argument("client")
+    c.add_argument("--rebuild", action="store_true")
+    c.add_argument("--no-batch", action="store_true", help="synchronous calls instead of the Batch API")
+    c.add_argument("--reassemble", action="store_true", help="re-apply rule_overrides.json to cached rules (no LLM)")
+    sb.set_defaults(fn=cmd_sandbox)
 
     args = p.parse_args(argv)
     return args.fn(args)

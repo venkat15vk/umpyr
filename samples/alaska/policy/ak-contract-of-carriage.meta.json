@@ -1,0 +1,18 @@
+{
+  "source_id": "ak-contract-of-carriage",
+  "url": "https://www.alaskaair.com/content/legal/contract-of-carriage/view-all",
+  "final_url": "https://resource.alaskaair.net/v3/assets/blt2cefe12c88e9dd91/blta6d545d0295aad57/CoC%20English",
+  "content_type": "application/pdf",
+  "title": "Alaska Airlines, Inc. Contract of ",
+  "fetched_at": "2026-10-19T20:43:22+00:00",
+  "sha256": "e89b317491a67f7a4e6e8db4c2f944d14cf462ed4cac11df028c2c9f8974861c",
+  "extractor": "pymupdf",
+  "chars": 250019,
+  "ok": true,
+  "notes": [
+    "redirected to https://resource.alaskaair.net/v3/assets/blt2cefe12c88e9dd91/blta6d545d0295aad57/CoC%20English",
+    "pdf 101 pages"
+  ],
+  "raw_path": "ak-contract-of-carriage.pdf",
+  "text_path": "ak-contract-of-carriage.txt"
+}

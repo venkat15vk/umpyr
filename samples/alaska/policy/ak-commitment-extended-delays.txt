@@ -1,0 +1,31 @@
+Comfort During Extended Delays Commitment
+We will ensure your comfort during a lengthy tarmac delay.
+Alaska Airlines and Hawaiian Airlines are committed to providing our customers with a service quality and on-time performance level that ranks among the highest in the industry. The impact of weather, air traffic control, airport operations, and safety factors occasionally cause tarmac delays. The Alaska and Hawaiian commitment to excellent customer service includes successful compliance with U.S. Department of Transportation (DOT) regulations pertaining to excessive tarmac delays. With this in mind, Alaska and Hawaiian have adopted detailed plans to manage and minimize excessive tarmac delays, while providing a safe and pleasant travel experience to our customers.
+In compliance with DOT regulations and 14 CFR 259.4, Alaska Airlines and Hawaiian Airlines have adopted a Contingency Plan for Lengthy Tarmac Delays for
+its scheduled and public charter flights at each U.S. large, medium and small hub airport and non-hub airport at which Alaska and Hawaiian
+operates or markets such air service and shall adhere to the plan’s terms. Information regarding the Alaska and Hawaiian Airlines Contingency Plan for Lengthy Tarmac Delays is included on the
+
+## /json-gtr/content/about-us/customer-commitment/customer-commitment-extended-delays/We-will-ensure-your-comfort-during-a-lengthy-tarmac-delay
+
+Alaska Airlines is committed to the following contingency measures to minimize your inconvenience
+Alaska Airlines and Hawaiian Airlines are committed to the following contingency measures to minimize your inconvenience:
+display="400" level="2"
+For domestic flights, Alaska or Hawaiian Airlines shall provide guests on a flight experiencing a tarmac delay at a U.S. airport the opportunity to deplane before the tarmac delay exceeds three hours in duration unless:
+For departing flights, the flight begins to return to a suitable disembarkation point no later than three hours after the main aircraft door is closed in order to deplane guests. If the aircraft is in an area that is not under the carrier's control, the aircraft has begun to return to a suitable disembarkation point when a request is made to the Federal Aviation Administration control tower, airport authority, or other relevant authority directing the aircraft's operations. If the aircraft is in an area that is under the carrier's control, the aircraft has begun to return to a suitable disembarkation point when the pilot begins maneuvering the aircraft to a suitable disembarkation point;
+The Pilot-in-Command determines that deplaning guests at a suitable disembarkation point would jeopardize guest safety or security, or there is a safety related or security related reason why the aircraft cannot leave its position on the tarmac to deplane guests; or
+Air traffic control advises the Pilot-in-Command that returning to a suitable disembarkation point to deplane guests would significantly disrupt airport operations.
+For all international flights, Alaska or Hawaiian shall provide guests on a flight experiencing a tarmac delay at a U.S. airport the opportunity to deplane before the tarmac delay exceeds four hours in duration, unless:
+For departing flights, the flight begins to return to a suitable disembarkation point no later than four hours after the main aircraft door is closed in order to deplane guests. If the aircraft is in an area that is not under the carrier's control, the aircraft has begun to return to a suitable disembarkation point when a request is made to the Federal Aviation Administration control tower, airport authority, or other relevant authority directing the aircraft's operations. If the aircraft is in an area that is under the carrier's control, the aircraft has begun to return to a suitable disembarkation point when the pilot begins maneuvering the aircraft to a suitable disembarkation point
+The Pilot-in-Command determines that deplaning guests at a suitable disembarkation point would jeopardize guest safety or security, or there is a safety related or security related reason why the aircraft cannot leave its position on the tarmac to deplane guests; or
+Air traffic control advises the Pilot-in-Command that returning to a suitable disembarkation point to deplane guests would significantly disrupt airport operations.
+We will timely notify you of each opportunity to deplane at a suitable disembarkation point for all departing flights and diversions.
+We will keep you updated regarding the status of the delay when a tarmac delay exceeds 30 minutes, and thereafter we may provide subsequent updates, including flight status changes, as appropriate.
+Once onboard, if your flight is held on the ground (away from the terminal or with the boarding door closed), we will maintain a comfortable cabin temperature by running the auxiliary power unit (APU) or aircraft engines as needed.
+During a tarmac delay, we will maintain operable onboard lavatories.
+We will provide adequate food and potable water no later than two hours after the start of the tarmac delay unless the Pilot-in-Command determines that safety or security considerations preclude such service.
+We will provide adequate medical attention if needed.
+We will have sufficient resources to implement our tarmac delay contingency plan and have coordinated our program with airport authorities (including terminal facility operators where applicable), U.S. Customs and Border Protection, and the U.S. Transportation Security Administration at all airports we serve, including our regular diversion airports. We will coordinate with airport officials and other airlines to share facilities and make gates available at the airport in an emergency.
+
+## /json-gtr/about-us/customer-commitment/customer-commitment-extended-delays/Alaska-Airlines-is-committed-to-the-following-contingency-measures
+
+## [STANDARD]/content/about-us/customer-commitment/customer-commitment-extended-delays

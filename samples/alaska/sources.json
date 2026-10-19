@@ -1,0 +1,88 @@
+{
+  "workspace": "alaska",
+  "name": "Alaska Airlines",
+  "sources": [
+    {
+      "id": "dot-14-cfr-260",
+      "url": "https://www.ecfr.gov/current/title-14/chapter-II/subchapter-A/part-260",
+      "tier": "law",
+      "title": "14 CFR Part 260 - Refunds for airline fare and ancillary service fees (US DOT)"
+    },
+    {
+      "id": "ak-contract-of-carriage",
+      "url": "https://www.alaskaair.com/content/legal/contract-of-carriage/view-all",
+      "tier": "contract",
+      "title": "Alaska Airlines Contract of Carriage",
+      "notes": "The HTML page renders client-side; the view-all URL redirects to the official PDF, which we archive. Only Rules 1, 7, 8, 15 and 17 (definitions, cancellations, delays/denied boarding, baggage, refunds) are compiled; the other rules do not govern customer disputes in scope.",
+      "keep_sections": [
+        "Rule 1.",
+        "Rule 7.",
+        "Rule 8.",
+        "Rule 15.",
+        "Rule 17."
+      ],
+      "section_pattern": "^Rule \\d+\\. "
+    },
+    {
+      "id": "ak-commitment-overview",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-overview",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - overview"
+    },
+    {
+      "id": "ak-commitment-refunds",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-process-refund",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - refund processing"
+    },
+    {
+      "id": "ak-commitment-baggage",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-baggage-return",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - prompt baggage return"
+    },
+    {
+      "id": "ak-commitment-delay-choices",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-delay-choices",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - choices during a delay"
+    },
+    {
+      "id": "ak-commitment-extended-delays",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-extended-delays",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - comfort during extended delays"
+    },
+    {
+      "id": "ak-commitment-flexibility",
+      "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-flexibility",
+      "tier": "commitment",
+      "title": "Customer Service Commitment - flexible booking (24-hour)"
+    },
+    {
+      "id": "ak-baggage-delayed-damaged",
+      "url": "https://www.alaskaair.com/content/travel-info/baggage/baggage-claim/delayed-damaged-missing",
+      "tier": "commitment",
+      "title": "Delayed, damaged or missing baggage (includes the 20-minute bag service guarantee)"
+    },
+    {
+      "id": "ak-optional-services-fees",
+      "url": "https://www.alaskaair.com/content/travel-info/optional-services-fees",
+      "tier": "contract",
+      "title": "Optional services and fees"
+    },
+    {
+      "id": "ak-fee-changes",
+      "url": "https://www.alaskaair.com/content/travel-info/optional-services-fees/fee-changes",
+      "tier": "contract",
+      "title": "Fee and policy changes (no-show policy, credits)"
+    },
+    {
+      "id": "ak-bonus-travel-terms",
+      "url": "https://www.alaskaair.com/content/gifts-and-products/gift-cards-certificates/bonus-travel-terms",
+      "tier": "contract",
+      "title": "Bonus travel certificate terms (credit certificate behaviour)",
+      "notes": "No dedicated 'credit certificate terms' page exists as of 2026-10; credits are governed by the Contract of Carriage (Credit definition, refund rules) and this page."
+    }
+  ]
+}

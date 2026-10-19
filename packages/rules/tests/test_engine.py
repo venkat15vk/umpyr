@@ -174,3 +174,21 @@ def test_evaluation_error_is_captured_not_raised():
     out = evaluate(RulePack(workspace="w", version="v", clauses=[c], rules=[r]), {})
     assert out.decision == "escalate"
     assert out.checks[0].error == "division by zero"
+
+
+def test_needs_fact_reports_only_highest_precedence_group(pack):
+    """A low-priority rule's missing facts are not asked for while a higher-priority rule is undecidable."""
+    extra = Rule(
+        rule_id="RK-GW-1.r2",
+        clause_id="RK-GW-1",
+        tier="goodwill",
+        priority=0,
+        claim_reasons=["damaged_on_arrival"],
+        requires=["customer.loyalty_tier"],
+        when=True,
+        effect=Effect(decision="approve", remedy="store_credit", amount=10),
+    )
+    pack2 = pack.model_copy(update={"rules": [*pack.rules, extra]})
+    r = evaluate(pack2, {"claim": {"reason": "damaged_on_arrival"}})
+    assert r.decision == "needs_fact"
+    assert r.missing_facts == ["claim.has_photos", "claim.reported_within_days"]  # commitment tier asked first

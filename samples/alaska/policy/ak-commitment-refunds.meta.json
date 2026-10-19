@@ -1,0 +1,15 @@
+{
+  "source_id": "ak-commitment-refunds",
+  "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-process-refund",
+  "final_url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-process-refund",
+  "content_type": "text/html",
+  "title": "Refund Processing Customer Commitment - Alaska Airlines and Hawaiian Airlines",
+  "fetched_at": "2026-10-19T20:43:26+00:00",
+  "sha256": "0ca208d1e28ffb7b4b413e2a598ffef296089276f46eb2ffc2e59647f882405d",
+  "extractor": "next-data",
+  "chars": 4569,
+  "ok": true,
+  "notes": [],
+  "raw_path": "ak-commitment-refunds.html",
+  "text_path": "ak-commitment-refunds.txt"
+}

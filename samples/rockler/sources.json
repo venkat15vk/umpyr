@@ -1,0 +1,10 @@
+{
+  "workspace": "rockler",
+  "name": "Rockler Woodworking and Hardware",
+  "sources": [
+    {"id": "rockler-faq-ordering", "url": "https://www.rockler.com/faq-ordering", "tier": "contract",
+     "title": "Rockler FAQ: ordering, shipping, returns, guarantees"},
+    {"id": "rockler-return-policy", "url": "https://www.rockler.com/return-policy", "tier": "contract",
+     "title": "Rockler return policy", "notes": "Redirects to the FAQ page as of 2026-10; archived under its own id for provenance."}
+  ]
+}

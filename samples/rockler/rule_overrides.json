@@ -1,0 +1,287 @@
+{
+  "_note": "Sandbox stand-in for the merchant approval step. Each entry is a merchant edit to the compiler output; the product records these as approvals in the setup UI (M4).",
+  "disable": [
+    "RK-RET-2.r1",
+    "RK-RET-4.r1",
+    "RK-SHIP-1.r1",
+    "RK-RET-6.r1",
+    "RK-RET-6.r3",
+    "RK-PAY-2.r1",
+    "RK-RET-16.r1",
+    "RK-RET-19.r1",
+    "RK-SHIP-4.r1",
+    "RK-PAY-4.r1",
+    "RK-ORD-13.r1"
+  ],
+  "patch": {
+    "RK-RET-1.r1": {
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request"
+      ],
+      "requires": [
+        "claim.has_receipt",
+        "order.days_since_order",
+        "item.line_total"
+      ],
+      "effect": {
+        "amount": {
+          "var": "item.line_total"
+        },
+        "fault": "customer",
+        "note": "Refund of merchandise price to original payment; customer pays return shipping."
+      },
+      "description": "Return within 90 days of purchase with proof of purchase: refund merchandise price to original payment."
+    },
+    "RK-PAY-1.r1": {
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request"
+      ],
+      "requires": [
+        "order.rewards_discount",
+        "item.line_total"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "order.rewards_discount"
+          },
+          0
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "partial_refund",
+        "amount": {
+          "-": [
+            {
+              "var": "item.line_total"
+            },
+            {
+              "var": "order.rewards_discount"
+            }
+          ]
+        },
+        "note": "Promotional Rewards Card was redeemed on this order: refund reduced by the redeemed amount, at Rockler's discretion."
+      },
+      "description": "Refund reduced by redeemed promotional Rewards Card (discretionary)."
+    },
+    "RK-RET-8.r1": {
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request"
+      ],
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "return_label",
+        "note": "Power tool returns require authorization; restocking fee based on price may apply."
+      }
+    },
+    "RK-GUAR-3.r1": {
+      "claim_reasons": [
+        "defective",
+        "lifetime_guarantee"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "effect": {
+        "decision": "approve",
+        "remedy": "replacement",
+        "fault": "merchant",
+        "note": "Lifetime guarantee on Rockler router bits: replace, no proof of purchase required."
+      }
+    },
+    "RK-GUAR-4.r1": {
+      "claim_reasons": [
+        "defective",
+        "lifetime_guarantee"
+      ],
+      "effect": {
+        "note": "Lifetime guarantee on TopSlide/Centerline drawer slides: replace, no proof of purchase required."
+      }
+    },
+    "RK-ORD-12.r1": {
+      "requires": [
+        "order.has_shipped"
+      ],
+      "effect": {
+        "decision": "approve",
+        "remedy": "cancel_order",
+        "amount": {
+          "var": "order.total"
+        },
+        "fault": "customer",
+        "note": "Order not yet shipped/picked up: cancel and refund in full."
+      }
+    },
+    "RK-RET-3.r1": {
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request",
+        "wrong_item",
+        "missing_item"
+      ],
+      "effect": {
+        "note": "No valid proof of purchase: return not accepted (lifetime-guarantee items excepted)."
+      }
+    }
+  },
+  "add": [
+    {
+      "rule_id": "RK-SHIP-1.m1",
+      "clause_id": "RK-SHIP-1",
+      "tier": "contract",
+      "priority": 5,
+      "claim_reasons": [
+        "damaged_on_arrival",
+        "defective"
+      ],
+      "requires": [
+        "claim.has_photos",
+        "order.days_since_order",
+        "item.line_total"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "claim.has_photos"
+              },
+              true
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "order.days_since_order"
+              },
+              90
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "replacement",
+        "amount": {
+          "var": "item.line_total"
+        },
+        "fault": "carrier",
+        "note": "Damaged or defective on arrival with photos: replacement at no charge (merchant-adopted practice; return shipping not charged per RK-SHIP-1)."
+      },
+      "description": "Merchant-adopted rule (sandbox): damaged/defective on arrival with photo evidence within 90 days -> replacement, no return shipping charge."
+    },
+    {
+      "rule_id": "RK-SHIP-1.m2",
+      "clause_id": "RK-SHIP-1",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "damaged_on_arrival",
+        "defective"
+      ],
+      "requires": [
+        "claim.has_photos"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.has_photos"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "needs_fact",
+        "note": "Photos of the damage/defect are required before a replacement is issued."
+      },
+      "description": "Merchant-adopted rule (sandbox): damage/defect claims need photo evidence."
+    },
+    {
+      "rule_id": "RK-RET-1.m1",
+      "clause_id": "RK-RET-1",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request"
+      ],
+      "requires": [
+        "order.days_since_order"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "order.days_since_order"
+          },
+          90
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Outside the 90-day return window."
+      },
+      "description": "Merchant-approved reading (sandbox): returns requested after 90 days from purchase are not accepted."
+    },
+    {
+      "rule_id": "RK-ORD-2.m1",
+      "clause_id": "RK-ORD-2",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "cancel_order",
+        "order_change"
+      ],
+      "requires": [
+        "order.has_shipped"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "order.has_shipped"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Order already shipped: too late to cancel or modify; unwanted items may be returned under the returns policy."
+      },
+      "description": "Merchant-approved reading (sandbox): shipped orders cannot be cancelled; return instead."
+    },
+    {
+      "rule_id": "RK-ORD-4.m1",
+      "clause_id": "RK-ORD-4",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "backorder"
+      ],
+      "requires": [
+        "order.is_backordered"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "order.is_backordered"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "none",
+        "fault": "merchant",
+        "note": "Backordered item ships automatically when in stock; in-stock dates are approximate. Customer may cancel the backordered item before it ships."
+      },
+      "description": "Merchant-approved reading (sandbox): backorder status enquiry - informational reply, no remedy owed."
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+
+## PageMetaData
+
+## Smart Object Data
+
+## PageVisibility
+
+## load_everymundo
+
+## Browser Title
+
+Bonus travel certificate terms and conditions - Alaska Airlines
+
+## Page Name For Tagging Tracking
+
+traveling:gift-certificates : bonus-travel-terms
+
+## Channel
+
+## Javascript References
+
+## Description
+
+Read terms and conditions for Alaska Airlines Bonus Travel Certificates.
+
+## Keywords
+
+## Additional Data
+
+- -
+
+## Canonical Href
+
+//www.alaskaair.com/content/gifts-and-products/gift-cards-certificates/bonus-travel-terms
+
+## Social Share Title
+
+Bonus travel certificate terms and conditions - Alaska Airlines
+
+## Social Share Description
+
+Read terms and conditions for Alaska Airlines Bonus Travel Certificates.
+
+## Social Share Image
+
+## is_legacy
+
+## OneColumnLayout
+
+## itemType
+
+## name
+
+## _metadata
+
+## Max Width
+
+## Margin Bottom
+
+## personalized
+
+## Column Items
+
+## Generic Text Rendering
+
+## itemType
+
+generic_text_rendering
+
+## name
+
+## _metadata
+
+## is_default
+
+## feature_id
+
+## group_id
+
+## text
+
+What are Alaska Airlines bonus travel certificates?
+
+ Bonus travel certificates are issued to volunteers who give up their seats when a flight is overbooked and more passengers show up than a flight can accommodate. They are valid for one year from their issue date.
+
+ - If you’ve received an Alaska Airlines bonus travel certificate, claim it using the tool below. This will add it to your account so that you can start using it to book future flights.
+
+ - If you already hold a Hawaiian Airlines travel voucher for flights operated by Hawaiian Airlines on/before April 21, 2026, convert to bonus travel certificate before using your credits. Refer to the how to redeem and terms & conditions pages for further information.
+
+ Claim Your Certificate 
+
+ Read the terms and conditions that apply to our bonus travel certificates. 
+
+ - Alaska Airlines bonus travel certificates (BTCs) must be redeemed online at alaskaair.com® towards the purchase of eligible fares for travel flights operated by Alaska Airlines, Hawaiian Airlines (for travel dates on/after April 22, 2026), Horizon Air, and SkyWest Flight Series 1-3499. 
+
+ - BTCs may be deposited into My wallet. See My wallet terms and conditions for more information. 
+
+ - BTCs may be applied to the purchase price of new tickets only and cannot be applied towards service fees or as additional fare for exchanged or partially used tickets. 
+
+ - BTCs may be applied to transportation sales tax, security fees and passenger facility charges. 
+
+ - BTCs are a valid form of payment for any fare type. 
+
+ - BTCs are nonrefundable and cannot be redeemed or exchanged for cash, check, or credit. 
+
+ - If the value of your BTC is insufficient to cover the full value of the ticket you wish to purchase, you may pay the difference with a credit card. If the ticket price is less than the value of the BTC, a credit balance will remain on the certificate until it is decreased to zero. 
+
+ - BTCs cannot be redeemed through a travel agency. 
+
+ - Up to four BTCs can be applied on the billing page toward one reservation. 
+
+ - If a BTC is redeemed for a ticket and travel is not completed, the ticket value will be refunded as a credit certificate. The applicable fare rules will govern refunds and ticket exchanges. 
+
+ - BTCs are valid for one year from issue date. 
+
+ - Atmos Rewards™ points may be accrued on tickets purchased with a BTC, subject to the Atmos Rewards conditions of membership. 
+
+ - BTCs are fully transferable, but will be void if bartered or sold. Alaska Airlines reserves the right to cancel reservations and/or collect the full fare for completed travel from the passenger or the original recipient of the BTC if they determine that the BTC has been bartered or sold. 
+
+ - BTCs cannot be applied to add/collect fees or used to purchase Alaska Airlines Vacations packages, air cargo services, services offered by Atmos Rewards hotel, cruise, or car rental partners. 
+
+ - BTCs cannot be used to purchase Fly & Buy Points™, trip protection, or hotel and car reservations. 
+
+ - The value of BTCs is in U.S. dollars. 
+
+ - The risk of loss and title for BTCs pass to the purchaser or transferee upon our electronic transmission to the recipient or transferee, whichever is applicable. Alaska Airlines is not responsible for lost or stolen BTCs. 
+
+ - BTCs are VOID if altered or obtained through illegal or fraudulent channels, or in a manner that violates the Atmos Rewards conditions of membership. 
+
+ - Alaska Airlines reserves the right to request alternate forms of payment before permitting travel if a fraudulently or improperly obtained BTC is redeemed through alaskaair.com.
+
+ - ALASKA AIRLINES MAKES NO WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO BONUS TRAVEL CERTIFICATES, INCLUDING WITHOUT LIMITATION, ANY EXPRESS OR IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. IN THE EVENT A BONUS TRAVEL CERTIFICATE IS NON-FUNCTIONAL, YOUR SOLE REMEDY, AND ALASKA AIRLINES' SOLE LIABILITY, SHALL BE THE REPLACEMENT OF THE BONUS TRAVEL CERTIFICATE. 
+
+ - The alaskaair.com internet privacy notice applies to all transactions involving BTCs. 
+
+ - These terms and conditions are applicable to the use of BTCs to the extent permitted by law. 
+
+ - Alaska Airlines reserves the right to change these terms and conditions from time to time at their discretion.
+
+## personalized
+
+Bonus travel certificate terms and conditions - Alaska Airlines
+Read terms and conditions for Alaska Airlines Bonus Travel Certificates.
+Bonus travel certificate terms and conditions - Alaska Airlines
+Read terms and conditions for Alaska Airlines Bonus Travel Certificates.
+//www.alaskaair.com/content/gifts-and-products/gift-cards-certificates/bonus-travel-terms
+traveling:gift-certificates : bonus-travel-terms
+- -

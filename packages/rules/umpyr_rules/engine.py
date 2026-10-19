@@ -10,8 +10,10 @@ Algorithm
    the winner. If another fired rule shares the winner's tier and priority but
    disagrees on decision or remedy, that is a conflict -> decision `escalate`.
 5. If nothing fired and some applicable rule had missing facts -> `needs_fact`
-   listing them (sorted). If nothing fired and nothing is missing -> `escalate`
-   with explanation "no rule matched" (we never invent a ruling).
+   listing the missing facts of the highest-precedence rules that could not be
+   evaluated (one focused question at a time, not every fact in the pack).
+   If nothing fired and nothing is missing -> `escalate` with explanation
+   "no rule matched" (we never invent a ruling).
 
 Same facts + same pack -> same Ruling. There is no clock or randomness here;
 derived date fields (days_since_delivery) are computed by the caller.
@@ -71,6 +73,7 @@ def evaluate(pack: RulePack, facts: dict[str, Any], category: str | None = None)
     checks: list[Check] = []
     fired: list[tuple[Check, Rule]] = []
     missing_all: set[str] = set()
+    missing_top: tuple[int, int] | None = None  # (tier rank, -priority) of the first rules with missing facts
 
     for rule in sorted(pack.rules, key=lambda r: (TIER_RANK[r.tier], -r.priority, r.rule_id)):
         applicable = _applicable(rule, facts, category)
@@ -88,7 +91,10 @@ def evaluate(pack: RulePack, facts: dict[str, Any], category: str | None = None)
         missing = [p for p in rule.requires if get_var(facts, p) is None]
         if missing:
             check.missing = missing
-            missing_all.update(missing)
+            level = (TIER_RANK[rule.tier], -rule.priority)
+            if missing_top is None or level == missing_top:
+                missing_top = level
+                missing_all.update(missing)
             checks.append(check)
             continue
         try:

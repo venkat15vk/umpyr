@@ -1,0 +1,15 @@
+{
+  "source_id": "ak-bonus-travel-terms",
+  "url": "https://www.alaskaair.com/content/gifts-and-products/gift-cards-certificates/bonus-travel-terms",
+  "final_url": "https://www.alaskaair.com/content/gifts-and-products/gift-cards-certificates/bonus-travel-terms",
+  "content_type": "text/html",
+  "title": "Bonus travel certificate terms and conditions - Alaska Airlines",
+  "fetched_at": "2026-10-19T20:43:33+00:00",
+  "sha256": "fd07cf941d4ba5610b9b9a22dc27691fe648cf18a4942fce6112b6e572b5f479",
+  "extractor": "next-data",
+  "chars": 5788,
+  "ok": true,
+  "notes": [],
+  "raw_path": "ak-bonus-travel-terms.html",
+  "text_path": "ak-bonus-travel-terms.txt"
+}

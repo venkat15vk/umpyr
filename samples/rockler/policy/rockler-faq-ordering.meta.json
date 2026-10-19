@@ -1,0 +1,15 @@
+{
+  "source_id": "rockler-faq-ordering",
+  "url": "https://www.rockler.com/faq-ordering",
+  "final_url": "https://www.rockler.com/faq-ordering",
+  "content_type": "text/html",
+  "title": "Rockler FAQ - Order & Customer Service Help",
+  "fetched_at": "2026-10-19T20:42:37+00:00",
+  "sha256": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+  "extractor": "trafilatura",
+  "chars": 24977,
+  "ok": true,
+  "notes": [],
+  "raw_path": "rockler-faq-ordering.html",
+  "text_path": "rockler-faq-ordering.txt"
+}

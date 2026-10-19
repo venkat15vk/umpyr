@@ -39,6 +39,7 @@ class Settings(BaseSettings):
 
     # Embeddings
     voyage_api_key: SecretStr | None = None
+    embedding_provider: str = Field("auto", description="auto | voyage | local (auto = voyage if key set, else local)")
     voyage_model: str = "voyage-3.5"
     embedding_dim: int = 1024
 

@@ -1,0 +1,17 @@
+{
+  "source_id": "rockler-return-policy",
+  "url": "https://www.rockler.com/return-policy",
+  "final_url": "https://www.rockler.com/faq-ordering#Rockler-Return-Guidelines-Accordions-Header",
+  "content_type": "text/html",
+  "title": "Rockler FAQ - Order & Customer Service Help",
+  "fetched_at": "2026-10-19T20:42:37+00:00",
+  "sha256": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+  "extractor": "trafilatura",
+  "chars": 24977,
+  "ok": true,
+  "notes": [
+    "redirected to https://www.rockler.com/faq-ordering#Rockler-Return-Guidelines-Accordions-Header"
+  ],
+  "raw_path": "rockler-return-policy.html",
+  "text_path": "rockler-return-policy.txt"
+}

@@ -1,0 +1,1618 @@
+{
+  "workspace": "rockler",
+  "version": "2026-10-19.2",
+  "clauses": [
+    {
+      "clause_id": "RK-RET-1",
+      "title": "Return window and proof of purchase",
+      "text": "If you are not completely satisfied with your purchase, you may return the merchandise within 90 days of the original purchase date with valid proof of purchase.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Uses 'may' for return right; outcome at discretion of merchant beyond stated 90-day window and proof of purchase conditions."
+    },
+    {
+      "clause_id": "RK-RET-2",
+      "title": "Refund method for returned merchandise",
+      "text": "Merchandise returned with valid proof of purchase will receive a refund in the manner of original payment (exclusions apply) for merchandise only.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'exclusions apply' is not specified in this document."
+    },
+    {
+      "clause_id": "RK-RET-3",
+      "title": "No returns without proof of purchase",
+      "text": "Rockler does not accept returns without valid proof of purchase.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-1",
+      "title": "Rewards Card reduction or void on return",
+      "text": "In Rockler’s discretion, if the original transaction included promotional Rewards Cards (not Gift Cards), then the Promotional Rewards Cards will be voided if unused or the refund amount will be reduced by the amount of the Rewards Card redeemed.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Applied 'in Rockler's discretion'; outcome not fixed."
+    },
+    {
+      "clause_id": "RK-RET-4",
+      "title": "Full refund requires all components",
+      "text": "*Merchandise being returned must include all components to receive a full refund.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-1",
+      "title": "Return shipping charges",
+      "text": "Customer will be responsible for shipping charges unless item is damaged or defective.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-5",
+      "title": "Restocking fee",
+      "text": "Some items may incur a restocking fee.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'Some items' does not identify which items or the fee amount."
+    },
+    {
+      "clause_id": "RK-RET-6",
+      "title": "Non-returnable software, plans and clearance",
+      "text": "Software, downloadable plans and clearance items are non-returnable.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-2",
+      "title": "Promotional gift card void or deduction",
+      "text": "Promotional gift cards (gift card with purchase) will be voided if unused, or the refund amount will be deducted based on the value of the gift card if redeemed.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-7",
+      "title": "Authorization before return",
+      "text": "Rockler encourages that merchandise be approved for authorization prior to being returned.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Phrased as encouragement, not a firm requirement."
+    },
+    {
+      "clause_id": "RK-RET-8",
+      "title": "Authorization required for power tools and direct ship",
+      "text": "Power tools and direct ship items require authorization on all returns.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GUAR-1",
+      "title": "Manufacturer warranty supersedes Rockler offer",
+      "text": "Manufacturer’s warranty supersedes any offer from Rockler.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-9",
+      "title": "Online purchases returned by mail",
+      "text": "Merchandise purchased online at Rockler.com may be returned by mail and must follow the Rockler return policy guidelines.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'may be returned' does not state a firm right to return by mail."
+    },
+    {
+      "clause_id": "RK-RET-10",
+      "title": "Customer pays restocking fee and shipping on online returns",
+      "text": "Items may be subject to a restocking fee and customer is responsible for shipping.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'may be subject to' leaves fee application undetermined."
+    },
+    {
+      "clause_id": "RK-RET-11",
+      "title": "Third-party web order returns",
+      "text": "Rockler branded merchandise purchased through third party websites (i.e. Amazon) will need to follow the third-party return guidelines.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Third-party guidelines are not set out in this document."
+    },
+    {
+      "clause_id": "RK-GUAR-2",
+      "title": "Power tool warranty, authorization and costs",
+      "text": "Power tools, CNC machines and laser products are subject to the manufacturer’s warranty, which supersedes any offer from Rockler. All items require authorization before returning.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-2",
+      "title": "Power tool return shipping and restocking costs",
+      "text": "Customer will be responsible for shipping costs and restocking fees based on the price of the merchandise being returned.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Restocking fee amount basis is not given as a number."
+    },
+    {
+      "clause_id": "RK-RET-12",
+      "title": "Non-warranty power tool return condition",
+      "text": "Any non-warranty returns must be unused and in original packaging.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-13",
+      "title": "Laguna and Sawstop non-returnable",
+      "text": "Laguna and Sawstop power tools are non-returnable.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GUAR-3",
+      "title": "Router bit guarantee",
+      "text": "If a Rockler Router bit fails to perform for any reason, we will replace it. No proof of purchase required.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GUAR-4",
+      "title": "Drawer slide lifetime guarantee",
+      "text": "If a Rockler TopSlide/Centerline Lifetime drawer slide fails to perform for any reason, we will replace it. No proof of purchase required.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GUAR-5",
+      "title": "Guarantee replacement name and address",
+      "text": "Name and address must be included in the package to process the exchange.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GUAR-6",
+      "title": "Manufacturer-shipped items warranty",
+      "text": "Merchandise purchased and shipped directly from the manufacturer is covered by the manufacturer’s warranty and supersede any offer from Rockler.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-3",
+      "title": "Manufacturer-shipped items costs",
+      "text": "Customer will be responsible for shipping costs and restocking fees.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Restocking fee amount not specified."
+    },
+    {
+      "clause_id": "RK-RET-14",
+      "title": "Clearance items final sale",
+      "text": "Clearance items are sold as final sale and are not eligible for return.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-15",
+      "title": "Retail store returns location",
+      "text": "Items purchased at Rockler’s retail stores must be returned to a Rockler retail store location.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-16",
+      "title": "Store return refund method",
+      "text": "Merchandise that is returned to a Rockler store location will receive a refund in the order of original payment.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-4",
+      "title": "Original shipping charges not refunded",
+      "text": "Original shipping charges will not be refunded.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-3",
+      "title": "Original credit card or gift card refund",
+      "text": "Customer will have to present the original credit card used to receive refund or a Rockler Gift card will be issued.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-4",
+      "title": "Apple Pay and PayPal refunds",
+      "text": "Purchases made with either tender require third party processing and stores can only issue a Rockler gift card.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-5",
+      "title": "Cash or debit card returns",
+      "text": "Merchandise returns made to a retail store with a receipt may require a mail order check due to limitations of cash on hand on the store.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'may require' leaves refund method undetermined."
+    },
+    {
+      "clause_id": "RK-ORD-1",
+      "title": "Cancellation not guaranteed",
+      "text": "Once your Rockler.com order is submitted we cannot guarantee your request to modify or cancel.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Cancellation explicitly not guaranteed; outcome discretionary."
+    },
+    {
+      "clause_id": "RK-ORD-2",
+      "title": "Return after failed cancellation",
+      "text": "If it is too late to cancel your order you may return any unwanted items in accordance with our returns policy.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-3",
+      "title": "Orders subject to approval",
+      "text": "All orders are subject to approval.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "No criteria given for approval."
+    },
+    {
+      "clause_id": "RK-PAY-6",
+      "title": "Discount codes not combinable",
+      "text": "Discount codes entered at checkout cannot be combined with other offers or applied to previous orders.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-7",
+      "title": "Promotions while supplies last",
+      "text": "Promotions are while supplies last and subject to change.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Promotion availability is discretionary."
+    },
+    {
+      "clause_id": "RK-PAY-8",
+      "title": "Promotional gift card voided on merchandise return",
+      "text": "In the event of a merchandise return, an unredeemed promotional gift card will be voided. If a promotional gift card has been redeemed the promotional gift card amount will be deducted from the final refund.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-9",
+      "title": "Promotional gift card validity",
+      "text": "Promotional gift cards are valid only for future orders.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-10",
+      "title": "Rewards card expiry",
+      "text": "Rewards card expire one year after activation.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-11",
+      "title": "Rewards card not redeemable for cash or replaced if lost",
+      "text": "Rewards card is not redeemable for cash (except where required by law) and cannot be replaced if lost or stolen.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-17",
+      "title": "Return shipping charges borne by customer",
+      "text": "Please note that you will be responsible for any return shipping charges.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-4",
+      "title": "Out-of-stock item back order",
+      "text": "In the case of an out-of-stock, we will place the rest of your order, and put the out-of-stock item on back order.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-5",
+      "title": "Discontinued item notification",
+      "text": "If an item you ordered has been discontinued, we will notify you and let you know if there are any recommended replacement items.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Recommended replacements are offered at discretion; no refund or cancellation right is stated."
+    },
+    {
+      "clause_id": "RK-SHIP-5",
+      "title": "Shipping and handling charge schedule",
+      "text": "Up to $15.00 | $7.99 | $15.01 - $25.00 | $9.99 | $25.01 - $50.00 | $11.99 | $50.01 - $75.00 | $13.99 | $75.01 - $100.00 | $15.99 | $100.01 - $125.00 | $17.99 | $125.01 - $150.00 | $19.99 | $150.01 - $175.00 | $21.99 | $175.01 - $200.00 | $23.99 | $200.01 + | $25.99",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-6",
+      "title": "Shipping carriers for free or economy shipping",
+      "text": "When Free or Economy Shipping is selected, Rockler determines the most efficient shipping carrier for your order. The carriers that may be used are: UPS Ground, UPS Surepost (which final delivery will be made by your local post office) or USPS.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-DLY-1",
+      "title": "Delivery estimate contiguous US",
+      "text": "If you are ordering within the contiguous United States, you can expect your order within 7 to 10 business days.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-7",
+      "title": "Direct ship items contiguous states only",
+      "text": "Most direct ship items ship within the 48 contiguous states only.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'Most' leaves exceptions undefined."
+    },
+    {
+      "clause_id": "RK-ORD-6",
+      "title": "Direct ship items are special orders charged at order",
+      "text": "Direct ship items are considered special order. Your account will be charged when you place your order.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-DLY-2",
+      "title": "Transit times not guaranteed for international orders",
+      "text": "Please note that all transit times are estimates only and are not guaranteed. Delivery may be delayed by customs clearance or other factors outside of UPS's and Rockler's control.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-7",
+      "title": "Partial order restriction for certain destinations",
+      "text": "We do not ship partial orders to Alaska, Hawaii, Puerto Rico, the Virgin Islands, Guam, or to our international customers. In addition we do not ship partial orders to AFO and FPO addresses. All ordered items must be in stock before the order will be shipped.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-8",
+      "title": "Stock status delay notification",
+      "text": "Occasionally an item showing in stock may go out of stock by the time your order is filled. In these cases, we will notify you of the delay as soon as possible via e-mail or phone.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-9",
+      "title": "Backorder expected date not guaranteed",
+      "text": "The in-stock date displayed in our online catalog for out of stock items is approximate and not guaranteed.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-10",
+      "title": "Buy online pickup no fee",
+      "text": "No, in-store pickup incurs no additional charges.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-11",
+      "title": "Store pickup: only account holder may pick up",
+      "text": "Only the person on the account’s billing information is authorized to pick up the order.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-18",
+      "title": "In-store return of picked-up items",
+      "text": "Can I return or exchange items I picked up in store?\nA: Absolutely. Just bring the item and your receipt to any of our store locations. Our standard return policy applies.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Refers to a 'standard return policy' that is not stated in this document; the return window and conditions cannot be determined from this text."
+    },
+    {
+      "clause_id": "RK-ORD-12",
+      "title": "Cancellation before pickup",
+      "text": "You can cancel your order any time before it's been picked up.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-13",
+      "title": "Automatic cancellation and refund after 5 days unpicked",
+      "text": "Or if you don’t pick it up after 5 days, we’ll automatically cancel and refund your purchase.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-14",
+      "title": "Store hold period",
+      "text": "We’ll hold your order for 5 days. If it’s not picked up by then, it will be canceled and refunded.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-15",
+      "title": "Out-of-stock cancellation",
+      "text": "In the event that an item becomes unavailable, we will cancel your order and notify you promptly.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "'Promptly' is not defined; no specific notification timeframe is given."
+    },
+    {
+      "clause_id": "RK-ORD-16",
+      "title": "No pickup location change after order",
+      "text": "Unfortunately, once an order is placed, the pickup location can’t be changed. You’ll need to cancel and reorder.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-PAY-12",
+      "title": "Rewards card redemption restriction for certain brands",
+      "text": "Rewards card cannot be redeemed for Festool or other brands that prohibit the use of free or discounted gift cards.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-GEN-1",
+      "title": "Pictorial and typographical errors correction",
+      "text": "Pictorial and typographical errors are subject to correction when orders are placed.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-17",
+      "title": "Right to limit quantities",
+      "text": "Rockler Woodworking and Hardware reserves the right to limit quantities.",
+      "source_url": "https://www.rockler.com/faq-ordering",
+      "source_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Discretionary right with no stated criteria."
+    },
+    {
+      "clause_id": "RK-GUAR-7",
+      "title": "Manufacturer-shipped items warranty and costs",
+      "text": "Merchandise purchased and shipped directly from the manufacturer is covered by the manufacturer’s warranty and supersede any offer from Rockler. All items require authorization before returning.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-19",
+      "title": "Store return refund and shipping not refunded",
+      "text": "Merchandise that is returned to a Rockler store location will receive a refund in the order of original payment. Original shipping charges will not be refunded.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-SHIP-8",
+      "title": "Items with ground transportation restriction",
+      "text": "Items marked \"Shipping Restrictions: Ground Transportation Only\" cannot ship to a PO Box and only can be shipped within the 48 contiguous states.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-18",
+      "title": "Back order of out-of-stock items",
+      "text": "In the case of an out-of-stock, we will place the rest of your order, and put the out-of-stock item on back order. We will then notify you of the item on back order, and the date it is expected in. It will be automatically sent to you when it is back in stock.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-ORD-19",
+      "title": "Pickup ready time",
+      "text": "Typically, orders are ready in about an hour during standard operating hours.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Typical timing only; not a guarantee."
+    },
+    {
+      "clause_id": "RK-ORD-20",
+      "title": "Store pickup: only billing account holder may pick up",
+      "text": "Only the person on the account’s billing information is authorized to pick up the order. They’ll need to bring a photo ID and confirmation email.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": false,
+      "ambiguity_note": null
+    },
+    {
+      "clause_id": "RK-RET-20",
+      "title": "Return or exchange of store-picked-up items",
+      "text": "Absolutely. Just bring the item and your receipt to any of our store locations. Our standard return policy applies.",
+      "source_url": "https://www.rockler.com/return-policy",
+      "source_title": "Rockler return policy",
+      "fetched_at": "2026-10-19",
+      "tier": "contract",
+      "ambiguous": true,
+      "ambiguity_note": "Refers to a 'standard return policy' not included in this chunk; the return window and conditions are not stated here."
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "RK-RET-1.r1",
+      "clause_id": "RK-RET-1",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "damaged_on_arrival",
+        "defective",
+        "wrong_item",
+        "missing_item",
+        "refund_request",
+        "credit_request",
+        "order_change"
+      ],
+      "requires": [
+        "claim.has_receipt",
+        "order.days_since_order"
+      ],
+      "when": {
+        "and": [
+          {
+            "<=": [
+              {
+                "var": "order.days_since_order"
+              },
+              90
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "claim.has_receipt"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": null,
+        "note": "Clause uses 'may' and says the customer is entitled to return only within 90 days with proof of purchase; the merchant discretion beyond these conditions is not encoded. Refund form assumed as the return remedy; amount not stated."
+      },
+      "description": "Return within 90 days of purchase with valid proof of purchase is permitted (entitlement, discretionary wording noted).",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-2.r1",
+      "clause_id": "RK-RET-2",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "missing_item",
+        "refund_request",
+        "order_change"
+      ],
+      "requires": [
+        "claim.has_receipt",
+        "order.payment_method",
+        "order.subtotal"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.has_receipt"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "order.subtotal"
+        },
+        "fault": null,
+        "note": "Clause says 'exclusions apply' without specifying them; amount limited to merchandise (subtotal) excluding shipping and tax. Refund method is original payment. Exclusions are unspecified so rule may need human review."
+      },
+      "description": "Merchandise returned with valid proof of purchase receives a refund to the original form of payment, for merchandise only (exclusions not specified in clause).",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-3.r1",
+      "clause_id": "RK-RET-3",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "missing_item",
+        "refund_request",
+        "credit_request",
+        "lifetime_guarantee"
+      ],
+      "requires": [
+        "claim.has_receipt"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.has_receipt"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause states returns are not accepted without valid proof of purchase. Applied to return-type claim reasons; the clause does not name a specific reason list, so the list reflects return-type claims."
+      },
+      "description": "Deny return/refund claims when the customer lacks proof of purchase",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-PAY-1.r1",
+      "clause_id": "RK-PAY-1",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "missing_item",
+        "order_change",
+        "cancel_order",
+        "lifetime_guarantee",
+        "backorder"
+      ],
+      "requires": [
+        "order.payment_method",
+        "order.rewards_discount"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "order.payment_method"
+          },
+          "rewards_card"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "partial_refund",
+        "amount": {
+          "var": "order.rewards_discount"
+        },
+        "fault": null,
+        "note": "Clause is discretionary ('in Rockler's discretion'); refund reduced by Rewards Card amount redeemed. Gift Cards excluded per clause but gift_card is a distinct payment_method value. Void-if-unused alternative not encodable without usage fact."
+      },
+      "description": "Return of order paid partly with promotional Rewards Card: at Rockler's discretion, refund reduced by the Rewards Card amount redeemed (requires human discretion).",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-4.r1",
+      "clause_id": "RK-RET-4",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "item.condition"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.condition"
+          },
+          "unknown"
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Clause states a condition for full refund (all components included) but does not state the outcome when components are missing or whether component completeness is an ontology fact. No ontology field captures component completeness, so the rule cannot be decided from facts; escalate for human judgme"
+      },
+      "description": "Full refund on returned merchandise requires all components included; this is a condition on full refund only, so a partial-refund reduction applies when components are missing.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-SHIP-1.r1",
+      "clause_id": "RK-SHIP-1",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "item.condition"
+      ],
+      "when": {
+        "and": [
+          {
+            "!=": [
+              {
+                "var": "item.condition"
+              },
+              "damaged"
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "item.condition"
+              },
+              "defective"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause allocates shipping charges only; no refund or remedy amount is stated. Encoded as customer-paid return shipping for non-damaged, non-defective items. The remedy is none because the clause sets no amount."
+      },
+      "description": "Customer pays return shipping charges unless the item is damaged or defective (customer-responsibility default)",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-6.r1",
+      "clause_id": "RK-RET-6",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "refund_request",
+        "return_label",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "item.is_final_sale"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.is_final_sale"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause lists clearance items as non-returnable; mapped to is_final_sale. Software and downloadable plans are not separately captured as a fact in the ontology except via category 'plan' and 'clearance', so those are covered in a companion rule."
+      },
+      "description": "Software, downloadable plans and clearance items are non-returnable: deny returns when the item is final sale.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-6.r2",
+      "clause_id": "RK-RET-6",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "refund_request",
+        "return_label",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.category"
+          },
+          "plan"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Downloadable plans are non-returnable per clause; category 'plan' used as proxy."
+      },
+      "description": "Downloadable plans (item category 'plan') are non-returnable.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-6.r3",
+      "clause_id": "RK-RET-6",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "refund_request",
+        "return_label",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.category"
+          },
+          "clearance"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clearance items are non-returnable per clause; category 'clearance' used as proxy."
+      },
+      "description": "Clearance items (item category 'clearance') are non-returnable.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-PAY-2.r1",
+      "clause_id": "RK-PAY-2",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "change_of_mind",
+        "order_change",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "item.category",
+        "item.condition"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "item.category"
+              },
+              "gift_card"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.condition"
+              },
+              "new_unopened"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause says promotional gift card is voided if unused. Modeled as partial with no monetary remedy; the void is a deduction-type outcome not in the remedy enum. Condition 'new_unopened' used as proxy for unused; ontology has no explicit unused flag for gift cards."
+      },
+      "description": "Promotional gift card (gift card with purchase) unused: void the gift card on refund",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-8.r1",
+      "clause_id": "RK-RET-8",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "item.is_power_tool"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.is_power_tool"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Clause sets an authorization requirement only; no remedy or amount stated. Direct ship items are not covered by an ontology fact and are not encoded."
+      },
+      "description": "Power tools require authorization on all returns; the clause does not state an outcome, so a human must authorize.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-12.r1",
+      "clause_id": "RK-RET-12",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind"
+      ],
+      "requires": [
+        "claim.item_unopened",
+        "claim.item_used"
+      ],
+      "when": {
+        "or": [
+          {
+            "==": [
+              {
+                "var": "claim.item_used"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "claim.item_unopened"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says non-warranty returns must be unused and in original packaging. Applied to change_of_mind claims only; warranty/defect claims are outside this clause. Denial reason inferred from the requirement's negation."
+      },
+      "description": "Non-warranty returns must be unused and in original packaging; returns that are not unused/original packaging are denied.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-13.r1",
+      "clause_id": "RK-RET-13",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "item.brand",
+        "item.is_power_tool"
+      ],
+      "when": {
+        "and": [
+          {
+            "in": [
+              {
+                "var": "item.brand"
+              },
+              [
+                "Laguna",
+                "SawStop"
+              ]
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.is_power_tool"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Exclusion: non-returnable brand and class. Clause says Sawstop; matched as SawStop brand."
+      },
+      "description": "Laguna and SawStop power tools are non-returnable",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-GUAR-3.r1",
+      "clause_id": "RK-GUAR-3",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "defective",
+        "lifetime_guarantee",
+        "other"
+      ],
+      "requires": [
+        "item.category",
+        "item.condition"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.category"
+          },
+          "router_bit"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "replacement",
+        "amount": null,
+        "fault": "merchant",
+        "note": "Clause says 'fails to perform for any reason'; no proof of purchase required, so receipt is not a requirement. Brand and condition not conditioned by clause."
+      },
+      "description": "Router bit that fails to perform is replaced; no proof of purchase required",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-GUAR-4.r1",
+      "clause_id": "RK-GUAR-4",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "lifetime_guarantee"
+      ],
+      "requires": [
+        "item.category",
+        "item.has_lifetime_guarantee"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "item.has_lifetime_guarantee"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.category"
+              },
+              "drawer_slide"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "replacement",
+        "amount": null,
+        "fault": "merchant",
+        "note": "Clause covers Rockler TopSlide/Centerline Lifetime drawer slides that fail to perform for any reason; replacement issued without proof of purchase. Eligibility keyed to lifetime guarantee flag and drawer_slide category."
+      },
+      "description": "Drawer slide lifetime guarantee: failed Rockler drawer slide replaced with no proof of purchase required",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-14.r1",
+      "clause_id": "RK-RET-14",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "item.is_final_sale"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.is_final_sale"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause RK-RET-14: clearance items sold as final sale are not eligible for return. Applied as an exclusion; claim_reasons left open since clause does not restrict by claim reason."
+      },
+      "description": "Clearance/final-sale items are not eligible for return (exclusion).",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-16.r1",
+      "clause_id": "RK-RET-16",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "damaged_on_arrival",
+        "defective",
+        "wrong_item",
+        "missing_item",
+        "refund_request"
+      ],
+      "requires": [
+        "order.payment_method"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "order.payment_method"
+          },
+          null
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": null,
+        "note": "Clause specifies refund method (original payment) for store returns; the store-location channel itself is not an ontology fact, so the rule applies on the refund method only."
+      },
+      "description": "Merchandise returned to a Rockler store location is refunded to the original payment method.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-SHIP-4.r1",
+      "clause_id": "RK-SHIP-4",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "change_of_mind",
+        "defective",
+        "damaged_on_arrival",
+        "wrong_item",
+        "missing_item"
+      ],
+      "requires": [
+        "shipment.shipping_paid"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "shipment.shipping_paid"
+          },
+          0
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "partial_refund",
+        "amount": {
+          "-": [
+            {
+              "var": "order.total"
+            },
+            {
+              "var": "shipment.shipping_paid"
+            }
+          ]
+        },
+        "fault": null,
+        "note": "Clause excludes original shipping charges from refund; amount is order total less shipping paid, assuming the remaining refund base is the merchandise and tax. Tax treatment is not stated, so confidence is moderate."
+      },
+      "description": "Original shipping charges are not refunded on returns.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-PAY-4.r1",
+      "clause_id": "RK-PAY-4",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request"
+      ],
+      "requires": [
+        "order.payment_method"
+      ],
+      "when": {
+        "in": [
+          {
+            "var": "order.payment_method"
+          },
+          [
+            "paypal"
+          ]
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "store_credit",
+        "amount": null,
+        "fault": null,
+        "note": "Clause says stores can only issue a Rockler gift card for these tenders. Mapped to store_credit as the closest remedy in the enum. Apple Pay has no distinct payment_method enum value in the ontology, so it is not encoded. Clause does not state a refund amount."
+      },
+      "description": "Refunds for purchases made with Apple Pay or PayPal are issued as a Rockler gift card; the clause describes a payment processing constraint, which is a refund-form statement tied to tender type.",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-ORD-12.r1",
+      "clause_id": "RK-ORD-12",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "cancel_order"
+      ],
+      "requires": [
+        "order.has_shipped"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "order.has_shipped"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "cancel_order",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says cancellation allowed any time before pickup. Mapped pickup to has_shipped as closest ontology fact; pickup is not a defined field, so confidence reduced."
+      },
+      "description": "Customer may cancel order before it has been picked up (not yet shipped).",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-ORD-13.r1",
+      "clause_id": "RK-ORD-13",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "order.days_since_order",
+        "order.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "order.status"
+              },
+              "pending"
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "order.days_since_order"
+              },
+              5
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "cancel_order",
+        "amount": null,
+        "fault": null,
+        "note": "Clause refers to pickup, which is not an ontology fact; condition approximated using order status and days since order. Refund follows cancellation; amount not specified so left null."
+      },
+      "description": "Order not picked up after 5 days is automatically cancelled and refunded",
+      "enabled": true
+    },
+    {
+      "rule_id": "RK-RET-19.r1",
+      "clause_id": "RK-RET-19",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "damaged_on_arrival",
+        "defective",
+        "wrong_item",
+        "missing_item",
+        "refund_request",
+        "order_change"
+      ],
+      "requires": [
+        "order.payment_method",
+        "order.subtotal"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "order.payment_method"
+          },
+          ""
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "refund",
+        "amount": {
+          "var": "order.subtotal"
+        },
+        "fault": null,
+        "note": "Refund equals merchandise amount in original payment form; shipping (order.shipping_total) excluded. Store-return channel is assumed by the clause only as a return to a store location; no store-location fact exists in the ontology, so the condition is tested on payment method presence."
+      },
+      "description": "Store return of merchandise receives refund in original form of payment; original shipping charges are not refunded.",
+      "enabled": true
+    }
+  ],
+  "conflicts": [
+    "RK-PAY-1.r1 (needs_approval/partial_refund) vs RK-RET-19.r1 (partial/refund) at tier=contract priority=5; shared fields ['order.payment_method']",
+    "RK-RET-4.r1 (escalate/None) vs RK-SHIP-1.r1 (partial/none) at tier=contract priority=5; shared fields ['item.condition']",
+    "RK-RET-4.r1 (escalate/None) vs RK-PAY-2.r1 (partial/none) at tier=contract priority=5; shared fields ['item.condition']"
+  ]
+}

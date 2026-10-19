@@ -1,0 +1,15 @@
+{
+  "source_id": "ak-commitment-overview",
+  "url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-overview",
+  "final_url": "https://www.alaskaair.com/content/about-us/customer-commitment/customer-commitment-overview",
+  "content_type": "text/html",
+  "title": "Customer Service Commitment - Alaska and Hawaiian Airlines",
+  "fetched_at": "2026-10-19T20:43:25+00:00",
+  "sha256": "973c98c77be2c6d0ff175be02e7de56d910a6fd2bbc95bde9be9e8d3871a07d9",
+  "extractor": "next-data",
+  "chars": 544,
+  "ok": true,
+  "notes": [],
+  "raw_path": "ak-commitment-overview.html",
+  "text_path": "ak-commitment-overview.txt"
+}

@@ -1,0 +1,321 @@
+"""Mine: Haiku turns each masked ticket thread into a structured case record.
+
+Output per ticket: summary, claim facts (ontology `claim.*`), item hint, ordered staff actions,
+outcome, category hint. Code then joins the merchant order record (by order_id) and derives the
+date facts so the case holds a complete ontology Facts bundle. Runs on the Batch API.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+from datetime import datetime
+from typing import Any
+
+from sqlalchemy import delete, select
+from sqlalchemy.orm import Session
+
+from ..db.models import Case, OrderRecord, Ticket
+from ..llm import LLMProvider
+from ..llm.helpers import json_request, llm_json_batch
+from .vocab import CLAIM_REASONS, DECISIONS, FAULTS, REMEDIES, STAFF_ACTIONS
+
+log = logging.getLogger(__name__)
+
+MINE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "summary": {"type": "string", "description": "One masked sentence: who asked for what and what happened"},
+        "category_hint": {"type": "string", "description": "2-4 word label for the kind of issue"},
+        "order_id": {"type": ["string", "null"]},
+        "item_hint": {"type": ["string", "null"], "description": "Product or service the issue is about"},
+        "claim": {
+            "type": "object",
+            "properties": {
+                "reason": {"type": "string", "enum": CLAIM_REASONS},
+                "requested_remedy": {"anyOf": [{"type": "string", "enum": REMEDIES}, {"type": "null"}]},
+                "requested_amount": {"type": ["number", "null"]},
+                "has_photos": {"type": ["boolean", "null"]},
+                "has_receipt": {"type": ["boolean", "null"]},
+                "reported_within_days": {"type": ["integer", "null"]},
+                "item_unopened": {"type": ["boolean", "null"]},
+                "item_used": {"type": ["boolean", "null"]},
+                "wants_credit_instead_of_refund": {"type": ["boolean", "null"]},
+                "description": {"type": "string"},
+            },
+            "required": [
+                "reason",
+                "requested_remedy",
+                "requested_amount",
+                "has_photos",
+                "has_receipt",
+                "reported_within_days",
+                "item_unopened",
+                "item_used",
+                "wants_credit_instead_of_refund",
+                "description",
+            ],
+            "additionalProperties": False,
+        },
+        "airline": {
+            "type": "object",
+            "description": "Only for airline tickets; null fields otherwise",
+            "properties": {
+                "delay_minutes": {"type": ["integer", "null"]},
+                "cause": {
+                    "anyOf": [
+                        {"type": "string", "enum": ["controllable", "uncontrollable", "unknown"]},
+                        {"type": "null"},
+                    ]
+                },
+                "is_cancelled_by_airline": {"type": ["boolean", "null"]},
+                "customer_accepted_alternative": {"type": ["boolean", "null"]},
+                "customer_cancelled": {"type": ["boolean", "null"]},
+                "hours_since_purchase": {"type": ["integer", "null"]},
+                "bag_minutes_to_carousel": {"type": ["integer", "null"]},
+                "bag_report_filed": {"type": ["boolean", "null"]},
+                "bag_report_filed_within_hours": {"type": ["integer", "null"]},
+                "bag_delay_days": {"type": ["integer", "null"]},
+                "bag_damage_type": {"type": ["string", "null"]},
+                "interim_expenses": {"type": ["number", "null"]},
+                "overnight_required": {"type": ["boolean", "null"]},
+            },
+            "required": [
+                "delay_minutes",
+                "cause",
+                "is_cancelled_by_airline",
+                "customer_accepted_alternative",
+                "customer_cancelled",
+                "hours_since_purchase",
+                "bag_minutes_to_carousel",
+                "bag_report_filed",
+                "bag_report_filed_within_hours",
+                "bag_delay_days",
+                "bag_damage_type",
+                "interim_expenses",
+                "overnight_required",
+            ],
+            "additionalProperties": False,
+        },
+        "staff_actions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "action": {"type": "string", "enum": STAFF_ACTIONS},
+                    "detail": {"type": "string"},
+                    "amount": {"type": ["number", "null"]},
+                },
+                "required": ["action", "detail", "amount"],
+                "additionalProperties": False,
+            },
+        },
+        "outcome": {
+            "type": "object",
+            "properties": {
+                "decision": {"type": "string", "enum": DECISIONS},
+                "remedy": {"anyOf": [{"type": "string", "enum": REMEDIES}, {"type": "null"}]},
+                "amount": {"type": ["number", "null"]},
+                "fault": {"anyOf": [{"type": "string", "enum": FAULTS}, {"type": "null"}]},
+            },
+            "required": ["decision", "remedy", "amount", "fault"],
+            "additionalProperties": False,
+        },
+    },
+    "required": ["summary", "category_hint", "order_id", "item_hint", "claim", "airline", "staff_actions", "outcome"],
+    "additionalProperties": False,
+}
+
+SYSTEM = f"""You extract structured case records from customer-support threads for Umpyr. Text is already PII-masked
+([NAME], [EMAIL], [PHONE], [ADDRESS]); keep those tokens, never guess identities.
+
+Extract only what the thread states or clearly implies. Use null when unknown.
+- claim.reason: the primary reason, one of {", ".join(CLAIM_REASONS)}.
+- claim facts: has_photos = customer provided or attached photos at any point in the thread; has_receipt = proof of
+  purchase available (an order number from the merchant counts as proof); reported_within_days = days between
+  delivery/arrival and the first message if stated; item_unopened / item_used as stated.
+- staff_actions: every action the staff took, in order, using the fixed vocabulary {", ".join(STAFF_ACTIONS)}.
+  Include amounts when money moved.
+- outcome: what the staff finally gave: decision approve (full remedy), partial (reduced), deny, needs_approval
+  (sent for authorization and then decided), escalate (handed to a human with no decision in the thread);
+  remedy and amount as stated; fault = who the staff treated as responsible.
+- summary: one masked sentence. category_hint: a short label such as "damaged on arrival" or "bag delayed".
+"""
+
+
+def _user(ticket: Ticket) -> str:
+    msgs = "\n\n".join(f"[{m['role'].upper()} {m.get('at') or ''}]\n{m['text']}" for m in ticket.thread)
+    return (
+        f"Ticket {ticket.ticket_id} ({ticket.channel}) created {ticket.ticket_created_at}\n"
+        f"Subject: {ticket.subject}\nOrder/booking reference: {ticket.order_id or 'not provided'}\n"
+        f"Recorded staff actions: {', '.join(ticket.agent_actions) or 'none'}\n"
+        f"Recorded resolution: {ticket.resolution or 'none'}; amount: {ticket.amount}\n\n{msgs}"
+    )
+
+
+def _parse_dt(s: str | None) -> datetime | None:
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(str(s).replace("Z", "+00:00")).replace(tzinfo=None)
+    except ValueError:
+        return None
+
+
+def hours_to_resolve(ticket: Ticket) -> float | None:
+    stamps = [d for d in (_parse_dt(m.get("at")) for m in ticket.thread) if d]
+    if len(stamps) >= 2:
+        return round((max(stamps) - min(stamps)).total_seconds() / 3600, 2)
+    return None
+
+
+def build_facts(mined: dict[str, Any], order: dict[str, Any] | None, ticket: Ticket, kind: str) -> dict[str, Any]:
+    """Join mined claim facts with the merchant record into an ontology Facts dict."""
+    at = ticket.ticket_created_at.replace(tzinfo=None) if ticket.ticket_created_at else None
+    claim = {k: v for k, v in (mined.get("claim") or {}).items() if v is not None}
+    facts: dict[str, Any] = {"claim": claim}
+    if not order:
+        return facts
+    if kind == "booking":
+        booking = {k: v for k, v in order.items() if k not in ("flights", "bags", "customer") and v is not None}
+        facts["booking"] = booking
+        flights = order.get("flights") or []
+        bags = order.get("bags") or []
+        if flights:
+            facts["flight"] = {k: v for k, v in flights[0].items() if v is not None}
+        if bags:
+            facts["bag"] = {k: v for k, v in bags[0].items() if v is not None}
+        air = {k: v for k, v in (mined.get("airline") or {}).items() if v is not None}
+        f = facts.setdefault("flight", {})
+        for k in (
+            "delay_minutes",
+            "cause",
+            "is_cancelled_by_airline",
+            "customer_accepted_alternative",
+            "overnight_required",
+        ):
+            if k in air:
+                f[k] = air[k]
+        b = facts.setdefault("bag", {})
+        for src, dst in (
+            ("bag_minutes_to_carousel", "minutes_to_carousel"),
+            ("bag_report_filed", "report_filed"),
+            ("bag_report_filed_within_hours", "report_filed_within_hours"),
+            ("bag_delay_days", "delay_days"),
+            ("bag_damage_type", "damage_type"),
+            ("interim_expenses", "interim_expenses"),
+        ):
+            if src in air:
+                b[dst] = air[src]
+        if "customer_cancelled" in air:
+            booking["customer_cancelled"] = air["customer_cancelled"]
+        if "hours_since_purchase" in air and "hours_since_purchase" not in booking:
+            booking["hours_since_purchase"] = air["hours_since_purchase"]
+        purchased = _parse_dt(order.get("purchased_at"))
+        if purchased and at:
+            booking.setdefault("hours_since_purchase", int((at - purchased).total_seconds() // 3600))
+        if flights and at:
+            dep = _parse_dt(flights[0].get("scheduled_departure"))
+            if dep:
+                booking.setdefault("hours_until_departure", int((dep - at).total_seconds() // 3600))
+        if order.get("customer"):
+            facts["customer"] = {
+                k: v for k, v in order["customer"].items() if k in ("customer_id", "loyalty_member", "loyalty_tier")
+            }
+        return facts
+    facts["order"] = {k: v for k, v in order.items() if k not in ("items", "shipments", "customer") and v is not None}
+    placed = _parse_dt(order.get("placed_at"))
+    if placed and at:
+        facts["order"]["days_since_order"] = max(0, (at - placed).days)
+    items = order.get("items") or []
+    hint = (mined.get("item_hint") or "").lower()
+    item = None
+    for it in items:
+        if hint and (
+            str(it.get("sku", "")).lower() in hint
+            or any(w in hint for w in str(it.get("name", "")).lower().split()[:2])
+        ):
+            item = it
+            break
+    item = item or (items[0] if items else None)
+    if item:
+        facts["item"] = {k: v for k, v in item.items() if v is not None}
+        if claim.get("reason") in ("damaged_on_arrival",):
+            facts["item"].setdefault("condition", "damaged")
+        elif claim.get("reason") in ("defective", "lifetime_guarantee"):
+            facts["item"].setdefault("condition", "defective")
+        elif claim.get("item_used"):
+            facts["item"]["condition"] = "used"
+        elif claim.get("item_unopened"):
+            facts["item"]["condition"] = "new_unopened"
+    ships = order.get("shipments") or []
+    if ships:
+        facts["shipment"] = {k: v for k, v in ships[0].items() if v is not None}
+        delivered = _parse_dt(ships[0].get("delivered_at"))
+        if delivered and at:
+            facts["shipment"]["days_since_delivery"] = max(0, (at - delivered).days)
+            claim.setdefault("reported_within_days", max(0, (at - delivered).days))
+    if order.get("customer"):
+        facts["customer"] = {
+            k: v for k, v in order["customer"].items() if k in ("customer_id", "loyalty_member", "loyalty_tier")
+        }
+    return facts
+
+
+def mine_workspace(
+    session: Session, llm: LLMProvider, workspace_id: str, *, kind: str = "order", replace: bool = True
+) -> dict[str, Any]:
+    tickets = list(
+        session.execute(select(Ticket).where(Ticket.workspace_id == workspace_id).order_by(Ticket.ticket_id)).scalars()
+    )
+    orders = {
+        o.order_id: o.data
+        for o in session.execute(select(OrderRecord).where(OrderRecord.workspace_id == workspace_id)).scalars()
+    }
+    reqs = [
+        json_request(
+            step="mine", system=SYSTEM, user=_user(t), schema=MINE_SCHEMA, max_tokens=1500, workspace_id=workspace_id
+        )
+        for t in tickets
+    ]
+    log.info("mining %d tickets", len(reqs))
+    results = llm_json_batch(llm, reqs)
+    if replace:
+        session.execute(delete(Case).where(Case.workspace_id == workspace_id))
+    n = failed = 0
+    for t, res in zip(tickets, results, strict=True):
+        if not res:
+            failed += 1
+            continue
+        order = orders.get(t.order_id or res.get("order_id") or "")
+        facts = build_facts(res, order, t, kind)
+        actions = [
+            {"seq": i + 1, "action": a["action"], "detail": a.get("detail"), "amount": a.get("amount")}
+            for i, a in enumerate(res.get("staff_actions") or [])
+        ]
+        outcome = res.get("outcome") or {}
+        record = {
+            "case_id": f"case-{t.ticket_id}",
+            "ticket_id": t.ticket_id,
+            "summary": res.get("summary"),
+            "category_hint": res.get("category_hint"),
+            "item_hint": res.get("item_hint"),
+            "staff_actions": actions,
+            "outcome": outcome,
+            "opened_at": t.ticket_created_at.isoformat() if t.ticket_created_at else None,
+            "is_synthetic": t.is_synthetic,
+        }
+        session.add(
+            Case(
+                workspace_id=workspace_id,
+                ticket_id=t.ticket_id,
+                record=json.loads(json.dumps(record, default=str)),
+                facts=json.loads(json.dumps(facts, default=str)),
+                summary=res.get("summary"),
+                hours_to_resolve=hours_to_resolve(t),
+                is_synthetic=t.is_synthetic,
+            )
+        )
+        n += 1
+    session.commit()
+    return {"cases": n, "failed": failed}
