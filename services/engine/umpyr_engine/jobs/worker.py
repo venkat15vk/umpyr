@@ -10,7 +10,7 @@ import traceback
 from ..config import get_settings
 from ..db.base import get_session_factory
 from ..llm.budget import BudgetExceeded
-from . import registry  # noqa: F401  (registers handlers)
+from . import onboard, registry  # noqa: F401  (registers handlers)
 from .queue import JobContext, claim, finish
 from .registry import HANDLERS
 

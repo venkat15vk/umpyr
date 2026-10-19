@@ -194,11 +194,16 @@ def ingest_tickets(
 PII_KEYS = {"name", "email", "phone", "address", "first_name", "last_name"}
 
 
-def _strip_pii(obj: Any) -> Any:
+def _strip_pii(obj: Any, in_customer: bool = False) -> Any:
+    """Drop PII fields from customer/passenger sub-records (product names etc. are kept)."""
     if isinstance(obj, dict):
-        return {k: _strip_pii(v) for k, v in obj.items() if k not in PII_KEYS}
+        return {
+            k: _strip_pii(v, in_customer or k in ("customer", "passenger", "passengers", "contact"))
+            for k, v in obj.items()
+            if not (in_customer and k in PII_KEYS)
+        }
     if isinstance(obj, list):
-        return [_strip_pii(v) for v in obj]
+        return [_strip_pii(v, in_customer) for v in obj]
     return obj
 
 

@@ -17,30 +17,35 @@ from sqlalchemy.orm import Session
 
 from ..db.models import Case, OrderRecord, Ticket
 from ..llm import LLMProvider
-from ..llm.helpers import json_request, llm_json_batch
+from ..llm.helpers import json_request, llm_json, llm_json_batch
 from .vocab import CLAIM_REASONS, DECISIONS, FAULTS, REMEDIES, STAFF_ACTIONS
 
 log = logging.getLogger(__name__)
 
+YNU = {"type": "string", "enum": ["yes", "no", "unknown"]}
+INT_U = {"type": "integer", "description": "-1 when unknown"}
+NUM_U = {"type": "number", "description": "-1 when unknown"}
+
+# No nullable/union types: the API caps union-typed parameters. Unknowns use sentinels ("unknown", -1, "").
 MINE_SCHEMA = {
     "type": "object",
     "properties": {
         "summary": {"type": "string", "description": "One masked sentence: who asked for what and what happened"},
         "category_hint": {"type": "string", "description": "2-4 word label for the kind of issue"},
-        "order_id": {"type": ["string", "null"]},
-        "item_hint": {"type": ["string", "null"], "description": "Product or service the issue is about"},
+        "order_id": {"type": "string", "description": "Order number / confirmation code, or empty string"},
+        "item_hint": {"type": "string", "description": "Product or service the issue is about, or empty string"},
         "claim": {
             "type": "object",
             "properties": {
                 "reason": {"type": "string", "enum": CLAIM_REASONS},
-                "requested_remedy": {"anyOf": [{"type": "string", "enum": REMEDIES}, {"type": "null"}]},
-                "requested_amount": {"type": ["number", "null"]},
-                "has_photos": {"type": ["boolean", "null"]},
-                "has_receipt": {"type": ["boolean", "null"]},
-                "reported_within_days": {"type": ["integer", "null"]},
-                "item_unopened": {"type": ["boolean", "null"]},
-                "item_used": {"type": ["boolean", "null"]},
-                "wants_credit_instead_of_refund": {"type": ["boolean", "null"]},
+                "requested_remedy": {"type": "string", "enum": [*REMEDIES, "unknown"]},
+                "requested_amount": NUM_U,
+                "has_photos": YNU,
+                "has_receipt": YNU,
+                "reported_within_days": INT_U,
+                "item_unopened": YNU,
+                "item_used": YNU,
+                "wants_credit_instead_of_refund": YNU,
                 "description": {"type": "string"},
             },
             "required": [
@@ -59,26 +64,24 @@ MINE_SCHEMA = {
         },
         "airline": {
             "type": "object",
-            "description": "Only for airline tickets; null fields otherwise",
+            "description": "Only meaningful for airline tickets; use unknown/-1 otherwise",
             "properties": {
-                "delay_minutes": {"type": ["integer", "null"]},
-                "cause": {
-                    "anyOf": [
-                        {"type": "string", "enum": ["controllable", "uncontrollable", "unknown"]},
-                        {"type": "null"},
-                    ]
+                "delay_minutes": INT_U,
+                "cause": {"type": "string", "enum": ["controllable", "uncontrollable", "unknown"]},
+                "is_cancelled_by_airline": YNU,
+                "customer_accepted_alternative": YNU,
+                "customer_cancelled": YNU,
+                "hours_since_purchase": INT_U,
+                "bag_minutes_to_carousel": INT_U,
+                "bag_report_filed": YNU,
+                "bag_report_filed_within_hours": INT_U,
+                "bag_delay_days": INT_U,
+                "bag_damage_type": {
+                    "type": "string",
+                    "description": "structural, wheel, handle, zipper, cosmetic, contents, none, or empty",
                 },
-                "is_cancelled_by_airline": {"type": ["boolean", "null"]},
-                "customer_accepted_alternative": {"type": ["boolean", "null"]},
-                "customer_cancelled": {"type": ["boolean", "null"]},
-                "hours_since_purchase": {"type": ["integer", "null"]},
-                "bag_minutes_to_carousel": {"type": ["integer", "null"]},
-                "bag_report_filed": {"type": ["boolean", "null"]},
-                "bag_report_filed_within_hours": {"type": ["integer", "null"]},
-                "bag_delay_days": {"type": ["integer", "null"]},
-                "bag_damage_type": {"type": ["string", "null"]},
-                "interim_expenses": {"type": ["number", "null"]},
-                "overnight_required": {"type": ["boolean", "null"]},
+                "interim_expenses": NUM_U,
+                "overnight_required": YNU,
             },
             "required": [
                 "delay_minutes",
@@ -104,7 +107,7 @@ MINE_SCHEMA = {
                 "properties": {
                     "action": {"type": "string", "enum": STAFF_ACTIONS},
                     "detail": {"type": "string"},
-                    "amount": {"type": ["number", "null"]},
+                    "amount": NUM_U,
                 },
                 "required": ["action", "detail", "amount"],
                 "additionalProperties": False,
@@ -114,9 +117,9 @@ MINE_SCHEMA = {
             "type": "object",
             "properties": {
                 "decision": {"type": "string", "enum": DECISIONS},
-                "remedy": {"anyOf": [{"type": "string", "enum": REMEDIES}, {"type": "null"}]},
-                "amount": {"type": ["number", "null"]},
-                "fault": {"anyOf": [{"type": "string", "enum": FAULTS}, {"type": "null"}]},
+                "remedy": {"type": "string", "enum": [*REMEDIES, "unknown"]},
+                "amount": NUM_U,
+                "fault": {"type": "string", "enum": [*FAULTS, "unknown"]},
             },
             "required": ["decision", "remedy", "amount", "fault"],
             "additionalProperties": False,
@@ -126,11 +129,30 @@ MINE_SCHEMA = {
     "additionalProperties": False,
 }
 
+
+def _clean(value):
+    """Sentinels -> None: 'unknown'/'' -> None, 'yes'/'no' -> bool, -1 -> None."""
+    if isinstance(value, dict):
+        return {k: _clean(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_clean(v) for v in value]
+    if value == "yes":
+        return True
+    if value == "no":
+        return False
+    if value in ("unknown", ""):
+        return None
+    if isinstance(value, int | float) and not isinstance(value, bool) and value == -1:
+        return None
+    return value
+
+
 SYSTEM = f"""You extract structured case records from customer-support threads for Umpyr. Text is already PII-masked
 ([NAME], [EMAIL], [PHONE], [ADDRESS]); keep those tokens, never guess identities.
 
 Extract only what the thread states or clearly implies. Use null when unknown.
 - claim.reason: the primary reason, one of {", ".join(CLAIM_REASONS)}.
+- Unknown values: "unknown" for yes/no fields, -1 for numbers, "" for strings. Never guess.
 - claim facts: has_photos = customer provided or attached photos at any point in the thread; has_receipt = proof of
   purchase available (an order number from the merchant counts as proof); reported_within_days = days between
   delivery/arrival and the first message if stated; item_unopened / item_used as stated.
@@ -263,11 +285,20 @@ def build_facts(mined: dict[str, Any], order: dict[str, Any] | None, ticket: Tic
 
 
 def mine_workspace(
-    session: Session, llm: LLMProvider, workspace_id: str, *, kind: str = "order", replace: bool = True
+    session: Session,
+    llm: LLMProvider,
+    workspace_id: str,
+    *,
+    kind: str = "order",
+    replace: bool = True,
+    limit: int | None = None,
+    use_batch: bool = True,
 ) -> dict[str, Any]:
     tickets = list(
         session.execute(select(Ticket).where(Ticket.workspace_id == workspace_id).order_by(Ticket.ticket_id)).scalars()
     )
+    if limit:
+        tickets = tickets[:limit]
     orders = {
         o.order_id: o.data
         for o in session.execute(select(OrderRecord).where(OrderRecord.workspace_id == workspace_id)).scalars()
@@ -279,7 +310,7 @@ def mine_workspace(
         for t in tickets
     ]
     log.info("mining %d tickets", len(reqs))
-    results = llm_json_batch(llm, reqs)
+    results = llm_json_batch(llm, reqs) if use_batch else [llm_json(llm, r) for r in reqs]
     if replace:
         session.execute(delete(Case).where(Case.workspace_id == workspace_id))
     n = failed = 0
@@ -287,6 +318,7 @@ def mine_workspace(
         if not res:
             failed += 1
             continue
+        res = _clean(res)
         order = orders.get(t.order_id or res.get("order_id") or "")
         facts = build_facts(res, order, t, kind)
         actions = [

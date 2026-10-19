@@ -61,3 +61,15 @@ def test_job_lifecycle_and_sse(client):
     assert events[-1] == "event: end"
     datas = [json.loads(line[len("data: ") :]) for line in text.splitlines() if line.startswith("data: ")]
     assert [d["step"] for d in datas[:-1]] == ["start", "ingest", "mine", "taxonomy", "done"]
+
+
+def test_workspace_summary_and_results_endpoints(client, session_factory):
+    with session_factory() as s:
+        if s.get(Workspace, "testws") is None:
+            s.add(Workspace(id="testws", name="Test", kind="sandbox"))
+            s.commit()
+    body = client.get("/workspaces/testws/summary").json()
+    assert body["workspace"]["id"] == "testws" and body["tickets"] == 0 and body["rule_pack"] is None
+    assert client.get("/workspaces/testws/categories").json() == []
+    assert client.get("/workspaces/testws/rules").json()["rules"] == []
+    assert client.get("/workspaces/nope/summary").status_code == 404

@@ -47,3 +47,16 @@ def test_compare_detects_drift_only_when_policy_decided():
     assert compare(r("needs_approval", "refund"), {"decision": "deny"}) is None
     assert compare(r("escalate"), {"decision": "approve", "remedy": "refund"}) is None
     assert compare(r("deny"), {"decision": "escalate"}) is None
+
+
+def test_strip_pii_only_inside_customer_records():
+    from umpyr_engine.ingest.loader import _strip_pii
+
+    rec = {
+        "order_id": "R1",
+        "items": [{"name": "Router Bit", "sku": "A"}],
+        "customer": {"customer_id": "C1", "name": "Priya N", "email": "p@example.com", "loyalty_member": True},
+    }
+    out = _strip_pii(rec)
+    assert out["items"][0]["name"] == "Router Bit"
+    assert out["customer"] == {"customer_id": "C1", "loyalty_member": True}

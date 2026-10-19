@@ -1,0 +1,12 @@
+{
+ "ingest": {
+  "tickets": 300,
+  "masked": {
+   "email": 319,
+   "phone": 308,
+   "address": 165,
+   "name": 1140
+  },
+  "records": 300
+ }
+}

@@ -18,7 +18,8 @@ CARD = re.compile(r"(?<!\d)(?:\d[ -]?){13,19}(?!\d)")
 ADDRESS = re.compile(
     r"\b\d{1,6}\s+(?:[A-Z][a-z]+\s){0,3}(?:[A-Z][a-z]+)\s+"
     r"(?:Street|St\.?|Avenue|Ave\.?|Road|Rd\.?|Boulevard|Blvd\.?|Lane|Ln\.?|Drive|Dr\.?|Court|Ct\.?|Way|Place|Pl\.?|Terrace|Circle|Cir\.?)"
-    r"(?:,?\s*(?:Apt\.?|Suite|Ste\.?|Unit|#)\s*\w+)?\b"
+    r"(?:,?\s*(?:Apt\.?|Suite|Ste\.?|Unit|#)\s*\w+)?"
+    r"(?:,\s*[A-Z][a-zA-Z .]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?)?\b"
 )
 SALUTATION = re.compile(
     r"\b(Hi|Hello|Hey|Dear|Thanks|Thank you|Regards|Best|Cheers|Sincerely|Best regards|Kind regards|Warm regards)"

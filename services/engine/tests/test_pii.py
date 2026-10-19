@@ -34,3 +34,10 @@ def test_common_words_not_masked_when_lowercase():
 def test_empty_and_none():
     assert mask_text(None) == ""
     assert mask_text("") == ""
+
+
+def test_address_with_city_state_zip_is_fully_masked():
+    out = mask_text("Ship to 2564 Birch Lane, Boise, ID 83702 please")
+    assert out == "Ship to [ADDRESS] please"
+    out = mask_text("at 10 Elm Place, Apt 4, San Jose, CA 95110.")
+    assert "[ADDRESS]" in out and "95110" not in out and "San Jose" not in out
