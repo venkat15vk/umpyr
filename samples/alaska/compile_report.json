@@ -1,0 +1,408 @@
+{
+  "version": "2026-10-19.2",
+  "clauses": 530,
+  "relevant_clauses": 461,
+  "ambiguous_clauses": 146,
+  "non_verbatim_clauses": [
+    "AK-GEN-5",
+    "AK-REF-18",
+    "AK-BAG-27",
+    "AK-BAG-28",
+    "AK-BAG-31",
+    "AK-BAG-32",
+    "AK-BAG-35",
+    "AK-BAG-37",
+    "AK-BAG-43",
+    "AK-BAG-44",
+    "AK-FEE-23",
+    "AK-FEE-24",
+    "AK-GEN-18",
+    "AK-BAG-89",
+    "AK-BAG-117",
+    "AK-BAG-120",
+    "AK-BAG-138",
+    "AK-BAG-140",
+    "AK-BAG-168",
+    "AK-DLY-43",
+    "AK-RET-42",
+    "AK-BAG-197"
+  ],
+  "rules": 37,
+  "rules_by_tier": {
+    "law": 8,
+    "contract": 16,
+    "commitment": 13
+  },
+  "rules_by_decision": {
+    "approve": 12,
+    "needs_fact": 1,
+    "needs_approval": 2,
+    "deny": 20,
+    "partial": 2
+  },
+  "clauses_by_topic": {
+    "FEE": 54,
+    "BAG": 217,
+    "REF": 21,
+    "DLY": 65,
+    "GEN": 35,
+    "PAY": 16,
+    "DMG": 5,
+    "DBC": 41,
+    "ORD": 13,
+    "RET": 60,
+    "LOY": 1,
+    "GUAR": 2
+  },
+  "cannot_encode": [
+    {
+      "clause_id": "AK-BAG-48",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause sets a maximum bag weight (100 lbs/45 kg per piece), but the ontology has no bag weight field, so the condition cannot be tested deterministically.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-61",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Ontology lacks fields for carry-on contents being fragile or perishable and for damage causation by those contents; the exclusion cannot be deterministically evaluated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-94",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is an exemption from a fee; the ontology has no linear-inch dimension field and no oversize charge amount, so the 62-inch condition cannot be evaluated and no remedy applies.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-97",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checked oversize charges; it grants no claim remedy and the 62 linear inch dimension is not in the ontology.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-102",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a baggage fee/logistics statement about oversize charges; the ontology has no scuba-equipment or linear-inch dimension fact and the clause sets no dispute remedy, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-110",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause concerns an oversize charge exemption for ski/snowboard equipment by linear inches; the ontology has no dimension or equipment-type fact and the remedy is a fee waiver not a claim outcome.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-111",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checking oversize surfboards/paddleboards; it does not state a claim remedy and dimensions (linear inches) and board type are not in the ontology, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-112",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption, not a dispute remedy; the 62 linear inch dimension is not in the ontology and the only available remedy is 'none', so the rule cannot meaningfully decide a claim.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-135",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Clause defines how actual value is determined and places a documentation burden on the passenger; it does not set a decision or an amount computable from the ontology facts (no purchase price documentation or depreciation fact exists).",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-170",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause defines timely-notice sufficiency but grants no remedy, and 'good cause' is undefined and cannot be decided from ontology facts; the only encodable element is a partial timeliness gate, so confidence is low.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-171",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "The condition (bag tendered within minimum check-in times in Section 15.C) cannot be tested with ontology facts; no check-in time field exists, and an unconditional rule is not permitted.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-RET-35",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional and unscoped"
+      ],
+      "cannot_encode": "The deadline depends on the ticket expiration date and the refund application date, neither of which exists in the ontology; only a non-decidable procedural deadline is stated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-185",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause sets a filing window and procedure (in-person claim at arrival airport) but states no remedy or amount; the only encodable element is the 2-hour window, which is recorded above with reduced confidence.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-DMG-5",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a procedural reporting deadline that states no remedy or outcome; it cannot yield an approve, partial or deny decision from the ontology facts alone.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-FEE-54",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause restricts how a bonus travel certificate may be applied (to fees or specific purchases). It is not a claim-entitlement rule and the ontology has no BTC instrument or Vacations/cargo/partner purchase facts to evaluate it against; an unconditional rule would violate encoding rules.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-GEN-32",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause voids a bonus travel certificate if it was altered or fraudulently obtained or obtained in violation of Atmos Rewards membership conditions. The ontology has no fact recording alteration, fraud, illegal acquisition, or membership-condition violation for a BTC, so the condition cannot be decided from ontology facts and no deterministic rule can be written.",
+      "confidence": []
+    }
+  ],
+  "dropped": [
+    {
+      "clause_id": "AK-BAG-48",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause sets a maximum bag weight (100 lbs/45 kg per piece), but the ontology has no bag weight field, so the condition cannot be tested deterministically.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-61",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Ontology lacks fields for carry-on contents being fragile or perishable and for damage causation by those contents; the exclusion cannot be deterministically evaluated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-94",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is an exemption from a fee; the ontology has no linear-inch dimension field and no oversize charge amount, so the 62-inch condition cannot be evaluated and no remedy applies.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-97",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checked oversize charges; it grants no claim remedy and the 62 linear inch dimension is not in the ontology.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-102",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a baggage fee/logistics statement about oversize charges; the ontology has no scuba-equipment or linear-inch dimension fact and the clause sets no dispute remedy, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-110",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause concerns an oversize charge exemption for ski/snowboard equipment by linear inches; the ontology has no dimension or equipment-type fact and the remedy is a fee waiver not a claim outcome.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-111",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checking oversize surfboards/paddleboards; it does not state a claim remedy and dimensions (linear inches) and board type are not in the ontology, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-112",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption, not a dispute remedy; the 62 linear inch dimension is not in the ontology and the only available remedy is 'none', so the rule cannot meaningfully decide a claim.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-135",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Clause defines how actual value is determined and places a documentation burden on the passenger; it does not set a decision or an amount computable from the ontology facts (no purchase price documentation or depreciation fact exists).",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-166",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": null,
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-170",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause defines timely-notice sufficiency but grants no remedy, and 'good cause' is undefined and cannot be decided from ontology facts; the only encodable element is a partial timeliness gate, so confidence is low.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-171",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "The condition (bag tendered within minimum check-in times in Section 15.C) cannot be tested with ontology facts; no check-in time field exists, and an unconditional rule is not permitted.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-RET-35",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional and unscoped"
+      ],
+      "cannot_encode": "The deadline depends on the ticket expiration date and the refund application date, neither of which exists in the ontology; only a non-decidable procedural deadline is stated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-185",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause sets a filing window and procedure (in-person claim at arrival airport) but states no remedy or amount; the only encodable element is the 2-hour window, which is recorded above with reduced confidence.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-DMG-5",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a procedural reporting deadline that states no remedy or outcome; it cannot yield an approve, partial or deny decision from the ontology facts alone.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-FEE-54",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause restricts how a bonus travel certificate may be applied (to fees or specific purchases). It is not a claim-entitlement rule and the ontology has no BTC instrument or Vacations/cargo/partner purchase facts to evaluate it against; an unconditional rule would violate encoding rules.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-GEN-32",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause voids a bonus travel certificate if it was altered or fraudulently obtained or obtained in violation of Atmos Rewards membership conditions. The ontology has no fact recording alteration, fraud, illegal acquisition, or membership-condition violation for a BTC, so the condition cannot be decided from ontology facts and no deterministic rule can be written.",
+      "confidence": []
+    }
+  ],
+  "conflicts": [
+    "AK-FEE-3.r1 (approve/refund) vs AK-FEE-3.m1 (deny/none) at tier=law priority=0; shared fields ['flight.cause_detail']",
+    "AK-DLY-35.r1 (approve/expense_reimbursement) vs AK-DLY-36.m1 (deny/none) at tier=contract priority=5; shared fields ['flight.cause', 'flight.customer_accepted_alternative']",
+    "AK-DLY-36.r1 (approve/expense_reimbursement) vs AK-DLY-36.m2 (deny/none) at tier=contract priority=0; shared fields ['flight.customer_accepted_alternative', 'flight.delay_minutes']",
+    "AK-DLY-45.r1 (approve/refund) vs AK-DLY-45.m1 (deny/none) at tier=commitment priority=0; shared fields ['flight.schedule_change_minutes']",
+    "AK-RET-48.r1 (partial/travel_credit) vs AK-RET-49.r1 (deny/none) at tier=commitment priority=5; shared fields ['booking.fare_class', 'booking.hours_until_departure']",
+    "AK-DLY-52.r1 (approve/refund) vs AK-DLY-52.m1 (deny/none) at tier=commitment priority=0; shared fields ['flight.customer_accepted_alternative', 'flight.delay_minutes']",
+    "AK-BAG-184.r1 (approve/voucher) vs AK-BAG-184.m1 (deny/none) at tier=commitment priority=0; shared fields ['bag.minutes_to_carousel']"
+  ],
+  "merchant_edits": [
+    "enable_only: kept 27 of 155 compiled rules",
+    "patched AK-REF-1.r1: ['claim_reasons', 'description', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-FEE-3.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-5.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-7.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-DLY-12.r1: ['effect', 'priority']",
+    "patched AK-DLY-13.r1: ['effect', 'priority']",
+    "patched AK-DLY-35.r1: ['claim_reasons', 'description', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-DLY-36.r1: ['claim_reasons', 'description', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-134.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-140.r1: ['claim_reasons', 'effect', 'requires', 'when']",
+    "patched AK-BAG-141.r1: ['claim_reasons', 'effect']",
+    "patched AK-BAG-143.r1: ['claim_reasons', 'effect']",
+    "patched AK-BAG-144.r1: ['claim_reasons', 'effect', 'requires', 'when']",
+    "patched AK-BAG-145.r1: ['claim_reasons', 'effect']",
+    "patched AK-RET-6.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-RET-11.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-RET-20.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-RET-44.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-DLY-45.r1: ['claim_reasons', 'effect', 'requires', 'when']",
+    "patched AK-RET-48.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-RET-49.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-RET-50.r1: ['claim_reasons', 'effect']",
+    "patched AK-DLY-52.r1: ['claim_reasons', 'effect', 'requires', 'when']",
+    "patched AK-RET-57.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-184.r1: ['claim_reasons', 'effect', 'priority', 'requires', 'when']",
+    "patched AK-BAG-186.r1: ['claim_reasons', 'effect']",
+    "patched AK-REF-20.r1: ['claim_reasons', 'effect', 'requires', 'when']",
+    "added AK-BAG-184.m1",
+    "added AK-BAG-184.m2",
+    "added AK-BAG-5.m1",
+    "added AK-DLY-36.m1",
+    "added AK-DLY-36.m2",
+    "added AK-DLY-52.m1",
+    "added AK-DLY-45.m1",
+    "added AK-BAG-134.m1",
+    "added AK-BAG-134.m2",
+    "added AK-FEE-3.m1"
+  ],
+  "compiled_at": "2026-10-19T21:29:55+00:00"
+}

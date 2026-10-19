@@ -1,0 +1,1352 @@
+{
+  "_note": "Sandbox stand-in for the merchant approval step. The compiler produced 155 candidate rules from 530 clauses; the reviewer kept the ones that correctly encode the governing clauses for the in-scope dispute types, patched scope/amounts where the model was loose, and added a few merchant-approved readings (ids ending .mN). Everything not listed is disabled, not deleted: it stays visible in the setup UI as 'not approved'.",
+  "enable_only": [
+    "AK-REF-1.r1",
+    "AK-DLY-12.r1",
+    "AK-DLY-13.r1",
+    "AK-REF-20.r1",
+    "AK-DLY-35.r1",
+    "AK-DLY-36.r1",
+    "AK-DLY-45.r1",
+    "AK-DLY-52.r1",
+    "AK-RET-6.r1",
+    "AK-RET-20.r1",
+    "AK-RET-44.r1",
+    "AK-RET-48.r1",
+    "AK-RET-49.r1",
+    "AK-RET-50.r1",
+    "AK-RET-57.r1",
+    "AK-RET-11.r1",
+    "AK-BAG-5.r1",
+    "AK-BAG-7.r1",
+    "AK-BAG-134.r1",
+    "AK-BAG-141.r1",
+    "AK-BAG-143.r1",
+    "AK-BAG-144.r1",
+    "AK-BAG-145.r1",
+    "AK-BAG-140.r1",
+    "AK-BAG-184.r1",
+    "AK-BAG-186.r1",
+    "AK-FEE-3.r1"
+  ],
+  "patch": {
+    "AK-REF-1.r1": {
+      "claim_reasons": [
+        "flight_cancelled",
+        "schedule_change",
+        "flight_delayed"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.is_significant_change"
+                  },
+                  true
+                ]
+              },
+              {
+                ">=": [
+                  {
+                    "var": "flight.delay_minutes"
+                  },
+                  180
+                ]
+              }
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "14 CFR 260.6: cancelled or significantly changed flight and the passenger declined the alternative: full refund to original payment, including taxes and fees."
+      },
+      "description": "DOT automatic refund: cancellation/significant change declined -> full refund."
+    },
+    "AK-DLY-12.r1": {
+      "priority": 0,
+      "effect": {
+        "fault": "airline",
+        "note": "14 CFR 260.6(a)(2)(i): flight cancelled and no alternative accepted: full refund."
+      }
+    },
+    "AK-DLY-13.r1": {
+      "priority": 0,
+      "effect": {
+        "fault": "airline",
+        "note": "14 CFR 260.6(a)(2)(ii): passenger rejects the significantly changed flight or rebooking: full refund."
+      }
+    },
+    "AK-REF-20.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "no_show"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "No-show: the reservation is cancelled and the fare is forfeited; no credit."
+      }
+    },
+    "AK-DLY-35.r1": {
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.overnight_required",
+        "flight.cause",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.overnight_required"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.cause"
+              },
+              "controllable"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "var": "claim.requested_amount"
+        },
+        "fault": "airline",
+        "note": "Rule 8.E: overnight caused by a controllable cancellation/delay: hotel voucher or reimbursement of reasonable hotel and ground transport costs with receipts."
+      },
+      "description": "Controllable overnight disruption: hotel and ground transport covered."
+    },
+    "AK-DLY-36.r1": {
+      "claim_reasons": [
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.cause",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "flight.delay_minutes"
+              },
+              180
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.cause"
+              },
+              "controllable"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "flight.overnight_required"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "priority": 0,
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "min": [
+            {
+              "var": "claim.requested_amount"
+            },
+            25
+          ]
+        },
+        "fault": "airline",
+        "note": "Rule 8.E: delay beyond three hours caused by the airline: a reasonable meal at the airport (meal voucher, or reimbursement of a reasonable meal with receipt)."
+      },
+      "description": "Controllable delay over 3 hours: meal covered."
+    },
+    "AK-DLY-45.r1": {
+      "claim_reasons": [
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.schedule_change_minutes",
+        "flight.customer_accepted_alternative",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "flight.schedule_change_minutes"
+              },
+              120
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Customer commitment: a schedule change of more than 120 minutes qualifies for a full refund to original payment."
+      }
+    },
+    "AK-DLY-52.r1": {
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.customer_accepted_alternative",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              },
+              {
+                ">=": [
+                  {
+                    "var": "flight.delay_minutes"
+                  },
+                  180
+                ]
+              }
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Customer commitment: if you decide not to travel due to a delay of 3+ hours or a cancellation, you may refund your ticket; fees waived."
+      }
+    },
+    "AK-RET-6.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.travel_completed",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "Rule 17.B: refundable ticket surrendered unused: refund to original form of payment (7 business days for card)."
+      }
+    },
+    "AK-RET-20.r1": {
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative",
+        "claim.requested_remedy"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "claim.requested_remedy"
+              },
+              [
+                "refund",
+                "travel_credit",
+                "partial_refund"
+              ]
+            ]
+          }
+        ]
+      },
+      "priority": 10,
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "Rule 17.D/E: transportation was provided to the destination (customer accepted the alternative): no fare refund is due. Amenity/expense claims are assessed separately."
+      }
+    },
+    "AK-RET-44.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.hours_since_purchase",
+        "booking.hours_until_departure",
+        "booking.customer_cancelled",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "booking.hours_since_purchase"
+              },
+              24
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              24
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.customer_cancelled"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "priority": 10,
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "24-hour flexibility: a wholly unused non-refundable reservation (including Saver) cancelled within 24 hours of purchase, with travel more than 24 hours out, is refunded to original payment."
+      }
+    },
+    "AK-RET-48.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.hours_until_departure",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.fare_class"
+              },
+              "saver"
+            ]
+          },
+          {
+            ">=": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              336
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "partial",
+        "remedy": "travel_credit",
+        "amount": {
+          "*": [
+            {
+              "var": "booking.total_paid"
+            },
+            0.5
+          ]
+        },
+        "fault": "customer",
+        "note": "Saver fare cancelled 14+ days before departure: travel credit for 50% of the ticket value."
+      }
+    },
+    "AK-RET-49.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.hours_until_departure"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.fare_class"
+              },
+              "saver"
+            ]
+          },
+          {
+            "<": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              336
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Saver fare cancelled less than 14 days before departure: full ticket value forfeited."
+      }
+    },
+    "AK-RET-50.r1": {
+      "claim_reasons": [
+        "order_change"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Saver fares do not allow changes."
+      }
+    },
+    "AK-RET-57.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.fare_class",
+        "booking.travel_completed",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "booking.fare_class"
+              },
+              [
+                "main",
+                "premium",
+                "first"
+              ]
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "priority": 0,
+      "effect": {
+        "decision": "partial",
+        "remedy": "travel_credit",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "Non-refundable Main/Premium/First fare cancelled before departure: full value as travel credit (valid one year), not a refund."
+      }
+    },
+    "AK-RET-11.r1": {
+      "claim_reasons": [
+        "refund_request",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.hours_since_purchase"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "booking.hours_since_purchase"
+          },
+          8760
+        ]
+      },
+      "priority": 10,
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Rule 17.B.a.iv: no refunds for tickets surrendered more than 12 months after issue."
+      }
+    },
+    "AK-BAG-5.r1": {
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid",
+        "bag.status",
+        "bag.report_filed",
+        "bag.delay_days"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.fee_paid"
+              },
+              0
+            ]
+          },
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "bag.status"
+                  },
+                  "lost"
+                ]
+              },
+              {
+                ">=": [
+                  {
+                    "var": "bag.delay_days"
+                  },
+                  1
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "priority": 5,
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "14 CFR 260.5 / Rule 17.C.b: checked bag lost or delayed beyond 12 hours (domestic) with a mishandled baggage report on file: the bag fee is refunded."
+      }
+    },
+    "AK-BAG-7.r1": {
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.report_filed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.report_filed"
+          },
+          false
+        ]
+      },
+      "priority": 10,
+      "effect": {
+        "decision": "needs_fact",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "14 CFR 260.5(b): a Mishandled Baggage Report must be on file before a bag-fee refund or delay compensation is owed; ask the customer to file one (File ID)."
+      }
+    },
+    "AK-BAG-134.r1": {
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.interim_expenses",
+        "bag.report_filed",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "bag.interim_expenses"
+              },
+              0
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "delayed",
+                "lost"
+              ]
+            ]
+          }
+        ]
+      },
+      "priority": 0,
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "min": [
+            {
+              "var": "bag.interim_expenses"
+            },
+            4700
+          ]
+        },
+        "fault": "airline",
+        "note": "Rule 15: reasonable, documented interim expenses from a delayed or lost bag are reimbursed up to the liability limit ($4,700 per passenger); receipts reviewed by an agent."
+      }
+    },
+    "AK-BAG-141.r1": {
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Rule 15: no liability for incidental damage such as scuffs, dents, stains or scratches when ordinary care was exercised."
+      }
+    },
+    "AK-BAG-143.r1": {
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Rule 15: no liability for damage to protruding parts such as wheels, feet, pockets, straps or handles."
+      }
+    },
+    "AK-BAG-144.r1": {
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "when": {
+        "in": [
+          {
+            "var": "bag.damage_type"
+          },
+          [
+            "wheel",
+            "handle",
+            "zipper",
+            "cosmetic"
+          ]
+        ]
+      },
+      "requires": [
+        "bag.damage_type"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Rule 15: no liability for manufacturing defects or fair wear and tear (wheels, handles, zippers, cosmetic)."
+      }
+    },
+    "AK-BAG-145.r1": {
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Rule 15: no liability for items kept in the passenger's own possession (carry-on)."
+      }
+    },
+    "AK-BAG-140.r1": {
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.status"
+          },
+          "delivered"
+        ]
+      },
+      "effect": {
+        "fault": "customer",
+        "note": "Rule 15: no liability for missing or damaged items when the checked bag itself was not damaged, delayed or lost."
+      }
+    },
+    "AK-BAG-184.r1": {
+      "claim_reasons": [
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.minutes_to_carousel",
+        "bag.guarantee_claim_filed_within_hours"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.minutes_to_carousel"
+              },
+              20
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "bag.guarantee_claim_filed_within_hours"
+              },
+              2
+            ]
+          }
+        ]
+      },
+      "priority": 0,
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": 25,
+        "fault": "airline",
+        "note": "Bag service guarantee: bag not at the carousel within 20 minutes of arrival at the gate, claimed at the airport within 2 hours: $25 discount code or 2,500 Atmos Rewards points."
+      }
+    },
+    "AK-BAG-186.r1": {
+      "claim_reasons": [
+        "bag_guarantee"
+      ],
+      "effect": {
+        "fault": "customer",
+        "note": "Bag service guarantee not valid to/from Dutch Harbor or on international flights requiring customs clearance."
+      }
+    },
+    "AK-FEE-3.r1": {
+      "claim_reasons": [
+        "seat_refund",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "booking.ancillary_seat_fee",
+        "flight.cause_detail"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "booking.ancillary_seat_fee"
+              },
+              0
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.cause_detail"
+              },
+              "seat_not_provided"
+            ]
+          }
+        ]
+      },
+      "priority": 0,
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.ancillary_seat_fee"
+        },
+        "fault": "airline",
+        "note": "14 CFR 260.4: a fee for an ancillary service that was paid for but not provided (e.g. a paid seat the passenger did not get) is refunded automatically."
+      }
+    }
+  },
+  "add": [
+    {
+      "rule_id": "AK-BAG-184.m1",
+      "clause_id": "AK-BAG-184",
+      "tier": "commitment",
+      "priority": 0,
+      "claim_reasons": [
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.minutes_to_carousel"
+      ],
+      "when": {
+        "<=": [
+          {
+            "var": "bag.minutes_to_carousel"
+          },
+          20
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "Bag reached the carousel within 20 minutes: the guarantee does not apply."
+      },
+      "description": "Merchant-approved reading (sandbox): the 20-minute guarantee only applies beyond 20 minutes."
+    },
+    {
+      "rule_id": "AK-BAG-184.m2",
+      "clause_id": "AK-BAG-184",
+      "tier": "commitment",
+      "priority": 5,
+      "claim_reasons": [
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.minutes_to_carousel",
+        "bag.guarantee_claim_filed_within_hours"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "bag.minutes_to_carousel"
+              },
+              20
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.guarantee_claim_filed_within_hours"
+              },
+              2
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "The bag service guarantee must be claimed in person at the arrival airport within 2 hours of arrival."
+      },
+      "description": "Merchant-approved reading (sandbox): guarantee claims made after the 2-hour window are not honoured."
+    },
+    {
+      "rule_id": "AK-BAG-5.m1",
+      "clause_id": "AK-BAG-5",
+      "tier": "law",
+      "priority": 0,
+      "claim_reasons": [
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.delay_days",
+        "bag.report_filed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          },
+          {
+            "<": [
+              {
+                "var": "bag.delay_days"
+              },
+              1
+            ]
+          },
+          {
+            "<": [
+              {
+                "var": "bag.interim_expenses"
+              },
+              1
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "Bag delayed less than 12 hours and no expenses claimed: no fee refund is due under 14 CFR 260.5 (bag was not 'significantly delayed')."
+      },
+      "description": "Merchant-approved reading (sandbox): short bag delays without expenses carry no refund."
+    },
+    {
+      "rule_id": "AK-DLY-36.m1",
+      "clause_id": "AK-DLY-36",
+      "tier": "contract",
+      "priority": 5,
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "flight.cause",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.cause"
+              },
+              "uncontrollable"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "uncontrollable",
+        "note": "Rule 8.A.d/8.D: delay or cancellation caused by weather, air traffic control or other circumstances outside the airline's control: no amenities or expense reimbursement owed; the passenger was transported."
+      },
+      "description": "Merchant-approved reading (sandbox): uncontrollable disruption, passenger flew: no compensation."
+    },
+    {
+      "rule_id": "AK-DLY-36.m2",
+      "clause_id": "AK-DLY-36",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            "<=": [
+              {
+                "var": "flight.delay_minutes"
+              },
+              180
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "Rule 8.E: amenities apply to delays beyond three hours; this delay was shorter and the passenger travelled."
+      },
+      "description": "Merchant-approved reading (sandbox): delays of 3 hours or less carry no amenity entitlement."
+    },
+    {
+      "rule_id": "AK-DLY-52.m1",
+      "clause_id": "AK-DLY-52",
+      "tier": "commitment",
+      "priority": 0,
+      "claim_reasons": [
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.customer_accepted_alternative",
+        "booking.is_refundable_fare"
+      ],
+      "when": {
+        "and": [
+          {
+            "<": [
+              {
+                "var": "flight.delay_minutes"
+              },
+              180
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Delay under 3 hours and the passenger chose not to travel on a non-refundable fare: no refund; standard fare rules apply (credit where the fare allows)."
+      },
+      "description": "Merchant-approved reading (sandbox): short delays do not trigger the no-travel refund."
+    },
+    {
+      "rule_id": "AK-DLY-45.m1",
+      "clause_id": "AK-DLY-45",
+      "tier": "commitment",
+      "priority": 0,
+      "claim_reasons": [
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "<=": [
+          {
+            "var": "flight.schedule_change_minutes"
+          },
+          120
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "airline",
+        "note": "Schedule change of 120 minutes or less: not a qualifying change for a refund; rebooking options apply."
+      },
+      "description": "Merchant-approved reading (sandbox): small schedule changes do not qualify for a refund."
+    },
+    {
+      "rule_id": "AK-BAG-134.m1",
+      "clause_id": "AK-BAG-134",
+      "tier": "contract",
+      "priority": 0,
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.damage_type",
+        "bag.report_filed",
+        "claim.requested_amount"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.damage_type"
+              },
+              "structural"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "min": [
+            {
+              "var": "claim.requested_amount"
+            },
+            4700
+          ]
+        },
+        "fault": "airline",
+        "note": "Rule 15: substantiated structural damage to checked baggage reported within 24 hours: repair or depreciated replacement value, up to $4,700; agent reviews photos/receipts."
+      },
+      "description": "Merchant-approved reading (sandbox): structural damage with a report on file is compensable subject to review."
+    },
+    {
+      "rule_id": "AK-BAG-134.m2",
+      "clause_id": "AK-BAG-134",
+      "tier": "contract",
+      "priority": 5,
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.report_filed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.report_filed"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "Damage must be reported to an agent on pickup / within 24 hours of arrival; no compensation without a report on file."
+      },
+      "description": "Merchant-approved reading (sandbox): late or missing damage report."
+    },
+    {
+      "rule_id": "AK-FEE-3.m1",
+      "clause_id": "AK-FEE-3",
+      "tier": "law",
+      "priority": 0,
+      "claim_reasons": [
+        "seat_refund"
+      ],
+      "requires": [
+        "flight.cause_detail"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.cause_detail"
+          },
+          "seat_provided"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "fault": "customer",
+        "note": "The paid seat was provided; ancillary fees are refundable only when the service was not provided."
+      },
+      "description": "Merchant-approved reading (sandbox): seat fee not refundable when the seat was used."
+    }
+  ]
+}

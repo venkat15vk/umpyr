@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-19.2",
+  "version": "2026-10-19.4",
   "clauses": 70,
   "relevant_clauses": 53,
   "ambiguous_clauses": 21,
@@ -7,16 +7,15 @@
     "RK-SHIP-5",
     "RK-RET-19"
   ],
-  "rules": 22,
+  "rules": 16,
   "rules_by_tier": {
-    "contract": 22
+    "contract": 16
   },
   "rules_by_decision": {
-    "approve": 8,
+    "approve": 6,
     "deny": 7,
     "needs_approval": 2,
-    "escalate": 1,
-    "partial": 4
+    "needs_fact": 1
   },
   "clauses_by_topic": {
     "RET": 20,
@@ -27,262 +26,36 @@
     "DLY": 2,
     "GEN": 1
   },
-  "cannot_encode": [
-    {
-      "clause_id": "RK-RET-4",
-      "rules": 1,
-      "dropped": [],
-      "cannot_encode": "Clause conditions full refund on all components being included, but the ontology has no field for component completeness, and the clause does not state the outcome (partial refund or denial) when components are missing.",
-      "confidence": [
-        0.3
-      ]
-    },
-    {
-      "clause_id": "RK-RET-5",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states that some items may incur a restocking fee but does not identify which items qualify or the fee amount, so no deterministic condition or amount can be encoded from the ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-7",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause is phrased as encouragement ('encourages') rather than a firm requirement, and it does not state a decision, remedy, or condition that can be evaluated from ontology facts; it is a procedural preference about obtaining return authorization.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-GUAR-1",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states a precedence principle between manufacturer warranty and Rockler's offer without specifying a condition, remedy, or decision that can be evaluated from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-9",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause says purchases 'may be returned by mail' and must follow unspecified return policy guidelines. It does not state a firm entitlement, exclusion, remedy, amount, or conditions that can be evaluated from the ontology facts, so no deterministic rule can be derived without inventing policy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-10",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states that items 'may be subject to' a restocking fee without defining when the fee applies or its amount, and customer shipping responsibility is a logistics statement. The ontology cannot determine whether or how much fee applies, so no deterministic rule can be encoded.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-11",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause defers to third-party return guidelines that are not set out in the document and cannot be evaluated from ontology facts; it does not state a decision, remedy, or condition the engine can apply.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-GUAR-2",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states that power tools, CNC machines and laser products are subject to the manufacturer's warranty, which supersedes Rockler's offers, and that all items require return authorization. These are a policy statement about warranty precedence and a procedural requirement (authorization before return), not a decision outcome that can be determined from the ontology facts alone. No remedy, decision, or amount is specified, so no deterministic rule can be derived without inventing policy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-SHIP-2",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause assigns customer responsibility for shipping costs and restocking fees 'based on the price of the merchandise', but gives no percentage or fixed amount, and the fee basis is not a numeric rule. Shipping logistics and fee allocation without a determinable amount cannot be decided from the ontology facts, so no rule is emitted.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-GUAR-5",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause states a procedural requirement (name and address must be included in the package) that is not a decision condition over ontology facts; it does not set an entitlement, exclusion, or remedy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-GUAR-6",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states that manufacturer-shipped merchandise is covered by the manufacturer's warranty and supersedes Rockler offers, but the ontology has no fact indicating the item was shipped directly by the manufacturer (shipment.carrier and shipment.method do not identify a manufacturer-direct shipment), so the warranty-supersession condition cannot be decided from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-SHIP-3",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause allocates shipping costs and restocking fees to the customer without specifying any fee amount, percentage, or triggering condition; it is a cost-allocation statement that cannot be decided from ontology facts and no restocking fee amount is given.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-15",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states a location requirement for returns of in-store purchases, but the ontology has no fact recording whether an order was placed at a retail store or where a return is being made, so it cannot be decided from the ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-PAY-3",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause describes refund payment-method logistics (refund to original card or gift card issuance) rather than an eligibility or remedy decision that can be determined from the ontology facts; it is a procedural/payment statement.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-PAY-5",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause says store returns with a receipt 'may require' a mail order check due to cash limitations. This is a permissive, non-determinate statement about refund method (not an entitlement, exclusion, or remedy amount), and the ontology has no fact capturing store cash on hand or whether a check will be used, so no deterministic rule can be derived from it.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-1",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states that cancellation or modification of an order is not guaranteed and is discretionary; it does not set a deterministic condition, decision, or remedy that the rule engine can evaluate from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-2",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause is a procedural cross-reference: it defers to an external returns policy that is not provided and depends on a 'too late to cancel' condition (order status/timing) that is not defined by the ontology. Deciding a remedy from this clause alone would invent policy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-PAY-8",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause governs voiding a promotional gift card and deducting its redeemed amount from a refund. The ontology has no fact for promotional gift card redemption status or card value, and the clause does not set a claim decision or remedy that the rule engine can evaluate from the available facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-17",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause allocates return shipping cost to the customer; it is a statement about shipping logistics/charges with no decision outcome (approve/partial/deny) or remedy that the ontology facts can determine.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-4",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause describes an order-fulfillment procedure (the rest of the order ships and the out-of-stock item is placed on backorder). It does not set an entitlement, exclusion, or remedy that the rule engine can decide from the ontology facts, so no rule is emitted.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-5",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause is a notification/procedure statement: it says the merchant will notify the customer of discontinuation and mention recommended replacements, but states no refund, cancellation, or remedy entitlement that can be decided from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-SHIP-5",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause is a shipping and handling charge schedule (pricing/shipping logistics), which the policy compiler must not encode as dispute-resolution rules.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-DLY-1",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause states a delivery time estimate (logistics/informational statement), not an entitlement, exclusion, or dispute outcome decidable from the ontology facts; no ontology path captures contiguous-US ordering location or a delivery-time commitment that drives a remedy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-6",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause defines direct ship items as special orders and states when the account is charged; it is a definition/pricing-timing statement with no decision or remedy that the ontology facts can resolve. There is no direct-ship flag in the ontology.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-DLY-2",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause states transit times are estimates and not guaranteed; it is a disclaimer about delivery logistics and does not set a claim outcome, remedy, or condition decidable from the ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-7",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause restricts shipping of partial orders by destination and states a stock requirement; destination/address facts (Alaska, Hawaii, international, AFO/FPO) and partial-order status are not in the ontology, and the clause defines a fulfillment/shipping logistics restriction rather than a dispute remedy decision.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-8",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause describes a notification procedure (we will notify the customer by e-mail or phone about stock-out delays), not a decision or remedy that can be decided from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-9",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause is a disclaimer about the accuracy of displayed in-stock dates; it does not state an entitlement, exclusion, or remedy decidable from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-18",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause defers to a 'standard return policy' that is not stated in this document, so the return window and conditions cannot be determined from the clause text; encoding an approval would invent policy.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-13",
-      "rules": 1,
-      "dropped": [],
-      "cannot_encode": "Clause ties automatic cancellation to pickup after 5 days, but the ontology has no pickup fact; the encoded rule is only a rough approximation.",
-      "confidence": [
-        0.4
-      ]
-    },
-    {
-      "clause_id": "RK-ORD-14",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause depends on whether the order was picked up within 5 days of a store hold, and the ontology has no pickup or hold-status fact. Its only measurable fact, order.days_since_order, cannot show whether pickup occurred, so the cancel-and-refund outcome cannot be decided from ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-15",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause is a procedural/notification statement (\"we will notify you promptly\") with no defined timeframe or decidable condition beyond unavailability, which is not expressible as a deterministic rule over the ontology facts. Unavailability is not a field in the ontology (order.is_backordered and order.status 'backordered' are related but the clause does not state their mapping), and 'promptly' is undefined.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-GUAR-7",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause defers warranty coverage to the manufacturer for manufacturer-shipped items and states a general authorization requirement for returns; it does not set a decision, remedy, or amount that the engine can evaluate from ontology facts. There is no ontology field identifying a manufacturer-direct shipment, so the condition cannot be tested.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-ORD-18",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "The clause describes merchant fulfillment logistics and notification procedure (placing the rest of the order, notifying the customer of the expected date, automatic shipment on restock) rather than a claim decision with a remedy, approval, or denial; it cannot be mapped to an approve, partial, deny, needs_approval, or escalate outcome from the ontology facts.",
-      "confidence": []
-    },
-    {
-      "clause_id": "RK-RET-20",
-      "rules": 0,
-      "dropped": [],
-      "cannot_encode": "Clause refers to the standard return policy, which is not included in this chunk; return window and conditions are not stated, and the procedural statement about bringing item and receipt to a store cannot be decided from ontology facts.",
-      "confidence": []
-    }
-  ],
+  "cannot_encode": [],
   "dropped": [],
   "conflicts": [
-    "RK-PAY-1.r1 (needs_approval/partial_refund) vs RK-RET-19.r1 (partial/refund) at tier=contract priority=5; shared fields ['order.payment_method']",
-    "RK-RET-4.r1 (escalate/None) vs RK-SHIP-1.r1 (partial/none) at tier=contract priority=5; shared fields ['item.condition']",
-    "RK-RET-4.r1 (escalate/None) vs RK-PAY-2.r1 (partial/none) at tier=contract priority=5; shared fields ['item.condition']"
+    "RK-RET-1.r1 (approve/refund) vs RK-RET-1.m1 (deny/none) at tier=contract priority=0; shared fields ['order.days_since_order']",
+    "RK-ORD-12.r1 (approve/cancel_order) vs RK-ORD-2.m1 (deny/none) at tier=contract priority=0; shared fields ['order.has_shipped']"
   ],
-  "compiled_at": "2026-10-19T20:55:39+00:00"
+  "merchant_edits": [
+    "patched RK-RET-1.r1: ['claim_reasons', 'description', 'effect', 'requires']",
+    "disabled RK-RET-2.r1",
+    "patched RK-RET-3.r1: ['claim_reasons', 'effect']",
+    "patched RK-PAY-1.r1: ['claim_reasons', 'description', 'effect', 'requires', 'when']",
+    "disabled RK-RET-4.r1",
+    "disabled RK-SHIP-1.r1",
+    "disabled RK-RET-6.r1",
+    "disabled RK-RET-6.r3",
+    "disabled RK-PAY-2.r1",
+    "patched RK-RET-8.r1: ['claim_reasons', 'effect']",
+    "patched RK-GUAR-3.r1: ['claim_reasons', 'effect', 'requires']",
+    "patched RK-GUAR-4.r1: ['claim_reasons', 'effect']",
+    "disabled RK-RET-16.r1",
+    "disabled RK-SHIP-4.r1",
+    "disabled RK-PAY-4.r1",
+    "patched RK-ORD-12.r1: ['effect', 'requires']",
+    "disabled RK-ORD-13.r1",
+    "disabled RK-RET-19.r1",
+    "added RK-SHIP-1.m1",
+    "added RK-SHIP-1.m2",
+    "added RK-RET-1.m1",
+    "added RK-ORD-2.m1",
+    "added RK-ORD-4.m1"
+  ],
+  "compiled_at": "2026-10-19T21:27:03+00:00"
 }

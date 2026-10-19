@@ -27,3 +27,21 @@ Short entries, newest last. Each: what we chose, why, and what it rules out.
 **D11. PII masking is regex + name lists.** Emails, phones, Luhn-valid card numbers, street addresses, salutation/sign-off names, a common-first-name list, and the synthetic generator's own name list. Good enough for synthetic data; a real deployment would add an NER pass.
 
 **D12. `.env` in `.env` only.** The root `.env` is read by pydantic-settings (engine) and by Vite (`envDir: ../..`, `VITE_*` only). Never read by tooling, never committed. The founder's `.env` sets a `DATABASE_URL` that currently fails to connect (see README "Database"); local work overrides it with `DATABASE_URL=pgserver://.pgdata` on the command line.
+
+## 2026-10-19 — M2
+
+**D13. Policy sources: archive raw + text + meta; Alaska via Next.js payload and PDF.** Alaska's pages render client-side, but their CMS content is embedded in the page's `__NEXT_DATA__` JSON, so we extract text from that without a browser (Playwright does not support this macOS version, and headless Chrome only rendered the cookie banner). The contract of carriage `view-all` URL redirects to the official PDF, which we archive and extract with PyMuPDF. 14 CFR Part 260 comes from the eCFR versioner API (XML). Rockler's `/return-policy` redirects to the FAQ page; both ids are archived, duplicates are skipped at compile time by SHA-256.
+
+**D14. Alaska contract of carriage compiled only for Rules 1, 7, 8, 15, 17.** The other rules (children, animals, codeshare, fares, data) do not govern in-scope disputes. Configured per source as `keep_sections` in `samples/alaska/sources.json`.
+
+**D15. Compiler = segment (verbatim clauses) -> convert (typed rules) -> lint -> assemble, with a merchant-approval step.** Haiku over-marks relevance and emits some unconditional or no-op rules, so code rejects rules with `when: true` outcomes, approve-with-no-remedy, and unknown ontology paths (one repair attempt with the validation error). JSON Logic is passed as a JSON-encoded string because structured outputs need concrete types. Potential conflicts are listed only when two rules share tier, priority, a claim reason and at least one fact field; the engine still escalates real conflicts at runtime.
+
+**D16. Sandbox curation lives in `samples/<client>/rule_overrides.json`.** This stands in for the merchant approval UI (M4): `disable`, `enable_only`, `patch` and `add`. Added rules are ids ending `.mN`, each cites an existing clause and carries a "merchant-approved reading" description. Rockler: 22 compiled -> 16 approved. Alaska: 155 compiled -> 37 approved. Raw compiler output is cached in `rules_raw.json` so re-curation never re-spends.
+
+**D17. Synthetic data is scenario-driven, not free-form.** Code generates orders/bookings, picks a scenario template, builds ontology facts, asks the rule engine for the policy ruling, derives a staff outcome (85% consistent, 15% labelled drift), and fixes the thread's turn plan and staff actions. Haiku writes only the words. Hidden ground truth (`tickets_truth.jsonl`) lets us score mining, taxonomy and drift detection. Fake PII uses example.com domains and 555 numbers; the names used are saved so masking is verifiable.
+
+**D18. needs_fact asks only for the highest-precedence undecidable rules' facts.** Otherwise every applicable rule's requirements would be demanded at once.
+
+**D19. Local hash embeddings when VOYAGE_API_KEY is absent.** `EMBEDDING_PROVIDER=auto` picks Voyage when the key exists, else a deterministic 1024-d HashingVectorizer. Clustering quality is lexical, not semantic, until the key is added; the pipeline and schema are identical.
+
+**D20. ruff ignores E501.** `ruff format` wraps code; long literal strings and prompts are fine.

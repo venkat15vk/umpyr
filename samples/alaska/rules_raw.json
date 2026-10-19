@@ -1,0 +1,6357 @@
+{
+  "rules": [
+    {
+      "rule_id": "AK-REF-1.r1",
+      "clause_id": "AK-REF-1",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "schedule_change"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.customer_accepted_alternative",
+        "flight.is_cancelled_by_airline",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "and": [
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.is_significant_change"
+                  },
+                  true
+                ]
+              }
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause requires that the consumer neither accepts the significantly changed flight/rebooking nor accepts any voucher, credit, or other compensation. The voucher/credit acceptance fact is not in the ontology; the rule assumes no alternative compensation was accepted via customer_accepted_alternative "
+      },
+      "description": "Refund airfare, including nonrefundable airfare, for a cancelled or significantly changed flight where the consumer does not accept the significantly changed flight or rebooking on an alternative flight, and does not accept any voucher, credit, or other compensation.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-3.r1",
+      "clause_id": "AK-DLY-3",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change",
+        "refund_request",
+        "seat_refund"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.is_domestic",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          },
+          {
+            ">=": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              180
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause (2) defines one qualifying significant-change condition; the refund entitlement itself is governed by the surrounding section and the consumer declining alternative transportation, which is not encoded here. Amount not set by clause."
+      },
+      "description": "Significant change: arrival time shifted by 3+ hours for domestic itinerary (DOT refund entitlement when consumer declines alternative)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-3.r2",
+      "clause_id": "AK-DLY-3",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change",
+        "refund_request",
+        "seat_refund"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              false
+            ]
+          },
+          {
+            ">=": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              360
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause (2) defines one qualifying significant-change condition for international itineraries; the refund entitlement itself is governed by the surrounding section and the consumer declining alternative transportation, which is not encoded here. Amount not set by clause."
+      },
+      "description": "Significant change: arrival time shifted by 6+ hours for international itinerary (DOT refund entitlement when consumer declines alternative)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-4.r1",
+      "clause_id": "AK-DLY-4",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_significant_change"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause (3) lists a different origin or destination airport as a significant change. The ontology has no direct airport-change flag, so the rule keys on flight.is_significant_change, which is the DOT significant-change determination; the clause's airport-change trigger is assumed to be reflected in t"
+      },
+      "description": "Significant change of different origin or destination airport entitles the consumer to a refund when the consumer does not accept the alternative",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-5.r1",
+      "clause_id": "AK-DLY-5",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_significant_change"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause (4) lists additional connections as one condition of a significant change. The ontology has no connection-count field, so the rule relies on flight.is_significant_change as the proxy for the whole significant-change definition; the connection-point comparison itself cannot be verified from th"
+      },
+      "description": "Significant change: itinerary now has more connection points than the original (DOT 260 refund trigger)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-6.r1",
+      "clause_id": "AK-DLY-6",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "schedule_change",
+        "flight_delayed",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.total_paid",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_significant_change"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "partial_refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause (5) lists downgrade to lower class as a significant change; the refund amount is the fare difference per the surrounding section, which is not stated in this clause, so amount is left null."
+      },
+      "description": "Passenger downgraded to a lower class of service due to a significant schedule change entitles refund of the fare difference, where the clause applies to flight delay/schedule change claims.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-FEE-3.r1",
+      "clause_id": "AK-FEE-3",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "seat_refund",
+        "ancillary_refund",
+        "bag_delayed",
+        "bag_lost",
+        "bag_damaged",
+        "bag_guarantee",
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "other"
+      ],
+      "requires": [
+        "booking.ancillary_bag_fee",
+        "booking.ancillary_other_fee",
+        "booking.ancillary_seat_fee",
+        "booking.payment_method",
+        "booking.total_paid"
+      ],
+      "when": {
+        "or": [
+          {
+            "!=": [
+              {
+                "var": "booking.ancillary_seat_fee"
+              },
+              0
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "booking.ancillary_bag_fee"
+              },
+              0
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "booking.ancillary_other_fee"
+              },
+              0
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "+": [
+            {
+              "var": "booking.ancillary_seat_fee"
+            },
+            {
+              "var": "booking.ancillary_bag_fee"
+            },
+            {
+              "var": "booking.ancillary_other_fee"
+            }
+          ]
+        },
+        "fault": "airline",
+        "note": "Clause requires the fee be refunded automatically and promptly when the service was not provided through no fault of the consumer. The condition that the service was not provided is not a fact in the ontology; the rule assumes ancillary fees paid are for services not provided and should be confirmed"
+      },
+      "description": "Automatic refund of ancillary fees (seat, bag, other optional services) when the paid service was not provided through no fault of the consumer, for carrier merchant of record.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-4.r1",
+      "clause_id": "AK-BAG-4",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "delayed"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Clause assigns refund responsibility to the operating carrier (or last-segment carrier for multi-carrier itineraries). Ticket agent merchant-of-record status and the 'no fault of the consumer' condition are not available as ontology facts and are not checked by this rule. The significant-delay thres"
+      },
+      "description": "Checked bag fee refund when a checked bag was lost or significantly delayed; the operating carrier (or last-segment carrier for multi-carrier itineraries) must provide a prompt, automatic refund of the checked bag fee where a ticket agent is merchant of record",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-FEE-4.r1",
+      "clause_id": "AK-FEE-4",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "ancillary_refund"
+      ],
+      "requires": [
+        "booking.ancillary_other_fee",
+        "booking.payment_method",
+        "customer.customer_id"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.payment_method"
+              },
+              "other"
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "booking.ancillary_other_fee"
+              },
+              0
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.ancillary_other_fee"
+        },
+        "fault": "airline",
+        "note": "Clause assigns refund responsibility to the operating carrier when a ticket agent is merchant of record and the carrier failed to provide the service through no fault of the consumer. Merchant-of-record status and service-failure facts are not directly in the ontology; payment_method 'other' is used"
+      },
+      "description": "Ticket agent is merchant of record for other ancillary fees; carrier failed to provide the service through no fault of consumer: carrier provides prompt automatic refund of the fee.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-5.r1",
+      "clause_id": "AK-BAG-5",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "delayed"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Refund of fee charged for transporting a lost or significantly delayed checked bag; prompt refund required. Merchant-of-record and multi-carrier allocation rules are not evaluable from ontology facts."
+      },
+      "description": "Covered carrier must promptly refund checked-bag fee when the checked bag is lost or significantly delayed",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-7.r1",
+      "clause_id": "AK-BAG-7",
+      "tier": "law",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.report_filed",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "delayed"
+              ]
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause only conditions the carrier's refund obligation on MBR filing; the approve case where an MBR is on file is not stated in this clause and is not encoded here. Multi-carrier last-segment routing is not evaluable from ontology facts."
+      },
+      "description": "No obligation to refund the checked-bag fee for a lost or significantly delayed bag when no Mishandled Baggage Report was filed with the operating carrier (or last-segment carrier for multi-carrier itineraries).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-10.r1",
+      "clause_id": "AK-BAG-10",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": null,
+        "note": "Clause sets a floor: refund amount must be at least the checked bag fee paid. Amount set to the full fee paid as the minimum compliant value."
+      },
+      "description": "Refund for checked bag fee must be equal to or greater than the fee the consumer paid for the checked bag",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-9.r1",
+      "clause_id": "AK-DLY-9",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_cancelled_by_airline"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause requires a full and prompt refund for a cancelled flight where the consumer chooses not to travel. The ontology has no fact for the consumer's choice not to travel, so the rule assumes it. The amount is the total paid, which includes taxes and ancillary fees."
+      },
+      "description": "Airline-cancelled flight: full refund of airfare, taxes and ancillary fees",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-9.r2",
+      "clause_id": "AK-DLY-9",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "schedule_change",
+        "flight_delayed"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_significant_change"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause is ambiguous: 'significantly delayed or changed' is defined elsewhere in the part. This rule uses the ontology's DOT significant-change flag as a proxy. The consumer's choice not to travel is not represented in the ontology and is assumed."
+      },
+      "description": "Significantly delayed or changed flight: full refund if the consumer declines travel (threshold not quantified in this chunk)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-12.r1",
+      "clause_id": "AK-DLY-12",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause states the consumer is not offered an alternative flight or any voucher, credit, or other compensation under paragraph (c). The ontology has no field recording whether a voucher or credit was offered, so the rule is conditioned on the customer not having accepted an alternative; the offered-c"
+      },
+      "description": "Automatic refund when a flight is cancelled by the airline and the consumer is not offered an alternative flight or any voucher, credit, or other compensation",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-13.r1",
+      "clause_id": "AK-DLY-13",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "schedule_change",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.customer_accepted_alternative",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_significant_change"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause (ii) of the DOT automatic refund rule: consumer rejects the significantly delayed or changed flight, rebooking, or compensation offered under paragraph (c). Modeled as significant change with alternative not accepted; the rejected-compensation element is not separately modeled as a fact."
+      },
+      "description": "Automatic refund when a consumer rejects a significantly delayed or changed flight, a rebooking on an alternative flight, or voucher/credit/compensation offered by the carrier",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-16.r1",
+      "clause_id": "AK-DLY-16",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.customer_accepted_alternative",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_significant_change"
+              },
+              true
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause requires a full and prompt refund for an individual with a disability who notifies the carrier they do not want to continue travel due to significant changes. The disability status fact is not in the ontology; the rule assumes the claim is from such an individual and the carrier is merchant o"
+      },
+      "description": "Carrier of record must provide a full refund to a passenger with a disability who declines to travel due to a significant schedule change.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-REF-11.r1",
+      "clause_id": "AK-REF-11",
+      "tier": "law",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "refund_request",
+        "credit_request",
+        "seat_refund",
+        "ancillary_refund",
+        "denied_boarding"
+      ],
+      "requires": [
+        "claim.wants_credit_instead_of_refund",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "claim.wants_credit_instead_of_refund"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Encodes only the prohibition on deemed acceptance of credit/voucher in lieu of refund. Denial here means the carrier cannot impose credit; the refund entitlement under 260.6(c) is not encoded by this clause. Confidence limited because the clause is a constraint on carrier procedure rather than a rem"
+      },
+      "description": "Carrier may not treat consumer as having accepted travel credit, voucher or other compensation in lieu of refund unless consumer affirmatively agreed; no deemed acceptance. This is a procedural prohibition on the carrier, not a decision on the refund itself.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-PAY-1.r1",
+      "clause_id": "AK-PAY-1",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "seat_refund",
+        "ancillary_refund",
+        "bag_lost",
+        "bag_delayed",
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "booking.payment_method"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "booking.payment_method"
+          },
+          null
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Refund method rule: money returned to original payment method; amount not specified by this clause. Applies only when a refund is due under Part 260."
+      },
+      "description": "Refund of a fare or ancillary fee due under this part must be issued promptly in the original form of payment unless the consumer agrees to a cash-equivalent alternative.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-FEE-9.r1",
+      "clause_id": "AK-FEE-9",
+      "tier": "law",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request"
+      ],
+      "requires": [
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "cancelled_by_airline"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause prohibits retaining a processing fee on refunds due; amount set to full total paid with no fee deducted. Condition limited to airline-cancelled bookings as the clearest refund-due trigger in the ontology."
+      },
+      "description": "Carrier may not retain a processing fee when issuing refunds that are due; refund of a due amount is issued without processing fee deduction.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-REF-15.r1",
+      "clause_id": "AK-REF-15",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "claim.requested_remedy"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.requested_remedy"
+          },
+          "travel_credit"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "The clause sets a one-year validity window from issuance but the ontology has no credit issuance date field, so the expiry test cannot be evaluated with available facts; rule is a conservative placeholder restricted to travel credit requests and should be reviewed. Non-transferability is not encoded"
+      },
+      "description": "Travel credit must be used for travel booked and flown within one year from issuance; credit older than one year is not valid for use",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-ORD-1.r1",
+      "clause_id": "AK-ORD-1",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "schedule_change",
+        "other"
+      ],
+      "requires": [
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_cancelled_by_airline"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause is discretionary ('reserves the right') and 'necessary or advisable' is not objectively defined; route to human review. Government/defense/force majeure trigger facts are not in the ontology."
+      },
+      "description": "Airline may cancel a reservation and seat assignment when necessary to comply with government regulation, emergency defense transport request, or force majeure; discretionary right with no remedy owed",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-REF-17.r1",
+      "clause_id": "AK-REF-17",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "no_show"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Discretionary ('may'); outcome requires human approval. The clause's notice-before-departure condition and the carrier-cancelled-reservation trigger are not representable with the current ontology, so this rule covers only the recorded no-show status."
+      },
+      "description": "Alaska may, at its discretion, cancel all reservations (confirmed or not) and seat assignments for continuing or return space when the passenger has no-showed a reserved flight segment without cancelling before departure.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-GEN-14.r1",
+      "clause_id": "AK-GEN-14",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "active"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Discretionary reserved right to invalidate tickets for violations; scope of 'violation' is broad and not defined in the clause, so a human must determine whether a violation occurred. Ontology has no direct violation fact; condition is a placeholder on active booking status."
+      },
+      "description": "Airline may invalidate a ticket that was purchased or used in violation of the Contract of Carriage or airline rules (discretionary right, broad scope of violation).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-ORD-4.r1",
+      "clause_id": "AK-ORD-4",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "no_show"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause reserves a discretionary right to cancel and deny boarding for failure to check in on time; outcome left to airline discretion. Cancel-and-deny reservation right, not a refund entitlement."
+      },
+      "description": "Airline may cancel reservation/seat and deny boarding for a passenger who fails to present within check-in time limits; discretionary right, so needs approval.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-ORD-5.r1",
+      "clause_id": "AK-ORD-5",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.hours_until_departure",
+        "booking.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "<": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              1
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "cancel_order",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says Alaska 'may' cancel, so cancellation is discretionary and requires staff approval. Only the 60-minute completion deadline is encoded; channel (website/app) is not an ontology field and is not tested. Ticket-completion timing is approximated via hours_until_departure below 1 hour."
+      },
+      "description": "Airline may cancel reservations and seat assignments of online tickets not completed at least 60 minutes before departure (discretionary).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-ORD-6.r1",
+      "clause_id": "AK-ORD-6",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "flight.actual_departure",
+        "flight.scheduled_departure"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "no_show"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says 'may be canceled' (discretionary). Gate arrival timing not directly in ontology; encoded using no_show status as proxy. Check-in times in Rule 15.A.c not encoded."
+      },
+      "description": "Reservation/seat may be canceled when passenger fails to arrive at gate at least 30 minutes before scheduled departure; discretionary cancellation, so needs_approval with no remedy.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-29.r1",
+      "clause_id": "AK-DLY-29",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "schedule_change",
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "flight.schedule_change_minutes"
+          },
+          0
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause disclaims liability for any schedule change or failure to operate on schedule, with or without notice. Scoped to schedule change and delay claims; does not address refund rights under other clauses."
+      },
+      "description": "Airline is not liable for schedule changes or failure to operate flights on schedule (exclusion of liability for schedule change claims)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-30.r1",
+      "clause_id": "AK-DLY-30",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.is_cancelled_by_airline",
+        "flight.is_significant_change"
+      ],
+      "when": {
+        "or": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_significant_change"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause says 'without prejudice to any rights afforded under Applicable Laws'; contractual liability is excluded but statutory rights (e.g., DOT refund rules) are not waived by this clause. Rule should be read with applicable law; a statutory refund may still apply outside the contract."
+      },
+      "description": "No airline liability for flight cancellations or significant delays/changes (exclusion of liability under contract; applicable laws preserved)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-2.r1",
+      "clause_id": "AK-RET-2",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "refund_request",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.total_paid",
+        "customer.customer_id"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "active"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "partial_refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause does not state the fare difference amount; amount must be computed from the fare difference, which the ontology does not provide. Requires knowledge of the lower-class fare and whether the customer accepted the downgrade."
+      },
+      "description": "Refund of fare difference when airline cannot transport in originally booked class and customer travels in a lower class",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-33.r1",
+      "clause_id": "AK-DLY-33",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "case.ticket_id"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.reason"
+          },
+          "other"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "The clause references a third-party submission and Rule 8 C.a. process compliance, neither of which is an ontology fact. The condition cannot be evaluated from available paths; the rule above is a placeholder and should not be relied on."
+      },
+      "description": "Deny claims submitted by a third-party company on behalf of passengers when the Rule 8 C.a. process has not been followed",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-34.r1",
+      "clause_id": "AK-DLY-34",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "refund_request",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "case.category"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "case.category"
+          },
+          "force_majeure"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "uncontrollable",
+        "note": "Clause says Alaska 'may refund ... or provide a travel certificate' at its discretion; the remedy choice is discretionary and the amount for unused portions is not fixed by the clause. Ambiguous per source metadata."
+      },
+      "description": "Force majeure cancellation: Alaska may refund unused ticket portion or provide a travel certificate at its discretion; refund vs travel certificate is ambiguous so route to human approval.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-35.r1",
+      "clause_id": "AK-DLY-35",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.cause",
+        "flight.is_cancelled_by_airline",
+        "flight.overnight_required"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.overnight_required"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.cause"
+              },
+              "controllable"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "voucher",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause requires 100+ miles from home and availability of hotels in the area; 'available hotels' undefined, so distance and hotel availability are not ontology-encodable and require human confirmation. Remedy modeled as complimentary hotel accommodation mapped to voucher."
+      },
+      "description": "Complimentary hotel accommodations for overnight stay due to airline-controllable flight cancellation or delay, when hotels are available in the area",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-36.r1",
+      "clause_id": "AK-DLY-36",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.delay_minutes"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "flight.delay_minutes"
+          },
+          180
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause says 'reasonable meal' without a monetary amount; remedy modeled as a meal voucher. Ambiguous wording: 'reasonable' and vendor availability are not quantifiable from ontology facts, so confidence is reduced."
+      },
+      "description": "Offer a reasonable meal at the airport when a flight delay extends beyond three hours",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-40.r1",
+      "clause_id": "AK-DLY-40",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "schedule_change",
+        "flight_delayed"
+      ],
+      "requires": [
+        "flight.is_significant_change",
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "and": [
+          {
+            "!=": [
+              {
+                "var": "flight.schedule_change_minutes"
+              },
+              null
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_significant_change"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause disclaims liability for schedule changes; the exception in Section G(2) of Rule 8 overrides this and is not part of this clause, so the rule is limited to non-significant changes to avoid conflicting with that exception."
+      },
+      "description": "Airline is not liable for schedule changes or failure to operate flights on schedule (exception in Section G(2) applies separately; not encoded here).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-41.r1",
+      "clause_id": "AK-DLY-41",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "schedule_change",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative",
+        "flight.is_cancelled_by_airline",
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "or": [
+          {
+            ">": [
+              {
+                "var": "flight.schedule_change_minutes"
+              },
+              0
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "rebook",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause option (i): transport on another flight with available space at customer request. Availability is not an ontology fact; engine treats it as operational."
+      },
+      "description": "Schedule change or missed flight: customer may request rebooking on another airline flight with available space (no refund amount stated here).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-41.r2",
+      "clause_id": "AK-DLY-41",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "schedule_change",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "booking.payment_method",
+        "booking.total_paid",
+        "flight.is_cancelled_by_airline",
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "or": [
+          {
+            ">": [
+              {
+                "var": "flight.schedule_change_minutes"
+              },
+              0
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Refund amount determined by reference to Rule 17, which is not in this clause; ambiguous, so route for approval. Refund goes to original form of payment."
+      },
+      "description": "Schedule change or missed flight: customer may request refund of unused ticket portion per Rule 17 (amount not stated in this clause), paid to original form of payment.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-3.r1",
+      "clause_id": "AK-DBC-3",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.is_domestic",
+        "flight.origin"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_domestic"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": "airline",
+        "note": "Compensation exclusion depends on Applicable Laws regulating oversold flights, which are not encoded. Staff must confirm whether applicable law requires compensation. Origin airport is not directly testable against U.S./Canada in the ontology; flight.is_domestic is used as a proxy only for flights n"
+      },
+      "description": "Oversold flight originating outside US/Canada: no compensation except where Applicable Laws require it. Clause defers to laws not in the ontology, so the default is a human-judgment escalation rather than a denial.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-9.r1",
+      "clause_id": "AK-DBC-9",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.travel_completed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.travel_completed"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "rebook",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause is truncated at the chunk boundary. The onward transport by other carrier is at Alaska's sole discretion and is not encoded here; it would need separate handling and human approval."
+      },
+      "description": "Passenger denied boarding (voluntarily or involuntarily) is rebooked without stopover on the next flight with space, at no additional cost, regardless of class of service.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-13.r1",
+      "clause_id": "AK-DBC-13",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.status",
+        "flight.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.status"
+              },
+              "delayed"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause states a condition for denied boarding eligibility (confirmed reserved space, flight unable to accommodate and departs without passenger). The ontology has no direct 'oversold/unable to accommodate' fact, so the rule uses the closest status proxy and requires human confirmation; no remedy amo"
+      },
+      "description": "Denied boarding eligibility: passenger holds confirmed reserved space, flight departs without them because it cannot accommodate them",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-14.r1",
+      "clause_id": "AK-DBC-14",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.cause",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.cause"
+              },
+              "uncontrollable"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Exclusion from compensation. The 'all reasonable measures' condition is discretionary and not captured by ontology facts; the cause proxy is approximate for 'operational or safety reasons' (cause_detail may refine it). The government requisition and aircraft-substitution branches cannot be evaluated"
+      },
+      "description": "Passenger not eligible for compensation when the confirmed flight is cancelled by the airline for an uncontrollable (operational or safety) reason, provided Alaska took all reasonable measures (proxy: cause recorded as uncontrollable).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-17.r1",
+      "clause_id": "AK-DBC-17",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes"
+      ],
+      "when": {
+        "<=": [
+          {
+            "var": "flight.arrival_delay_minutes"
+          },
+          60
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states an alternate-flight exclusion. The clause requires alternate flight planned arrival within one hour of original planned arrival; the ontology has no direct field for alternate flight arrival time, so arrival_delay_minutes is used as a proxy. Confidence is limited accordingly."
+      },
+      "description": "Denied boarding compensation exclusion: airline places passenger on alternate flight arriving within one hour of original planned arrival",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-19.r1",
+      "clause_id": "AK-DBC-19",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.status"
+          },
+          "scheduled"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause states the consequence of failing check-in time limits but the ontology has no check-in compliance fact; the when condition is a placeholder gate and the engine should only apply this where check-in failure is established by the case facts."
+      },
+      "description": "Passenger failed to meet check-in time limits; reservation cancelled and ineligible for denied boarding compensation",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-20.r1",
+      "clause_id": "AK-DBC-20",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              60
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states exclusion of compensation when alternate transportation arrives within one hour of planned original arrival. Requires alternate arrival time data; arrival_delay_minutes used as proxy. Clause phrased as 'no compensation', so deny applies to compensation only."
+      },
+      "description": "No compensation for denied boarding when Alaska offers alternate transportation planned to arrive within one hour of the original flight's planned arrival",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-22.r1",
+      "clause_id": "AK-DBC-22",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.total_paid",
+        "flight.arrival_delay_minutes",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              120
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": {
+          "min": [
+            {
+              "*": [
+                {
+                  "var": "booking.total_paid"
+                },
+                4
+              ]
+            },
+            2150
+          ]
+        },
+        "fault": "airline",
+        "note": "Clause requires the lower of 400% of the fare to the destination or first stopover, or $2,150. Fare is approximated by booking.total_paid, which includes taxes and fees. The 'alternate transportation planned to arrive more than two hours late' test is approximated by flight.arrival_delay_minutes > 1"
+      },
+      "description": "Domestic denied boarding compensation of 400% of fare capped at $2,150 when the arrival delay exceeds two hours and no alternate transportation was offered",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-24.r1",
+      "clause_id": "AK-DBC-24",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              false
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              60
+            ]
+          },
+          {
+            "<": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              240
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": 400,
+        "fault": "airline",
+        "note": "Clause states a maximum payment of $400 CAD. Applies to alternate transportation planned to arrive more than 1 but less than 4 hours after original planned arrival; encoded using arrival delay as proxy for planned arrival of alternate transport. Currency CAD is not in the ontology; the Canada-origin"
+      },
+      "description": "Denied boarding compensation for alternate transportation arriving 1-4 hours late: maximum payment of $400 CAD",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-25.r1",
+      "clause_id": "AK-DBC-25",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.origin"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.origin"
+              },
+              "YYZ"
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              240
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": 800,
+        "fault": "airline",
+        "note": "Clause gives a maximum payment of $800 CAD; origin test uses YYZ as a proxy for Canada-originating and should be verified against a country field. Alternate-transport planning time is not an ontology fact; arrival delay is used as proxy."
+      },
+      "description": "Denied boarding compensation for Canada-originating flight: maximum $800 CAD when alternate transportation is planned to arrive more than 4 hours after original planned arrival.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-26.r1",
+      "clause_id": "AK-DBC-26",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.is_domestic",
+        "flight.origin"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_domestic"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause defers to local or international law regulating oversold flights, which the ontology cannot evaluate. Origin is not a U.S./Canada airport; the is_domestic check is a proxy and the origin country would need to be verified by a human. Exception for legally required compensation is not encoded."
+      },
+      "description": "Denied boarding on an oversold flight originating outside the U.S. or Canada: no compensation, except where local or international law requires it (law not in the ontology, so the case is escalated for review).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-27.r1",
+      "clause_id": "AK-DBC-27",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.status",
+        "booking.ticket_number",
+        "flight.origin"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "booking.ticket_number"
+              },
+              null
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": "airline",
+        "note": "Compensation amount and eligibility are determined by Applicable Law (e.g. EU261/UK261), not stated in the clause. The ontology lacks an airport-country field, so UK/EEA origin cannot be tested; a human must confirm origin and the amount due."
+      },
+      "description": "UK/EEA denied boarding: entitlement to compensation, refreshments and care as required by Applicable Law, for passengers departing from UK/EEA airports with valid ticket and confirmed reservation",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-32.r1",
+      "clause_id": "AK-DBC-32",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.status"
+          },
+          "cancelled"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause governs timing of a denied boarding payment when alternate transport departs before payment is made; payment amount is set elsewhere. Condition tested uses flight status as a proxy only and is unverified; consider cannot_encode if reviewer disagrees."
+      },
+      "description": "Denied boarding compensation for a passenger whose alternate transport departs before payment can be made: payment is sent by mail or other means within 24 hours after the denied boarding. This is a procedural timing obligation about delivering payment, not a claim eligibility decision.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-33.r1",
+      "clause_id": "AK-DBC-33",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [],
+      "when": {
+        "==": [
+          {
+            "var": "claim.reason"
+          },
+          "denied_boarding"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": "airline",
+        "note": "Discretionary offer ('may'). Transportation value must be >= cash compensation due and passenger must be informed they may decline for cash. Amount not determinable from clause; no cash amount fact in ontology."
+      },
+      "description": "Alaska may offer free or discounted air transportation in place of denied boarding cash compensation, where the transportation value is at least the cash due; discretionary offer, so needs human approval.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-37.r1",
+      "clause_id": "AK-DBC-37",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.reason"
+          },
+          "denied_boarding"
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "expense_reimbursement",
+        "amount": 2150,
+        "fault": "airline",
+        "note": "Liability capped at actual damages proved, not exceeding $2150 USD per ticketed passenger, where the denied boarding compensation offer was not accepted. The clause does not state actual damages are payable in full; amount is the cap, actual proven damages govern. Requires human confirmation of dama"
+      },
+      "description": "Denied boarding: if compensation offer not accepted, airline liability limited to proven actual damages capped at $2150 per ticketed passenger",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DBC-39.r1",
+      "clause_id": "AK-DBC-39",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "denied_boarding"
+      ],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "cancelled_by_airline"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause excludes punitive, consequential and special damages only; it does not itself bar direct refund or compensation. Condition approximated via booking.status; the clause is a damages exclusion and does not set a monetary remedy."
+      },
+      "description": "Denied boarding claims for punitive, consequential or special damages arising from failure to provide confirmed reserved space are not payable",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-FEE-14.r1",
+      "clause_id": "AK-FEE-14",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": null,
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause states a charge obligation (fee re-payment) rather than a remedy; the stopover duration (>=12 hours) is not an ontology fact, so this rule cannot verify the condition and is routed to human review. Fee amount is not stated in the clause."
+      },
+      "description": "Checked bag fees must be paid again when passenger continues journey and checks bags after a stopover of 12 hours or more",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-47.r1",
+      "clause_id": "AK-BAG-47",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": null,
+        "note": "Clause exempts listed items from the checked-bag service charge; refund applies to any fee paid for such an item. Item-type identification is not in the ontology, so this encodes only the checked-bag fee-paid condition."
+      },
+      "description": "Car seats, baby carrier backpacks, strollers and assistive devices may be checked without a baggage service charge.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-FEE-19.r1",
+      "clause_id": "AK-FEE-19",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause sets an oversize-charge waiver for eligible military passengers up to 115 linear inches. The ontology has no military status or linear-size fact, so eligibility and bag size cannot be verified; the when-clause is only a placeholder check on a checked bag and does not encode eligibility. Low c"
+      },
+      "description": "Active duty military passengers and military recruits (and dependents eligible for the military baggage charge waiver) may check bags up to 115 linear inches without an oversize charge.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-51.r1",
+      "clause_id": "AK-BAG-51",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause refuses carriage of oversize/overweight bags; the ontology lacks bag dimension and weight fields, so the trigger condition cannot be tested and this rule is a placeholder that should only fire once dimension/weight facts are available. Consider manual review."
+      },
+      "description": "Bag refused for carriage when oversize (over 206 cm / 80 in linear) or overweight (over 100 lbs / 45 kg); no bag-related remedy applies.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-52.r1",
+      "clause_id": "AK-BAG-52",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "other"
+      ],
+      "requires": [
+        "bag.checked",
+        "flight.destination",
+        "flight.origin"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "The clause defines an acceptance exception based on bag weight and route. Weight and route paths are not in the ontology, so the rule is limited to checked bags; the weight and route condition cannot be evaluated from available facts and is flagged for review."
+      },
+      "description": "Checked bag weighing more than 70 lb / 32 kg per piece on travel between the US and Australia, New Zealand, Cook Islands or French Polynesia (Papeete) is not accepted.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-65.r1",
+      "clause_id": "AK-BAG-65",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.damage_type",
+        "item.category"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.damage_type"
+              },
+              "contents"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.category"
+              },
+              "alcoholic_beverage"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause excludes liability for breakage or spillage of alcoholic beverages; packing requirement is a customer obligation. Category value 'alcoholic_beverage' is assumed for alcohol items and is not a listed ontology value."
+      },
+      "description": "Airline is not liable for breakage or spillage of alcoholic beverages in checked baggage",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-67.r1",
+      "clause_id": "AK-BAG-67",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_delayed",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.damage_type",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_domestic"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause excludes musical instrument damage except International Carriage under Montreal/Warsaw Conventions; the instrument-identification fact is not in the ontology, so this rule is limited to domestic flights and the exception is not encoded."
+      },
+      "description": "Airline is not liable for damage to musical instruments or cases (domestic/non-convention carriage); exclusion applies to bag claims involving musical instruments.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-72.r1",
+      "clause_id": "AK-BAG-72",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.damage_type",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause excludes liability for damage to checked child/infant seats except certain international carriage under Montreal/Warsaw Conventions. Item-type identification (child/infant seat) is not an ontology fact, so this rule is a best approximation and should be reviewed; the international exception i"
+      },
+      "description": "No liability for damage to a Child/Infant seat carried as checked baggage (domestic/non-Montreal/Warsaw carriage).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-75.r1",
+      "clause_id": "AK-BAG-75",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.damage_type"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "bag.damage_type"
+              },
+              "none"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "carrier",
+        "note": "Clause excludes liability for stroller damage when checked; does not apply to certain international carriage under Montreal/Warsaw Conventions, which the ontology cannot identify. Condition on bag damage is an approximation for stroller identity, which the ontology lacks."
+      },
+      "description": "No liability for damage to strollers checked as baggage (domestic/non-Montreal/Warsaw carriage)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-76.r1",
+      "clause_id": "AK-BAG-76",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.declared_value",
+        "item.category"
+      ],
+      "when": {
+        "and": [
+          {
+            "!=": [
+              {
+                "var": "bag.declared_value"
+              },
+              null
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.category"
+              },
+              "stroller"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause prohibits purchasing excess valuation for strollers. Assumes stroller is identified via item.category; the ontology has no dedicated stroller flag."
+      },
+      "description": "Excess valuation may not be purchased for strollers; claims for excess valuation on stroller bags are denied.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-85.r1",
+      "clause_id": "AK-BAG-85",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.checked",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause lists specific items (sporting equipment) excluded from liability when checked; the specific item list is not in the ontology so this rule is limited to domestic checked bags. Exception for International carriage under Montreal/Warsaw is not encoded as a deny."
+      },
+      "description": "Alaska is not liable for damage to sporting equipment carried as checked baggage (domestic / non-Montreal-Warsaw carriage)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-95.r1",
+      "clause_id": "AK-BAG-95",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "other"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.category"
+          },
+          "hockey_lacrosse_equipment"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": null,
+        "fault": null,
+        "note": "Clause exempts qualifying equipment from oversize/overweight charge; the ontology has no linear-inch dimension field, and no category value for hockey/lacrosse is listed, so the category test is an approximation and the 62-inch dimension cannot be verified from ontology facts."
+      },
+      "description": "Hockey or lacrosse equipment exceeding 62 linear inches may be checked without an oversize/overweight charge",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-98.r1",
+      "clause_id": "AK-BAG-98",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "other"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.category"
+          },
+          "kayak"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states glass kayaks are not accepted; the ontology has no construction-material field, so the rule keys on category kayak and is low confidence. Also covers Horizon/SkyWest operated flights per clause, which is not encoded as a separate rule."
+      },
+      "description": "Kayaks of glass construction are not accepted",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-101.r1",
+      "clause_id": "AK-BAG-101",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Clause sets no-charge entitlement for one scuba tank in a scuba gear container on specified carriers; operator-scope check (Alaska, Horizon, SkyWest) is not available as a fact, so the rule is limited to checked bags and refund of any fee paid. Reviewer should confirm operator and scuba-tank scope."
+      },
+      "description": "Scuba tank may be checked at no additional charge on flights operated solely by Alaska, Horizon, or SkyWest on behalf of Alaska, as part of the scuba gear container.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-108.r1",
+      "clause_id": "AK-BAG-108",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "other"
+      ],
+      "requires": [
+        "bag.checked",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause restricts checking firearms/ammunition; the ontology has no firearm-item or connecting-carrier fact, so the rule only approximates the foreign-destination condition and should be reviewed before use."
+      },
+      "description": "Firearms and ammunition may not be checked to foreign destinations involving a connection to another carrier",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-120.r1",
+      "clause_id": "AK-BAG-120",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_domestic"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "partial_refund",
+        "amount": 1519,
+        "fault": "airline",
+        "note": "Cap is expressed in SDRs; the amount of 1519 is in SDR units, not USD, and currency conversion is not encoded here."
+      },
+      "description": "Liability for baggage destruction, loss, damage or delay on international carriage is capped at 1,519 SDRs per passenger.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-121.r1",
+      "clause_id": "AK-BAG-121",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.declared_value"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.declared_value"
+        },
+        "fault": "airline",
+        "note": "Clause is ambiguous: supplementary sum and maximum permissible declaration are not stated; amount capped at declared value. Unless Alaska proves declared amount exceeds passenger's actual interest in delivery, which cannot be determined from ontology facts."
+      },
+      "description": "Alaska is liable for loss, damage, destruction or delay of checked baggage up to the declared amount when the passenger made a special declaration of interest at check-in and paid any applicable supplementary sum; the declared amount itself is not stated in the clause.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-126.r1",
+      "clause_id": "AK-BAG-126",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "damaged"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause states liability conditions only; it does not set a remedy or amount. Remedy is a placeholder for the liability finding. Liability condition on board or in airline charge is assumed to be met by the lost/damaged status."
+      },
+      "description": "Alaska is liable for loss or damage to checked baggage where the event occurred on board or while the bag was in Alaska's charge (bag status lost or damaged).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-126.r2",
+      "clause_id": "AK-BAG-126",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged"
+      ],
+      "requires": [
+        "item.condition"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "item.condition"
+          },
+          "defective"
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Inherent defect, quality or vice exclusion. Ontology item.condition 'defective' is only a proxy; a human must determine whether damage resulted from the bag's inherent defect."
+      },
+      "description": "Alaska is not liable to the extent the damage resulted from an inherent defect, quality or vice of the baggage; flagged for human judgment because the ontology has no direct inherent-defect fact.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-133.r1",
+      "clause_id": "AK-BAG-133",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.declared_value",
+        "claim.requested_amount"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "bag.declared_value"
+              },
+              4700
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "min": [
+            {
+              "var": "claim.requested_amount"
+            },
+            4700
+          ]
+        },
+        "fault": "airline",
+        "note": "Clause excludes wheelchairs, mobility aids and assistive devices, which are not in the ontology and are not tested here. Excess valuation with an additional paid charge is not represented in the ontology and is not encoded. Amount is the requested amount capped at 4700; proven amount is not a separa"
+      },
+      "description": "Checked bag loss, damage or delay: airline liability limited to the proven amount of damage or loss, capped at USD $4,700 per passenger where no excess valuation was declared",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-134.r1",
+      "clause_id": "AK-BAG-134",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.declared_value",
+        "bag.interim_expenses",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "bag.interim_expenses"
+              },
+              0
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "delayed",
+                "damaged",
+                "lost"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "var": "bag.interim_expenses"
+        },
+        "fault": "airline",
+        "note": "Clause is ambiguous: 'substantial delay' is not quantified, the limit of liability is not in the ontology, and 'reasonable', 'documented', and 'good judgment' to minimize damage require assessment. Amount is capped at the higher of limit of liability or declared value, which is not modeled here."
+      },
+      "description": "Compensate reasonable documented baggage expenses from loss, damage, or substantial delay, subject to limit of liability or declared value; reasonableness and mitigation require human review",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-138.r1",
+      "clause_id": "AK-BAG-138",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.declared_value",
+        "bag.status",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_domestic"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "partial_refund",
+        "amount": {
+          "var": "bag.declared_value"
+        },
+        "fault": "airline",
+        "note": "Maximum liability is the original documented purchase price of the wheelchair or assistive device; the amount is capped at documented purchase price, which the engine represents with declared value as the available input. Clause does not define assistive device status explicitly in ontology; applies"
+      },
+      "description": "Domestic liability for lost, damaged or destroyed wheelchair or assistive device is capped at the original documented purchase price of the device.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-139.r1",
+      "clause_id": "AK-BAG-139",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.checked"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "expense_reimbursement",
+        "amount": 4700,
+        "fault": "airline",
+        "note": "Clause sets a flat $10/lb rate capped at $4,700 per ticketed passenger, but pounds of game meat and whether the item is game meat are not in the ontology; amount shown is the cap only and must be verified. Applies only to game meat obtained other than by store purchase. Damage and spoilage are exclu"
+      },
+      "description": "Game meat checked baggage loss: liability at flat $10.00 per pound (weight not in ontology), capped at USD $4,700 per ticketed passenger; damage or spoilage excluded",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-140.r1",
+      "clause_id": "AK-BAG-140",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.status"
+          },
+          "delivered"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause AK-BAG-140: Alaska does not assume liability where checked baggage is not damaged, delayed, or lost. Mapped to bag.status = delivered; pilfered status is not addressed by the clause and is not covered by this rule."
+      },
+      "description": "No airline liability for missing or damaged checked-bag claims where the checked bag was not damaged, delayed, or lost (bag status delivered).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-141.r1",
+      "clause_id": "AK-BAG-141",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.damage_type"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.damage_type"
+          },
+          "cosmetic"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause excludes cosmetic-type incidental damage from normal wear; damage_type cosmetic is the closest ontology mapping. Standard of care condition cannot be verified from ontology facts."
+      },
+      "description": "Incidental damage such as scuffs, dents, stains, punctures, marks, dirt, scratches and cuts resulting from normal wear and tear is excluded from airline liability when standard of care was exercised.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-142.r1",
+      "clause_id": "AK-BAG-142",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.damage_type"
+      ],
+      "when": {
+        "!=": [
+          {
+            "var": "bag.damage_type"
+          },
+          "none"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Exclusion for further damage to previously damaged items. Clause says airline may but is not obligated to conditionally accept previously damaged items; no encodable acceptance rule because no conditions are specified."
+      },
+      "description": "Airline assumes no liability for further damage to bags that were previously damaged",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-143.r1",
+      "clause_id": "AK-BAG-143",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.damage_type"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.damage_type"
+          },
+          "wheel"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause covers protruding-part damage from inherent defect; the ontology cannot confirm the damage cause as inherent defect, so the rule keys on damage type of protruding parts (wheel). Other protruding-part damage types (handle, zipper) are covered by separate rules or need review."
+      },
+      "description": "Airline is not liable for damage to protruding exterior parts (wheels, feet, pockets, hooks, pull handles, straps, zippers, locks, telescoping handles) where the damage results from inherent defect, quality or vice of the bag.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-144.r1",
+      "clause_id": "AK-BAG-144",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.damage_type"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "bag.damage_type"
+              },
+              [
+                "wheel",
+                "handle",
+                "zipper",
+                "cosmetic"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause excludes manufacturing defects and fair wear and tear; damage type mapping to wear (cosmetic, wheel, handle, zipper) is an interpretive assumption. Structural damage from handling is not expressly excluded."
+      },
+      "description": "Airline assumes no liability for baggage manufacturing defects or fair wear and tear from ordinary handling of checked baggage",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-145.r1",
+      "clause_id": "AK-BAG-145",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.checked"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause excludes carry-on items unless Alaska at fault; a fault-based exception needs separate fact confirmation, so this denies only the non-fault default. Liability for airline fault is not encoded here."
+      },
+      "description": "Carry-on items remaining in passenger's possession: airline not liable unless damage resulted from airline fault",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-147.r1",
+      "clause_id": "AK-BAG-147",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "item.category"
+      ],
+      "when": {
+        "in": [
+          {
+            "var": "item.category"
+          },
+          [
+            "clearance",
+            "gift_card"
+          ]
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause lists excluded item classes; the category check here is a placeholder covering the ontology categories only loosely. Low confidence; likely needs human review against the full item list in the clause."
+      },
+      "description": "Alaska assumes no liability for loss, theft, damage or delay of unsuitable checked-baggage contents (cash, valuables, electronics, etc.) on bag claims",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-149.r1",
+      "clause_id": "AK-BAG-149",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.status"
+          },
+          "lost"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause excludes liability for externally attached items. Ontology lacks fields for attachment or item type, so the rule keys on lost status as a proxy and needs human confirmation. 'Similar articles' is undefined; the ambiguity is flagged."
+      },
+      "description": "Airline not liable for attached items (tents, sleeping bags, similar articles) strapped, taped, or tied to other baggage that separate during normal handling",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-151.r1",
+      "clause_id": "AK-BAG-151",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.minutes_to_carousel"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "bag.minutes_to_carousel"
+          },
+          30
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause limits liability for unclaimed bags; encoded as denial when the bag was not collected within 30 minutes of carousel availability. Uses minutes_to_carousel as proxy for time available for claiming; the clause's claim-time measure may differ."
+      },
+      "description": "Airline is not liable for baggage not claimed within 30 minutes after it was made available in the public baggage claim area.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-152.r1",
+      "clause_id": "AK-BAG-152",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.damage_type"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.damage_type"
+          },
+          "structural"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "uncontrollable",
+        "note": "Clause excludes liability for locks damaged or missing due to TSA inspection. Ontology has no lock-specific or TSA-cause fact, so the condition is approximated only partially; a human should confirm the damage is lock-related and TSA-caused. Rule is narrow to avoid overreach."
+      },
+      "description": "Exclusion: bag lock damage or loss resulting from TSA inspection is not the airline's liability",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-154.r1",
+      "clause_id": "AK-BAG-154",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.damage_type"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause waives the normal limit of liability for substantiated claims; the payable amount is not stated in the clause, so amount is left null and the liability-limit waiver is applied by the adjudicator. Assistive device status is not an ontology field and is not checked; the rule is conditioned on a"
+      },
+      "description": "Assistive device loss, damage, or delay claims with substantiated claim: airline's normal liability limit is waived for wheelchairs or other assistive devices accepted into care.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-156.r1",
+      "clause_id": "AK-BAG-156",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.report_filed_within_hours"
+      ],
+      "when": {
+        "and": [
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "damaged"
+              ]
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.report_filed_within_hours"
+              },
+              24
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause is a procedural condition; deny only where the report timing is clearly beyond 24 hours. Ontology lacks an explicit assistive-device flag, so this rule is approximated using bag claim reasons and status."
+      },
+      "description": "Passenger must report lost, damaged, or destroyed assistive device in writing within 24 hours of arrival; a report filed later than 24 hours does not meet the clause requirement.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-159.r1",
+      "clause_id": "AK-BAG-159",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "other"
+      ],
+      "requires": [
+        "bag.damage_type",
+        "claim.requested_remedy"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "claim.requested_remedy"
+              },
+              "repair"
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "bag.damage_type"
+              },
+              "none"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "repair",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause is discretionary ('may') and conditional on repairs restoring original condition, which the ontology cannot verify; requires human approval. Applies to assistive devices only, which the ontology does not identify directly."
+      },
+      "description": "Assistive device damaged in transit can be restored to original condition by reasonable repairs; Alaska may repair at passenger's request (discretionary)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-162.r1",
+      "clause_id": "AK-BAG-162",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.declared_value"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.declared_value"
+              },
+              0
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "bag.declared_value"
+              },
+              5000
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.declared_value"
+        },
+        "fault": "airline",
+        "note": "Liability for the bag is capped at the declared value (max USD 5,000). The declaration charge of USD 1.00 per USD 100.00 of additional declared value is a fee, not encoded as a payout; the clause does not state the fee amount is refunded. Amount reflects maximum liability at declared value, subject "
+      },
+      "description": "Passenger declared higher bag value (up to USD 5,000) on a checked bag: liability capped at declared value; declaration charge is USD 1 per USD 100 of additional declared value.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-163.r1",
+      "clause_id": "AK-BAG-163",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.declared_value",
+        "item.category"
+      ],
+      "when": {
+        "and": [
+          {
+            ">": [
+              {
+                "var": "bag.declared_value"
+              },
+              0
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "item.category"
+              },
+              "excluded"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause refers to excluded items listed in Rule 15(N)(1), which is not in the ontology; category value 'excluded' is a placeholder mapping and needs verification against Rule 15(N)(1) list."
+      },
+      "description": "Excluded items (per Rule 15(N)(1)) are not acceptable for higher value declaration; deny higher value declaration for bag claims when the item is excluded.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-165.r1",
+      "clause_id": "AK-BAG-165",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_damaged",
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.declared_value"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "bag.declared_value"
+          },
+          5000
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Clause is discretionary (\"has the discretion\"); special arrangements are undefined in the ontology, so a human must decide. Source clause AK-BAG-165."
+      },
+      "description": "Airline may refuse baggage with declared value over $5,000 USD unless special arrangements were made in advance; discretionary refusal, so escalate for human judgment.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-167.r1",
+      "clause_id": "AK-BAG-167",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "other"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.report_filed",
+        "bag.report_filed_within_hours"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states the claim is barred unless presented in writing; the report-filed condition is used as proxy for written presentment. Day-count of receipt is not in the ontology, so only the no-report case is encoded. Interline and immediacy requirements not encoded."
+      },
+      "description": "International carriage: claim for baggage loss/damage/delay is barred unless presented in writing within seven days of receipt of checked baggage",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-168.r1",
+      "clause_id": "AK-BAG-168",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.delay_days",
+        "bag.report_filed",
+        "claim.reported_within_days"
+      ],
+      "when": {
+        "<=": [
+          {
+            "var": "claim.reported_within_days"
+          },
+          21
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": null,
+        "fault": "airline",
+        "note": "Reimbursement based on acceptable proof of claim. Amount not set by clause. Deadline is measured from return of the baggage; claim.reported_within_days is used as the closest available fact."
+      },
+      "description": "Baggage delay complaint must be filed within 21 days of the bag being returned; otherwise the claim is not valid for reimbursement.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-169.r1",
+      "clause_id": "AK-BAG-169",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "claim.reported_within_days",
+        "flight.is_domestic"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "claim.reported_within_days"
+              },
+              45
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "The clause measures 45 days from the alleged occurrence, but the ontology field claim.reported_within_days counts from delivery/arrival, so this is an approximation. The written-form requirement and the two-year legal action deadline cannot be checked from ontology facts and are not encoded."
+      },
+      "description": "Domestic bag claim denied when written notice is presented more than 45 days after the occurrence (AK-BAG-169).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-4.r1",
+      "clause_id": "AK-RET-4",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "active"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause conditions on no portion of ticket used; status 'active' used as proxy for unused. Refund equals fare and fees on original ticket."
+      },
+      "description": "Unused ticket entitles customer to refund of fare and fees paid on original ticket",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-6.r1",
+      "clause_id": "AK-RET-6",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "cancel_order",
+        "refund_request",
+        "other"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.payment_method",
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.is_refundable_fare"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause sets refund for refund-eligible tickets on surrender of unused portion, using original form of payment. Amount set to total paid as the ceiling; unused-portion calculation is not stated in the clause."
+      },
+      "description": "Refund of unused ticket portion for refundable fare, to original form of payment, upon surrender",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-8.r1",
+      "clause_id": "AK-RET-8",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "flight_cancelled",
+        "other",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.status",
+        "booking.total_paid",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "active"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause conditions on no portion of the ticket being used; booking.status active used as proxy for unused ticket. Refund equals fare and fees on the original ticket."
+      },
+      "description": "Unused ticket refund equals the original fare and fees paid when no portion of the ticket has been used",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-11.r1",
+      "clause_id": "AK-RET-11",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request"
+      ],
+      "requires": [
+        "booking.purchased_at"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "claim.reason"
+              },
+              "refund_request"
+            ]
+          },
+          {
+            ">": [
+              {
+                "/": [
+                  {
+                    "var": "booking.hours_since_purchase"
+                  },
+                  24
+                ]
+              },
+              365
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause excludes refunds for tickets surrendered after 12 months from original issue; 365 days approximates 12 months. Evaluated on hours since purchase as proxy for issue date."
+      },
+      "description": "Refund denied for tickets surrendered more than 12 months after original issue date",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-PAY-5.r1",
+      "clause_id": "AK-PAY-5",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "seat_refund",
+        "ancillary_refund",
+        "flight_cancelled"
+      ],
+      "requires": [
+        "booking.payment_method"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.payment_method"
+          },
+          "card"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": null,
+        "note": "Clause sets the refund mechanism (reversal of original card transaction) rather than an amount; fallback to cardholder account only if cancellation is not possible, which the ontology cannot evaluate."
+      },
+      "description": "Refund for a ticket paid by credit card is processed by cancelling the original card transaction, in principle.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-15.r1",
+      "clause_id": "AK-RET-15",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.ancillary_other_fee"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "claim.reason"
+          },
+          "seat_refund"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.ancillary_other_fee"
+        },
+        "fault": "airline",
+        "note": "Clause covers refund of upgrade fee paid on downgrade; mapped to seat_refund claim reason and the paid optional service fee field as the best available ontology proxy for the upgrade fee."
+      },
+      "description": "Refund of upgrade fee when customer was downgraded to a lower class of service",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-16.r1",
+      "clause_id": "AK-RET-16",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.fare_class",
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "first"
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "partial_refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Refund equals difference between fare paid and applicable Main Cabin fare, only if a fare difference exists. Applicable Main Cabin fare is not in the ontology, so amount cannot be computed; requires human/fare lookup. Downgrade and election to travel are not represented as facts."
+      },
+      "description": "Refund of fare difference when a first-class fare holder is downgraded and elects to travel",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-174.r1",
+      "clause_id": "AK-BAG-174",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.fee_paid",
+        "bag.report_filed",
+        "bag.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.status"
+              },
+              "lost"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.fee_paid"
+              },
+              0
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Covers the lost-bag branch only. Refund is the fee attributable to the lost bag, conditioned on an MBR. The significantly-delayed-bag branch is not encoded because the ontology has no hours-since-arrival fact for bag delay and the international 15/30 hour threshold is ambiguous."
+      },
+      "description": "Refund checked-bag fee for a lost bag when a Mishandled Baggage Report is on file",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-175.r1",
+      "clause_id": "AK-BAG-175",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.fee_paid",
+        "bag.report_filed",
+        "bag.status",
+        "booking.payment_method",
+        "flight.flight_id"
+      ],
+      "when": {
+        "and": [
+          {
+            "in": [
+              {
+                "var": "bag.status"
+              },
+              [
+                "lost",
+                "delayed"
+              ]
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "bag.report_filed"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Clause requires a travel agent to have collected the baggage fees and the airline to have operated the last segment; these travel-agent and last-segment facts are not in the ontology, so the rule as encoded omits them and should be reviewed. MBR is mapped to bag.report_filed."
+      },
+      "description": "Refund baggage fees for lost or significantly delayed bags when a travel agent collected the fees, the airline operated the last segment, and an MBR was filed",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-176.r1",
+      "clause_id": "AK-BAG-176",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "bag.delay_days"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.delay_days"
+          },
+          {
+            "var": "bag.delay_days"
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Exclusion (i) requires a fact about failure to recheck at first international entry point, which is not in the ontology; the when clause is a placeholder and the rule is not fully evaluable. Ambiguity: 'where you are at fault' undefined; exclusion (ii) not encoded because it depends on undefined fau"
+      },
+      "description": "No refund of baggage fees for a Significantly Delayed Bag when the customer failed to pick up and recheck baggage at the first international entry point into the U.S.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-177.r1",
+      "clause_id": "AK-BAG-177",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.fee_paid"
+          },
+          {
+            "var": "bag.fee_paid"
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause excludes refunds of baggage fees collected by another carrier; the ontology has no field identifying the collecting carrier, so the condition is approximated; review before relying on it."
+      },
+      "description": "Alaska is not responsible for refunding baggage fees collected by another carrier",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-GEN-27.r1",
+      "clause_id": "AK-GEN-27",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "denied_boarding"
+      ],
+      "requires": [
+        "flight.origin"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.origin"
+          },
+          "ICN"
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": null,
+        "amount": null,
+        "fault": null,
+        "note": "Clause defers to external KFTC guidelines not encoded in the ontology; amount and eligibility criteria cannot be determined from facts. Origin airport code ICN is an assumption for Korea departures. The discretionary 'may ... special circumstances' extension is not encoded as an entitlement."
+      },
+      "description": "Passengers departing from Korea are entitled to compensation per Korea Fair Trade Commission guidelines; the guidelines' amounts are not in the ontology, so the rule cannot compute an amount.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-17.r1",
+      "clause_id": "AK-RET-17",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause conditions 'no portion used' and 'no transportation provided' are mapped to booking.status active and travel_completed false; booking.status active is an approximation of unused ticket and should be confirmed against the ticket record."
+      },
+      "description": "Involuntary refund of unused ticket: if no portion of the ticket has been used and no transportation provided, refund the fare and charges paid.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-18.r1",
+      "clause_id": "AK-RET-18",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "booking.ticket_number",
+        "flight.cause",
+        "flight.is_cancelled_by_airline",
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause is an exclusion from involuntary refund obligation; the 'fully unused' and 'not confirmed on affected flight' conditions and the Alaska-issued exception cannot be fully verified from ontology facts, so the rule is a coarse approximation and should be reviewed."
+      },
+      "description": "Airline not obligated to refund unused ticket lacking confirmed reservation on affected flight, unless issued by Alaska",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-19.r1",
+      "clause_id": "AK-RET-19",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "booking.total_paid",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "cancelled_by_airline"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Refund amount equals total paid minus fare/charges applicable to the used portion; the used-portion fare is not an ontology fact, so amount cannot be computed from facts alone and requires human calculation."
+      },
+      "description": "Involuntary refund of partially used ticket: refund equals difference between fare/charges paid and fare/charges applicable to used portion",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-20.r1",
+      "clause_id": "AK-RET-20",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.customer_accepted_alternative"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause says 'acceptable to the Passenger' with no objective test; the ontology fact customer_accepted_alternative is used as proxy. Ambiguous; review recommended."
+      },
+      "description": "No refund when alternative surface transportation is provided and accepted by the passenger",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-22.r1",
+      "clause_id": "AK-RET-22",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "flight.is_cancelled_by_airline",
+        "flight.schedule_change_minutes",
+        "flight.status"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              false
+            ]
+          },
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "flight.status"
+                  },
+                  "delayed"
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.status"
+                  },
+                  "on_time"
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.status"
+                  },
+                  "scheduled"
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.status"
+                  },
+                  "completed"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Ambiguous: co-terminal determination is at Alaska's discretion and the list is non-exhaustive. Condition approximated from flight status; transportation-provided fact is not in the ontology, so human review is required."
+      },
+      "description": "No refund when transportation is provided from the schedule irregularity point to the ticketed destination or stopover, or to a co-terminal determined by Alaska; co-terminal list is non-exhaustive and discretionary, so route to human approval rather than deny outright.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-42.r1",
+      "clause_id": "AK-DLY-42",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.customer_accepted_alternative",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "airline",
+        "note": "Clause conditions on the irregularity point not serving the final destination area; that geographic fact is not in the ontology, so the rule approximates by requiring airline cancellation and declined rebooking. Return transportation to departure airport is not a modeled remedy."
+      },
+      "description": "Refund and return transportation if irregularity point does not serve final destination area and customer declines rebooking to final destination",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-43.r1",
+      "clause_id": "AK-DLY-43",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.arrival_delay_minutes",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "or": [
+          {
+            "and": [
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              }
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "flight.arrival_delay_minutes"
+              },
+              300
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause says passenger 'may request' a refund; it does not state Alaska must grant it. Ambiguous; route to human review. Co-terminal requirement and final-destination arrival within 5 hours of original scheduled arrival are not fully represented by available facts."
+      },
+      "description": "Co-terminal flight arrival more than 5 hours late under EU261/UK261: passenger may request a refund; clause does not state Alaska must grant it, so escalate for human judgment.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-23.r1",
+      "clause_id": "AK-RET-23",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.purchased_at"
+      ],
+      "when": {
+        "<": [
+          {
+            "var": "booking.purchased_at"
+          },
+          {
+            "var": "booking.purchased_at"
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause expresses a one-year limit from ticket issuance; the ontology lacks a days-since-issuance field (booking.purchased_at approximates issuance). The when expression is a placeholder pending a days-since-purchase fact; engine should evaluate elapsed days since booking.purchased_at > 365."
+      },
+      "description": "Refund not applicable where ticket is presented more than one year after original ticket issuance",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-25.r1",
+      "clause_id": "AK-RET-25",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "change_of_mind",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.is_refundable_fare"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.is_refundable_fare"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says a credit 'may' be given for refund-restricted tickets; issuance is discretionary, so routed for human approval rather than auto-approved. Amount not stated by clause."
+      },
+      "description": "Refund of a voluntary ticket is subject to the fare rules; a refund-restricted fare is not refundable in cash under this clause",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-26.r1",
+      "clause_id": "AK-RET-26",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.is_refundable_fare"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.is_refundable_fare"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause limits tax refunds to refundable fares. Refundable-fare case is an entitlement only in terms of tax eligibility; amount of taxes not specified here, so no approve rule emitted."
+      },
+      "description": "Taxes and charges are refundable only if the underlying fare is refundable; non-refundable fare means taxes are not refunded.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-27.r1",
+      "clause_id": "AK-RET-27",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.status",
+        "booking.total_paid",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.travel_completed"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause states refund or credit equal to fare, taxes and charges paid when no portion of the ticket is used. Proxy for unused: travel not completed. Booking status not directly tested; unused is approximated by travel_completed false."
+      },
+      "description": "Refund of fare, taxes and charges when no portion of the ticket has been used",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-29.r1",
+      "clause_id": "AK-RET-29",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.hours_since_purchase"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "booking.hours_since_purchase"
+          },
+          8760
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause sets a one-year surrender window for coupons; mapped to ticket purchase age as proxy for issue date. Unused-coupon status is not in ontology, so the rule uses only the time limit."
+      },
+      "description": "Refund or credit under section 2 or 3 is available only if unused flight coupons are surrendered within one year of ticket issue. Clause does not state a time-based denial outcome, and surrender timing is not an ontology fact (booking.purchased_at and booking.hours_since_purchase exist but ticket is",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-30.r1",
+      "clause_id": "AK-RET-30",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.status"
+          },
+          "active"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause conditions refund obligation on Alaska ticket stock. The ontology has no ticket stock field, so the condition cannot be tested; this rule is a placeholder pending a ticket-stock fact and is not a faithful encoding."
+      },
+      "description": "No voluntary refund obligation when the ticket was not issued on Alaska Ticket stock",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-31.r1",
+      "clause_id": "AK-RET-31",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.fare_class",
+        "booking.status",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "main"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": null,
+        "note": "Clause requires a death of immediate family (or traveling companion on same itinerary) as the reason the guest cannot commence or continue travel; the death fact is not an ontology field, so the rule applies on fare class alone and the bereavement trigger must be verified by staff. Amount not specif"
+      },
+      "description": "Bereavement refund for guest on main fare unable to commence or continue travel due to death of immediate family member or traveling companion on same itinerary",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-33.r1",
+      "clause_id": "AK-RET-33",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request"
+      ],
+      "requires": [
+        "booking.status",
+        "claim.requested_remedy"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "claim.requested_remedy"
+              },
+              "travel_credit"
+            ]
+          },
+          {
+            "!=": [
+              {
+                "var": "booking.status"
+              },
+              "flown"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause says Alaska 'may' issue a voluntary refund as a credit; form is at airline discretion, so requires approval. Credit is restricted to Alaska, Horizon, and SkyWest flights. Flight operator scope is not in the ontology and is not encoded as a condition."
+      },
+      "description": "Voluntary refund issued as a travel credit usable only on Alaska, Horizon, and SkyWest flights, for tickets on those carriers' flights, at airline discretion.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-39.r1",
+      "clause_id": "AK-RET-39",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "cancel_order",
+        "change_of_mind",
+        "other"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Exception 'as required by Applicable Laws' cannot be evaluated from ontology facts; route to human review if law may apply."
+      },
+      "description": "Nonrefundable fare for unused travel is not eligible for refund (exclusion, except as required by applicable law which is not an ontology fact)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-40.r1",
+      "clause_id": "AK-RET-40",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request"
+      ],
+      "requires": [
+        "booking.is_refundable_fare"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.is_refundable_fare"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Applies to taxes, security fees and PFCs tied to a nonrefundable fare. The carve-out for refunds required by Applicable Laws is not encodable from ontology facts and must be checked by a human where it arises."
+      },
+      "description": "Taxes, security fees, and Passenger Facility Charges on a nonrefundable fare are not refundable (except as required by Applicable Laws, which the ontology cannot assess).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-41.r1",
+      "clause_id": "AK-RET-41",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.hours_until_departure",
+        "booking.is_refundable_fare",
+        "booking.status",
+        "claim.wants_credit_instead_of_refund"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "active"
+            ]
+          },
+          {
+            "and": [
+              {
+                ">": [
+                  {
+                    "var": "booking.hours_until_departure"
+                  },
+                  0
+                ]
+              },
+              {
+                "==": [
+                  {
+                    "var": "claim.wants_credit_instead_of_refund"
+                  },
+                  true
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "travel_credit",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "Clause says 'may', so conversion is discretionary; routed to human approval. Amount includes taxes, security fees and PFCs as stated. Requires request made directly with Alaska before scheduled departure."
+      },
+      "description": "Nonrefundable restricted fare for unused travel may be converted to travel credit when requested before scheduled departure (discretionary 'may').",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-42.r1",
+      "clause_id": "AK-RET-42",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.is_refundable_fare",
+        "booking.status",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause excepts amounts required by Applicable Laws; this rule does not evaluate legal-requirement exceptions, so a human may need to confirm legal obligations before final denial."
+      },
+      "description": "Non-changeable nonrefundable tickets with unused travel are not refundable or creditable",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-44.r1",
+      "clause_id": "AK-RET-44",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.customer_cancelled",
+        "booking.hours_since_purchase",
+        "booking.is_refundable_fare",
+        "booking.payment_method",
+        "booking.status",
+        "booking.total_paid",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "booking.hours_since_purchase"
+              },
+              24
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.customer_cancelled"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "Clause uses 'may', so refund is discretionary; whole unused reservation only. Saver fares included. Original form of payment."
+      },
+      "description": "Whole, unused, nonrefundable reservation canceled within 24 hours of purchase may be refunded to original form of payment (discretionary).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-45.r1",
+      "clause_id": "AK-DLY-45",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "schedule_change",
+        "flight_cancelled",
+        "refund_request"
+      ],
+      "requires": [
+        "flight.schedule_change_minutes"
+      ],
+      "when": {
+        ">": [
+          {
+            "var": "flight.schedule_change_minutes"
+          },
+          120
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause is a fragment ending in 'or', so it is one of several alternative triggers. Trigger uses schedule_change_minutes; the Alaska carrier scope is not an ontology field and is not tested."
+      },
+      "description": "Full refund for departure time change over 120 minutes on an Alaska flight",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-46.r1",
+      "clause_id": "AK-DLY-46",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.is_significant_change",
+        "flight.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "flight.is_significant_change"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause is one limb of a list of conditions ('; or'); the stops-added trigger is not separately exposed in the ontology. Encoded using significant-change flag as the closest available proxy, which is an approximation and should be reviewed."
+      },
+      "description": "Full refund when a scheduled flight routing change adds one or more stops to the original itinerary",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-47.r1",
+      "clause_id": "AK-RET-47",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request",
+        "credit_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.customer_cancelled",
+        "booking.is_refundable_fare",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.customer_cancelled"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says 'most' wholly unused nonrefundable tickets; exclusions are not defined, so a human must confirm eligibility. Website cancellation channel (alaskaair.com or hawaiianairlines.com) is not an ontology field and is not checked here."
+      },
+      "description": "Travel credit offered on wholly unused nonrefundable tickets cancelled by the customer on the airline website (eligibility for excluded tickets undefined, so requires human judgment for exclusions)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-48.r1",
+      "clause_id": "AK-RET-48",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request",
+        "other"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.hours_until_departure",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.fare_class"
+              },
+              "saver"
+            ]
+          },
+          {
+            ">=": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              336
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "travel_credit",
+        "amount": {
+          "*": [
+            {
+              "var": "booking.total_paid"
+            },
+            0.5
+          ]
+        },
+        "fault": "customer",
+        "note": "Credit equals 50% of ticket value and 100% of taxes; booking.total_paid includes taxes and fees, so the tax component is not separately available in the ontology and the amount is an approximation pending tax breakdown. 14 days is expressed as 336 hours."
+      },
+      "description": "Saver fare cancelled 14 or more days before outbound departure receives travel credit of 50% of ticket value plus 100% of taxes",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-49.r1",
+      "clause_id": "AK-RET-49",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.fare_class",
+        "booking.hours_until_departure",
+        "booking.total_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.fare_class"
+              },
+              "saver"
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              312
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause says 13 days or less; converted to 312 hours (13 x 24). Clause states forfeiture of full ticket value, encoded as deny with no remedy. Cancellation-initiator condition not stated, so not added."
+      },
+      "description": "Saver fare cancelled 13 days or less before outbound departure forfeits the full ticket value",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-50.r1",
+      "clause_id": "AK-RET-50",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "order_change"
+      ],
+      "requires": [
+        "booking.fare_class"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "saver"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause states saver fares do not allow changes; applied to change-related claims only."
+      },
+      "description": "Saver fare tickets do not allow changes",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-182.r1",
+      "clause_id": "AK-BAG-182",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.fee_paid"
+              },
+              0
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Clause reimburses bag transport fee for lost bags. Lost status is identified by claim reason bag_lost; the clause references 14 CFR Part 260.5 for significance, which is not encoded here."
+      },
+      "description": "Reimburse bag transport fee when a checked bag is lost (bag_lost claim) and the bag fee was paid.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-182.r2",
+      "clause_id": "AK-BAG-182",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.delay_days",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.fee_paid"
+              },
+              0
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "escalate",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "'Significantly delayed' is undefined in the document and depends on 14 CFR Part 260.5; requires human judgment on whether the delay is significant."
+      },
+      "description": "Reimburse bag transport fee when a checked bag is significantly delayed (bag_delayed claim) and the bag fee was paid. Significance threshold is external (14 CFR Part 260.5) and is not encoded; escalate for judgment.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DLY-52.r1",
+      "clause_id": "AK-DLY-52",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.is_cancelled_by_airline"
+      ],
+      "when": {
+        "or": [
+          {
+            "==": [
+              {
+                "var": "flight.is_cancelled_by_airline"
+              },
+              true
+            ]
+          },
+          {
+            ">=": [
+              {
+                "var": "flight.delay_minutes"
+              },
+              180
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause offers a choice: reschedule to an alternate day or refund the ticket. Encoded as refund option; reschedule alternative is not a distinct remedy in the enum set and is covered by rebook in a separate clause if needed."
+      },
+      "description": "Customer may reschedule or refund if they decide not to travel due to a significant flight delay or cancellation (3+ hours)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-54.r1",
+      "clause_id": "AK-RET-54",
+      "tier": "commitment",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "refund_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.customer_cancelled",
+        "booking.hours_since_purchase",
+        "booking.hours_until_departure",
+        "booking.is_refundable_fare",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "<=": [
+              {
+                "var": "booking.hours_since_purchase"
+              },
+              24
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "booking.hours_until_departure"
+              },
+              24
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.customer_cancelled"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": "customer",
+        "note": "Clause says 'may be refunded', so outcome is discretionary; whole unused reservation assumed. Refund to original form of payment."
+      },
+      "description": "Non-refundable whole unused reservation (including Saver) canceled within 24 hours of purchase, with travel more than 24 hours after booking, may be refunded to original form of payment (discretionary).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-55.r1",
+      "clause_id": "AK-RET-55",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.days_until_departure_at_purchase",
+        "booking.fare_class",
+        "booking.hours_until_departure",
+        "booking.total_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "saver"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "travel_credit",
+        "amount": {
+          "*": [
+            {
+              "var": "booking.total_paid"
+            },
+            0.5
+          ]
+        },
+        "fault": null,
+        "note": "Clause requires cancellation at least 14 days prior to departure; days until departure at request is derived from hours_until_departure (>= 336 hours). Ticket value approximated by total_paid."
+      },
+      "description": "Saver fare canceled at least 14 days before departure of first flight receives a credit of 50% of ticket value",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-57.r1",
+      "clause_id": "AK-RET-57",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "cancel_order",
+        "credit_request",
+        "refund_request",
+        "other"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.is_refundable_fare"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.is_refundable_fare"
+              },
+              false
+            ]
+          },
+          {
+            "in": [
+              {
+                "var": "booking.fare_class"
+              },
+              [
+                "main",
+                "premium",
+                "first"
+              ]
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": null,
+        "note": "Clause lists Main, Premium, Business and First Class fares; the ontology fare_class enum has no Business value, so only main, premium and first are matched. Amount of credit not specified by the clause."
+      },
+      "description": "Non-refundable Main, Premium, Business or First fare booking may be cancelled for future travel credit",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-58.r1",
+      "clause_id": "AK-RET-58",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "cancel_order",
+        "refund_request",
+        "credit_request",
+        "flight_cancelled",
+        "flight_delayed",
+        "schedule_change",
+        "seat_refund",
+        "ancillary_refund",
+        "other"
+      ],
+      "requires": [
+        "booking.fare_class"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "saver"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause states Saver fares cannot be changed or canceled after purchase. Applied as a denial for Saver fare requests; applies generally per clause text. Unclear whether airline-initiated cancellations are covered, so claim reasons limited to customer-side requests plus generic ones; schedule/flight d"
+      },
+      "description": "Saver fare cannot be changed or canceled after purchase (exclusion)",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-184.r1",
+      "clause_id": "AK-BAG-184",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_guarantee",
+        "bag_delayed"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.minutes_to_carousel"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "bag.checked"
+              },
+              true
+            ]
+          },
+          {
+            ">": [
+              {
+                "var": "bag.minutes_to_carousel"
+              },
+              20
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "voucher",
+        "amount": 25,
+        "fault": "airline",
+        "note": "Offer is a $25 discount code for a future Alaska/Hawaiian flight, or 2,500 Atmos Rewards bonus points (alternative at customer choice; encoded as voucher with $25 value). Points alternative not separately modeled."
+      },
+      "description": "Bag not at carousel within 20 minutes of arrival: offer $25 future-flight discount code or 2,500 bonus points",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-186.r1",
+      "clause_id": "AK-BAG-186",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee"
+      ],
+      "requires": [
+        "flight.destination",
+        "flight.is_domestic",
+        "flight.origin"
+      ],
+      "when": {
+        "or": [
+          {
+            "==": [
+              {
+                "var": "flight.origin"
+              },
+              "DUT"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.destination"
+              },
+              "DUT"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.is_domestic"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Exclusion for DUT flights and international customs-clearance flights. Customs clearance is approximated by flight.is_domestic = false. Operator and flight-number-range eligibility (Alaska 0001-1999, Horizon 2000-2999, SkyWest 3000-3499) cannot be evaluated from the ontology and is not encoded."
+      },
+      "description": "Baggage guarantee does not apply to flights to or from Dutch Harbor (DUT) or to international flights requiring customs clearance (approximated as non-domestic).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-187.r1",
+      "clause_id": "AK-BAG-187",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_guarantee",
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.checked"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause does not expose an oversize-area indicator in the ontology; the rule as encoded only tests checked status and cannot identify oversize items. Encoded conservatively as a checked-bag exclusion would overreach, so the condition is limited to a checked bag. Review needed to map oversize delivery"
+      },
+      "description": "Bag service guarantee offer does not apply to checked items delivered to the oversize/oddsize baggage claim area (pets, golf clubs, skis, surfboards, assistive devices, firearms).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-DMG-2.r1",
+      "clause_id": "AK-DMG-2",
+      "tier": "commitment",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_damaged",
+        "bag_lost"
+      ],
+      "requires": [
+        "bag.report_filed"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.report_filed"
+          },
+          false
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states compensation cannot be awarded without a report on file. Denial applies only where report is absent; the clause does not state the remedy when a report exists."
+      },
+      "description": "Damaged or missing bag claims require a delayed/damaged bag report on file with the airline; without one, no compensation is awarded.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-195.r1",
+      "clause_id": "AK-BAG-195",
+      "tier": "commitment",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_lost",
+        "bag_damaged"
+      ],
+      "requires": [
+        "bag.status"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.status"
+          },
+          "delayed"
+        ]
+      },
+      "effect": {
+        "decision": "needs_approval",
+        "remedy": "bag_delivery",
+        "amount": null,
+        "fault": "airline",
+        "note": "Clause is a commitment to deliver recovered bags; 'checked in late' is undefined and the 'other flight' exclusion has no ontology fact, so route to human approval."
+      },
+      "description": "Bag delivery to home or hotel for recovered bags, unless customer checked baggage in late or took a flight other than the tagged one. Late check-in is undefined and no fact exists for it, so the exclusion cannot be decided from ontology facts; delivery entitlement is a procedural commitment.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-205.r1",
+      "clause_id": "AK-BAG-205",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "booking.ancillary_bag_fee",
+        "booking.fare_class"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "first"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause conditions on confirmation in First Class at check-in; the ontology has no check-in-time fare fact, so fare_class is used as proxy for the upgrade state. Refund of baggage fees is denied for upgraded passengers, per the clause."
+      },
+      "description": "Passengers upgraded after baggage has been accepted are not eligible for refund of baggage fees paid.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-207.r1",
+      "clause_id": "AK-BAG-207",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "bag.fee_paid",
+        "booking.loyalty_number",
+        "customer.loyalty_member",
+        "customer.loyalty_tier"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "customer.loyalty_tier"
+              },
+              "Club 49"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "customer.loyalty_member"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "expense_reimbursement",
+        "amount": {
+          "var": "bag.fee_paid"
+        },
+        "fault": "airline",
+        "note": "Clause describes a fee waiver for companions; encoded as reimbursement of checked-bag fee paid. Group-desk exception not encodable without a group-booking fact."
+      },
+      "description": "Club 49 member companions booked in the same reservation receive the baggage fee waiver",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-213.r1",
+      "clause_id": "AK-BAG-213",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_damaged",
+        "bag_lost",
+        "bag_guarantee",
+        "ancillary_refund",
+        "refund_request"
+      ],
+      "requires": [
+        "bag.checked",
+        "bag.fee_paid"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "bag.checked"
+          },
+          true
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause excludes baggage fee refunds for passengers upgraded after bag acceptance. The ontology has no upgrade-after-acceptance fact, so the condition is not directly testable; the rule is scoped to checked bags pending confirmation of upgrade timing."
+      },
+      "description": "Passengers upgraded after baggage has been accepted are not eligible for refund of baggage fees paid.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-214.r1",
+      "clause_id": "AK-BAG-214",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "bag_guarantee",
+        "bag_damaged",
+        "bag_delayed",
+        "ancillary_refund"
+      ],
+      "requires": [
+        "booking.ancillary_bag_fee",
+        "booking.status",
+        "customer.loyalty_member"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "customer.loyalty_member"
+              },
+              true
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "group"
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause is about fee applicability in group bookings; the ontology has no group-booking or companion flag, so the condition is approximated and confidence is low."
+      },
+      "description": "Companions and non-status passengers in group bookings pay standard baggage fees; only the actual status member receives the waiver. Encoded as a deny of fee waiver for bag fee refund claims in group bookings where the passenger is not the status member.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-BAG-216.r1",
+      "clause_id": "AK-BAG-216",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "bag_delayed",
+        "bag_fee_refund",
+        "ancillary_refund",
+        "other"
+      ],
+      "requires": [
+        "booking.ancillary_bag_fee",
+        "booking.fare_class"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "first"
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "refund",
+        "amount": {
+          "var": "booking.ancillary_bag_fee"
+        },
+        "fault": null,
+        "note": "Clause grants a free third bag (up to 70 lbs) to First Class codeshare passengers on AA and BA. Ontology has no codeshare-carrier or bag-weight field, so the rule approximates eligibility by fare class only; amount limited to paid bag fees."
+      },
+      "description": "First Class codeshare passengers on AA and BA receive a third free checked bag up to 70 lbs.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-ORD-12.r1",
+      "clause_id": "AK-ORD-12",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "change_of_mind",
+        "cancel_order",
+        "refund_request"
+      ],
+      "requires": [
+        "booking.fare_class",
+        "booking.hours_since_purchase"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.fare_class"
+          },
+          "saver"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": "customer",
+        "note": "Clause excludes 24-hour cancellation and same-day confirmed exceptions; those are not separately encoded here because the ontology lacks a same-day confirmed flag. Denial applies to saver fares generally, so the exception case may need review."
+      },
+      "description": "Saver fares: changes or cancellations are not permitted unless the 24-hour cancellation or same-day confirmed policy applies (condition not expressible from ontology facts for those policies, so only the denial default is encoded for saver fares).",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-REF-20.r1",
+      "clause_id": "AK-REF-20",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "credit_request"
+      ],
+      "requires": [
+        "booking.status",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.status"
+              },
+              "no_show"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause states no credit for unused flight; applied to credit requests on no-show bookings. Scope limited to no_show status as the clause's 'unused flight' condition."
+      },
+      "description": "Money or points spent on an unused flight are not available as a credit toward future flights",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-PAY-8.r1",
+      "clause_id": "AK-PAY-8",
+      "tier": "contract",
+      "priority": 5,
+      "categories": [],
+      "claim_reasons": [],
+      "requires": [
+        "booking.paid_with_credit_amount",
+        "booking.payment_method"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "booking.payment_method"
+          },
+          "travel_credit"
+        ]
+      },
+      "effect": {
+        "decision": "partial",
+        "remedy": "travel_credit",
+        "amount": null,
+        "fault": null,
+        "note": "Clause limits BTC use to the purchase price of new tickets; it may not cover service fees or additional fare on exchanged or partially used tickets. Amount not stated, so left null for the engine to determine from the credit balance and fare terms."
+      },
+      "description": "BTC cannot be applied to service fees or as additional fare for exchanged or partially used tickets",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-RET-59.r1",
+      "clause_id": "AK-RET-59",
+      "tier": "contract",
+      "priority": 10,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request"
+      ],
+      "requires": [
+        "claim.requested_remedy",
+        "order.payment_method"
+      ],
+      "when": {
+        "==": [
+          {
+            "var": "order.payment_method"
+          },
+          "travel_credit"
+        ]
+      },
+      "effect": {
+        "decision": "deny",
+        "remedy": "none",
+        "amount": null,
+        "fault": null,
+        "note": "Clause refers to BTCs (bonus travel certificates); mapped to travel_credit payment method. Ambiguity on whether a BTC is the payment method versus a booking payment is noted."
+      },
+      "description": "Bonus travel certificates are nonrefundable and cannot be redeemed for cash, check, or credit; deny cash-out or refund requests paid with a BTC.",
+      "enabled": true
+    },
+    {
+      "rule_id": "AK-REF-21.r1",
+      "clause_id": "AK-REF-21",
+      "tier": "contract",
+      "priority": 0,
+      "categories": [],
+      "claim_reasons": [
+        "refund_request",
+        "credit_request",
+        "cancel_order",
+        "other"
+      ],
+      "requires": [
+        "booking.payment_method",
+        "booking.total_paid",
+        "booking.travel_completed"
+      ],
+      "when": {
+        "and": [
+          {
+            "==": [
+              {
+                "var": "booking.payment_method"
+              },
+              "travel_credit"
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "booking.travel_completed"
+              },
+              false
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "travel_credit",
+        "amount": {
+          "var": "booking.total_paid"
+        },
+        "fault": null,
+        "note": "Clause is ambiguous: the applicable fare rules govern refunds and exchanges, which are not specified here. Amount assumes full ticket value is unused; partial use is not encoded. Payment method 'travel_credit' is used as the proxy for a BTC redemption."
+      },
+      "description": "If a bonus travel certificate was redeemed for a ticket and travel is not completed, the unused ticket value is refunded as a credit certificate.",
+      "enabled": true
+    }
+  ],
+  "report": [
+    {
+      "clause_id": "AK-BAG-48",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause sets a maximum bag weight (100 lbs/45 kg per piece), but the ontology has no bag weight field, so the condition cannot be tested deterministically.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-61",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Ontology lacks fields for carry-on contents being fragile or perishable and for damage causation by those contents; the exclusion cannot be deterministically evaluated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-94",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is an exemption from a fee; the ontology has no linear-inch dimension field and no oversize charge amount, so the 62-inch condition cannot be evaluated and no remedy applies.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-97",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checked oversize charges; it grants no claim remedy and the 62 linear inch dimension is not in the ontology.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-102",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a baggage fee/logistics statement about oversize charges; the ontology has no scuba-equipment or linear-inch dimension fact and the clause sets no dispute remedy, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-110",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause concerns an oversize charge exemption for ski/snowboard equipment by linear inches; the ontology has no dimension or equipment-type fact and the remedy is a fee waiver not a claim outcome.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-111",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause is a fee exemption about checking oversize surfboards/paddleboards; it does not state a claim remedy and dimensions (linear inches) and board type are not in the ontology, so it cannot be decided from ontology facts.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-112",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a fee exemption, not a dispute remedy; the 62 linear inch dimension is not in the ontology and the only available remedy is 'none', so the rule cannot meaningfully decide a claim.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-135",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "Clause defines how actual value is determined and places a documentation burden on the passenger; it does not set a decision or an amount computable from the ontology facts (no purchase price documentation or depreciation fact exists).",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-166",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": null,
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-170",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause defines timely-notice sufficiency but grants no remedy, and 'good cause' is undefined and cannot be decided from ontology facts; the only encodable element is a partial timeliness gate, so confidence is low.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-171",
+      "rules": 0,
+      "dropped": [
+        "lint: no facts referenced"
+      ],
+      "cannot_encode": "The condition (bag tendered within minimum check-in times in Section 15.C) cannot be tested with ontology facts; no check-in time field exists, and an unconditional rule is not permitted.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-RET-35",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional and unscoped"
+      ],
+      "cannot_encode": "The deadline depends on the ticket expiration date and the refund application date, neither of which exists in the ontology; only a non-decidable procedural deadline is stated.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-BAG-185",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause sets a filing window and procedure (in-person claim at arrival airport) but states no remedy or amount; the only encodable element is the 2-hour window, which is recorded above with reduced confidence.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-DMG-5",
+      "rules": 0,
+      "dropped": [
+        "lint: approve with no remedy"
+      ],
+      "cannot_encode": "Clause is a procedural reporting deadline that states no remedy or outcome; it cannot yield an approve, partial or deny decision from the ontology facts alone.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-FEE-54",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "Clause restricts how a bonus travel certificate may be applied (to fees or specific purchases). It is not a claim-entitlement rule and the ontology has no BTC instrument or Vacations/cargo/partner purchase facts to evaluate it against; an unconditional rule would violate encoding rules.",
+      "confidence": []
+    },
+    {
+      "clause_id": "AK-GEN-32",
+      "rules": 0,
+      "dropped": [
+        "lint: unconditional outcome (when=true)"
+      ],
+      "cannot_encode": "The clause voids a bonus travel certificate if it was altered or fraudulently obtained or obtained in violation of Atmos Rewards membership conditions. The ontology has no fact recording alteration, fraud, illegal acquisition, or membership-condition violation for a BTC, so the condition cannot be decided from ontology facts and no deterministic rule can be written.",
+      "confidence": []
+    }
+  ]
+}

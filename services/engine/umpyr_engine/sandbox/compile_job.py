@@ -8,8 +8,10 @@ from datetime import UTC, datetime
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
+from umpyr_rules import Rule
 
 from ..compile.compiler import (
+    apply_overrides,
     assemble_pack,
     compile_report,
     convert_clauses,
@@ -148,9 +150,12 @@ def persist(session: Session, client: str, docs: list[dict], clauses: list[dict]
 def run_compile(
     session: Session, client: str, rebuild: bool = False, use_batch: bool = True, reassemble: bool = False
 ) -> dict:
+    """rebuild: re-run segmentation and rule conversion (LLM). reassemble: re-apply rule_overrides.json to the
+    cached raw rules (no LLM). Neither: load the cached pack and persist it."""
     out = client_dir(client)
     pack_path = out / "rule_pack.json"
     clauses_path = out / "clauses.json"
+    raw_rules_path = out / "rules_raw.json"
     report_path = out / "compile_report.json"
     docs = load_documents(client)
     if not docs:
@@ -166,23 +171,36 @@ def run_compile(
         persist(session, client, docs, clauses, pack, report)
         return report
 
-    llm = get_llm()
     prefix = PREFIX.get(client, client[:2].upper())
-    if clauses_path.exists() and (not rebuild or reassemble):
+    if clauses_path.exists() and not rebuild:
         log.info("using cached clauses %s", clauses_path)
         clauses = json.loads(clauses_path.read_text())
     else:
-        clauses = segment_documents(llm, docs, prefix, client, use_batch=use_batch)
+        clauses = segment_documents(get_llm(), docs, prefix, client, use_batch=use_batch)
         clauses_path.write_text(json.dumps(clauses, indent=2))
     log.info("%d clauses (%d dispute-relevant)", len(clauses), sum(c["relevant_to_disputes"] for c in clauses))
 
-    rules, conv_report = convert_clauses(llm, clauses, client, use_batch=use_batch)
+    if raw_rules_path.exists() and not rebuild:
+        log.info("using cached raw rules %s", raw_rules_path)
+        raw = json.loads(raw_rules_path.read_text())
+        rules = [Rule.model_validate(r) for r in raw["rules"]]
+        conv_report = raw.get("report", [])
+    else:
+        rules, conv_report = convert_clauses(get_llm(), clauses, client, use_batch=use_batch)
+        raw_rules_path.write_text(
+            json.dumps({"rules": [json.loads(r.model_dump_json()) for r in rules], "report": conv_report}, indent=2)
+        )
+
+    overrides_path = out / "rule_overrides.json"
+    overrides = json.loads(overrides_path.read_text()) if overrides_path.exists() else None
+    rules, edits = apply_overrides(rules, overrides)
     existing = [
         v for (v,) in session.execute(select(m.RulePack.version).where(m.RulePack.workspace_id == client)).all()
     ]
     pack = assemble_pack(client, clauses, rules, new_version(existing))
     pack_path.write_text(pack.model_dump_json(indent=2))
     report = compile_report(clauses, rules, conv_report, pack)
+    report["merchant_edits"] = edits
     report["compiled_at"] = datetime.now(UTC).isoformat(timespec="seconds")
     report_path.write_text(json.dumps(report, indent=2, default=str))
     persist(session, client, docs, clauses, pack, report)

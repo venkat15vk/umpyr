@@ -288,11 +288,16 @@ def apply_overrides(rules: list[Rule], overrides: dict | None) -> tuple[list[Rul
         return rules, []
     log_lines: list[str] = []
     disable = set(overrides.get("disable", []))
+    enable_only = overrides.get("enable_only")
     patch = overrides.get("patch", {})
     out: list[Rule] = []
+    if enable_only is not None:
+        kept = {r.rule_id for r in rules} & set(enable_only)
+        log_lines.append(f"enable_only: kept {len(kept)} of {len(rules)} compiled rules")
     for r in rules:
-        if r.rule_id in disable:
-            log_lines.append(f"disabled {r.rule_id}")
+        if r.rule_id in disable or (enable_only is not None and r.rule_id not in enable_only):
+            if r.rule_id in disable:
+                log_lines.append(f"disabled {r.rule_id}")
             continue
         if r.rule_id in patch:
             data = r.model_dump()
