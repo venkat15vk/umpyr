@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     claude_model: str = Field("claude-haiku-5-5", description="A Haiku model id; every runtime call uses it")
     daily_cost_cap_usd: Decimal = Field(Decimal("1.00"), description="Block LLM calls once today's spend reaches this")
     llm_default_effort: str = Field("low", description="output_config.effort for runtime calls")
+    llm_batch: bool = Field(
+        True, description="Use the Batch API (50% price, minutes of queue latency) for offline jobs"
+    )
+    llm_sync_workers: int = Field(6, description="Concurrent requests when LLM_BATCH=false")
 
     # Embeddings
     voyage_api_key: SecretStr | None = None

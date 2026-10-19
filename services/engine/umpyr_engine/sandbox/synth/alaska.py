@@ -189,9 +189,7 @@ def generate(pack: RulePack, n: int = 300, seed: int = 11) -> tuple[list[dict], 
     bookings: list[dict] = []
     scenarios: list[Scenario] = []
     names: list[str] = []
-    cats = [c for c, w in MIX for _ in range(w)]
-    rng.shuffle(cats)
-    cats = cats[:n]
+    cats = rng.choices([c for c, _ in MIX], weights=[w for _, w in MIX], k=n)
     for i, cat in enumerate(cats):
         person = make_person(rng, 5000 + i)
         names.append(person.name)

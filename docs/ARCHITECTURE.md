@@ -39,6 +39,19 @@ workspaces · uploads · tickets · orders · cases (pgvector embedding) · cate
 
 Every tenant table has `workspace_id`; queries filter by it. Uploaded workspaces get `expires_at` (14 days default) and a sweeper job (M4).
 
+## Onboarding pipeline (M2, offline for the sandboxes; worker jobs `onboard.*` for uploads in M4)
+
+```
+sources.json ──fetch──► policy/*.txt ──compile──► clauses.json ──► rules_raw.json ──(rule_overrides.json = merchant approval)──► rule_pack.json ──► DB
+rule_pack ──synth──► orders.json + tickets.jsonl (+ hidden tickets_truth.jsonl)
+tickets ──ingest (PII mask)──► tickets/orders tables ──mine (Haiku, batch)──► cases (facts, staff actions, outcome)
+cases ──taxonomy (embed, HDBSCAN, Haiku names)──► categories ──router (logreg)──► router_models
+categories + cases + rule pack ──procedures (process mining + Haiku draft)──► procedures (approved)
+cases + rule pack ──drift (replay)──► drift_findings, gold split ──eval──► eval_scenarios
+```
+
+Every LLM step runs on the Batch API and caches its output under `samples/<client>/`; `--rebuild` re-spends.
+
 ## Runtime flow (M3)
 
 ```

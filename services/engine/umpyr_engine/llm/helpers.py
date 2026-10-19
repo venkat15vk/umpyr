@@ -70,7 +70,17 @@ def llm_json(llm: LLMProvider, req: LLMRequest, retries: int = 1) -> Any:
 
 
 def llm_json_batch(llm: LLMProvider, reqs: list[LLMRequest]) -> list[Any]:
-    """Batch API (50% price). Items that fail are retried once synchronously."""
+    """Batch API (50% price) when LLM_BATCH=true; otherwise concurrent synchronous calls.
+    Items that fail are retried once synchronously."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from ..config import get_settings
+
+    settings = get_settings()
+    if not settings.llm_batch:
+        log.info("LLM_BATCH=false: %d synchronous requests with %d workers", len(reqs), settings.llm_sync_workers)
+        with ThreadPoolExecutor(max_workers=settings.llm_sync_workers) as pool:
+            return list(pool.map(lambda r: llm_json(llm, r, retries=1), reqs))
     responses = llm.batch(reqs)
     out: list[Any] = []
     for req, resp in zip(reqs, responses, strict=True):

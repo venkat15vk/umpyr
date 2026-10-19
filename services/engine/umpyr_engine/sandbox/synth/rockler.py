@@ -422,9 +422,7 @@ def generate(pack: RulePack, n: int = 300, seed: int = 7) -> tuple[list[dict], l
     orders: list[dict] = []
     scenarios: list[Scenario] = []
     names: list[str] = []
-    cats = [c for c, w in MIX for _ in range(w)]
-    rng.shuffle(cats)
-    cats = cats[:n]
+    cats = rng.choices([c for c, _ in MIX], weights=[w for _, w in MIX], k=n)
     for i, cat in enumerate(cats):
         person = make_person(rng, i)
         names.append(person.name)
