@@ -1,0 +1,38 @@
+{
+ "scenarios": 1000,
+ "by_decision": {
+  "approve": 608,
+  "deny": 317,
+  "needs_approval": 52,
+  "escalate": 23
+ },
+ "by_category": {
+  "damaged_on_arrival": 255,
+  "change_of_mind_return": 314,
+  "order_cancel_change": 123,
+  "defective_item": 84,
+  "backorder_status": 112,
+  "lifetime_guarantee": 112
+ },
+ "rule_coverage": {
+  "RK-SHIP-1.m1": 310,
+  "RK-RET-1.r1": 69,
+  "RK-ORD-2.m1": 90,
+  "RK-RET-12.r1": 91,
+  "RK-ORD-4.m1": 64,
+  "RK-PAY-1.r1": 28,
+  "RK-RET-13.r1": 66,
+  "null": 23,
+  "RK-RET-8.r1": 24,
+  "RK-ORD-12.r1": 53,
+  "RK-GUAR-3.r1": 66,
+  "RK-GUAR-4.r1": 46,
+  "RK-RET-14.r1": 35,
+  "RK-RET-3.r1": 27,
+  "RK-RET-1.m1": 8
+ },
+ "rules_never_fired": [
+  "RK-RET-6.r2",
+  "RK-SHIP-1.m2"
+ ]
+}

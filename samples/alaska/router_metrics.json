@@ -1,0 +1,21 @@
+{
+ "model": "logreg+sigmoid-calibration",
+ "n_train": 240,
+ "n_test": 60,
+ "accuracy": 1.0,
+ "macro_f1": 1.0,
+ "threshold": 0.7,
+ "coverage_at_threshold": 0.967,
+ "accuracy_at_threshold": 1.0,
+ "class_counts": {
+  "airline_booking_cancellation": 51,
+  "checked_bag_damage": 27,
+  "checked_bag_delayed": 31,
+  "delayed_checked_bag_guarantee": 40,
+  "flight_delay_expenses": 47,
+  "flight_delay_refund_request": 46,
+  "flight_schedule_change": 14,
+  "missing_loyalty_points": 21,
+  "seat_fee_refund": 23
+ }
+}

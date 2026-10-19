@@ -1,6 +1,6 @@
 {
   "workspace": "alaska",
-  "version": "2026-10-19.2",
+  "version": "2026-10-19.3",
   "clauses": [
     {
       "clause_id": "AK-FEE-1",
@@ -6259,7 +6259,10 @@
         "amount": {
           "min": [
             {
-              "var": "claim.requested_amount"
+              "var": [
+                "claim.requested_amount",
+                25
+              ]
             },
             25
           ]
@@ -6345,14 +6348,27 @@
         "bag_delayed"
       ],
       "requires": [
-        "bag.status"
+        "bag.status",
+        "bag.damage_type"
       ],
       "when": {
-        "==": [
+        "and": [
           {
-            "var": "bag.status"
+            "==": [
+              {
+                "var": "bag.status"
+              },
+              "delivered"
+            ]
           },
-          "delivered"
+          {
+            "==": [
+              {
+                "var": "bag.damage_type"
+              },
+              "contents"
+            ]
+          }
         ]
       },
       "effect": {
@@ -6360,7 +6376,7 @@
         "remedy": "none",
         "amount": null,
         "fault": "customer",
-        "note": "Rule 15: no liability for missing or damaged items when the checked bag itself was not damaged, delayed or lost."
+        "note": "Rule 15: no liability for missing or damaged contents when the checked bag itself was not damaged, delayed or lost."
       },
       "description": "No airline liability for missing or damaged checked-bag claims where the checked bag was not damaged, delayed, or lost (bag status delivered).",
       "enabled": true

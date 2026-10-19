@@ -1,0 +1,1281 @@
+[
+ {
+  "category_key": "damaged_or_defective_product",
+  "version": 1,
+  "name": "damaged_or_defective_product_resolution",
+  "steps": [
+   {
+    "kind": "gather",
+    "name": "gather_photos",
+    "tool": "extract_facts",
+    "step_id": "damaged_or_defective_product.s1",
+    "clause_ids": [],
+    "instruction": "Ask the customer for photos of the damaged or defective product and packaging if no photos are on file.",
+    "staff_action": "request_photos",
+    "required_facts": [
+     "claim.has_photos"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "verify_order_details",
+    "tool": "lookup_order",
+    "step_id": "damaged_or_defective_product.s2",
+    "clause_ids": [],
+    "instruction": "Look up the order to confirm the item, brand, category, line total and days since order.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.line_total",
+     "order.days_since_order"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "review_photos",
+    "tool": "none",
+    "step_id": "damaged_or_defective_product.s3",
+    "clause_ids": [],
+    "instruction": "Review the customer's photos to confirm the item arrived damaged on arrival or failed to perform.",
+    "staff_action": "review_photos",
+    "required_facts": [
+     "claim.has_photos"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "check_guarantee_and_return_eligibility",
+    "tool": "rule",
+    "step_id": "damaged_or_defective_product.s4",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4",
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6",
+     "RK-SHIP-1"
+    ],
+    "instruction": "Determine whether a lifetime guarantee applies (router bits, TopSlide/Centerline drawer slides) and whether the item is non-returnable (Laguna/Sawstop power tools, clearance/final sale, software or plans). Guarantee replacements apply regardless of proof of purchase. Shipping charges are waived when the item is damaged or defective.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.is_power_tool",
+     "item.is_final_sale",
+     "item.has_lifetime_guarantee"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "decide_remedy",
+    "tool": "rule",
+    "step_id": "damaged_or_defective_product.s5",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4",
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "If the item is covered by a lifetime guarantee, approve replacement. If the item is non-returnable and not defective-covered, deny. Otherwise approve replacement for damaged or defective items.",
+    "staff_action": "issue_replacement",
+    "required_facts": [
+     "item.has_lifetime_guarantee",
+     "item.is_final_sale",
+     "item.is_power_tool",
+     "item.brand"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "authorize_and_issue_replacement",
+    "tool": "authorize",
+    "step_id": "damaged_or_defective_product.s6",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4",
+     "RK-SHIP-1"
+    ],
+    "instruction": "After authorization, issue the replacement (or refund in rare cases) and provide the customer confirmation.",
+    "staff_action": "issue_replacement",
+    "required_facts": [
+     "item.line_total"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "damaged_or_defective_product.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "claim.has_photos",
+   "item.brand",
+   "item.category",
+   "item.has_lifetime_guarantee",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "item.line_total",
+   "order.days_since_order"
+  ],
+  "outcomes": [
+   {
+    "remedy": "replacement",
+    "decision": "approve",
+    "condition": "Damaged or defective item with photos, returnable or covered by lifetime guarantee",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4",
+     "RK-SHIP-1"
+    ]
+   },
+   {
+    "remedy": "none",
+    "decision": "deny",
+    "condition": "Item is Laguna or Sawstop power tool, clearance/final sale, software or downloadable plan, and not defective",
+    "clause_ids": [
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6"
+    ]
+   },
+   {
+    "remedy": "refund",
+    "decision": "approve",
+    "condition": "Item is defective or damaged and a refund is requested in place of replacement",
+    "clause_ids": [
+     "RK-SHIP-1"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 100,
+   "outcomes": {
+    "deny/none": 7,
+    "approve/refund": 2,
+    "approve/replacement": 91
+   },
+   "common_path": [
+    "review_photos",
+    "issue_replacement"
+   ],
+   "conditional": [
+    "acknowledge",
+    "verify_order",
+    "request_photos"
+   ],
+   "frequencies": {
+    "other": 0.07,
+    "acknowledge": 0.33,
+    "provide_eta": 0.08,
+    "check_policy": 0.07,
+    "close_ticket": 0.04,
+    "deny_request": 0.07,
+    "issue_refund": 0.02,
+    "verify_order": 0.2,
+    "review_photos": 1.0,
+    "request_photos": 0.41,
+    "issue_replacement": 0.91,
+    "send_return_label": 0.01,
+    "file_carrier_claim": 0.01
+   },
+   "claim_reasons": {
+    "defective": 30,
+    "damaged_on_arrival": 70
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "change_of_mind_returns",
+  "version": 1,
+  "name": "change_of_mind_returns_procedure",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify order and proof of purchase",
+    "tool": "lookup_order",
+    "step_id": "change_of_mind_returns.s1",
+    "clause_ids": [
+     "RK-RET-3"
+    ],
+    "instruction": "Look up the order and confirm valid proof of purchase exists. If no receipt, deny under RK-RET-3.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "claim.has_receipt",
+     "order.days_since_order"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather item condition",
+    "tool": "extract_facts",
+    "step_id": "change_of_mind_returns.s2",
+    "clause_ids": [],
+    "instruction": "Ask the customer whether the item is unopened and unused and confirm the item details needed for the ruling.",
+    "staff_action": "acknowledge",
+    "required_facts": [
+     "claim.item_unopened",
+     "claim.item_used"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check return window and item eligibility",
+    "tool": "rule",
+    "step_id": "change_of_mind_returns.s3",
+    "clause_ids": [
+     "RK-RET-1",
+     "RK-RET-6",
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "Confirm the purchase is within 90 days, and that the item is not clearance or final sale, software or downloadable plans, or a Laguna or Sawstop power tool.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "order.days_since_order",
+     "item.is_final_sale",
+     "item.category",
+     "item.brand",
+     "item.is_power_tool"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check power tool and packaging conditions",
+    "tool": "authorize",
+    "step_id": "change_of_mind_returns.s4",
+    "clause_ids": [
+     "RK-RET-12",
+     "RK-RET-8"
+    ],
+    "instruction": "For power tools, confirm the item is unused and in original packaging and that authorization is required before any return is processed.",
+    "staff_action": "escalate_supervisor",
+    "required_facts": [
+     "item.is_power_tool",
+     "claim.item_used",
+     "claim.item_unopened"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ruling and rewards adjustment",
+    "tool": "rule",
+    "step_id": "change_of_mind_returns.s5",
+    "clause_ids": [
+     "RK-PAY-1"
+    ],
+    "instruction": "Issue the deterministic ruling. Where a promotional Rewards Card was used, void it if unused or reduce the refund by the amount redeemed.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "order.rewards_discount",
+     "item.line_total"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Execute remedy",
+    "tool": "draft_reply",
+    "step_id": "change_of_mind_returns.s6",
+    "clause_ids": [
+     "RK-RET-1",
+     "RK-PAY-1",
+     "RK-RET-8"
+    ],
+    "instruction": "After authorization, send the return label and issue the full refund, partial refund, or store credit according to the ruling.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "item.line_total",
+     "order.rewards_discount"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "change_of_mind_returns.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "claim.has_receipt",
+   "claim.item_unopened",
+   "claim.item_used",
+   "item.brand",
+   "item.category",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "item.line_total",
+   "order.days_since_order",
+   "order.rewards_discount"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Deny the return and explain the proof of purchase requirement",
+    "decision": "deny",
+    "condition": "No valid proof of purchase",
+    "clause_ids": [
+     "RK-RET-3"
+    ]
+   },
+   {
+    "remedy": "Deny the return as non-returnable",
+    "decision": "deny",
+    "condition": "Clearance, final sale, software, or downloadable plans",
+    "clause_ids": [
+     "RK-RET-14",
+     "RK-RET-6"
+    ]
+   },
+   {
+    "remedy": "Deny the return as non-returnable",
+    "decision": "deny",
+    "condition": "Laguna or Sawstop power tool",
+    "clause_ids": [
+     "RK-RET-13"
+    ]
+   },
+   {
+    "remedy": "Issue full refund or store credit and send return label; void or reduce by Rewards Card amount if applicable",
+    "decision": "approve",
+    "condition": "Eligible, within 90 days, unused and unopened, with receipt",
+    "clause_ids": [
+     "RK-RET-1",
+     "RK-PAY-1"
+    ]
+   },
+   {
+    "remedy": "Escalate to supervisor for authorization; deny if item is used or not in original packaging",
+    "decision": "escalate",
+    "condition": "Power tool return without authorization or not in original packaging",
+    "clause_ids": [
+     "RK-RET-8",
+     "RK-RET-12"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 90,
+   "outcomes": {
+    "deny/none": 37,
+    "escalate/None": 5,
+    "approve/refund": 25,
+    "approve/store_credit": 5,
+    "partial/store_credit": 4,
+    "partial/partial_refund": 14
+   },
+   "common_path": [
+    "verify_order"
+   ],
+   "conditional": [
+    "check_policy",
+    "escalate_supervisor",
+    "send_return_label",
+    "deny_request",
+    "issue_refund",
+    "close_ticket"
+   ],
+   "frequencies": {
+    "other": 0.03333333333333333,
+    "acknowledge": 0.05555555555555555,
+    "provide_eta": 0.06666666666666667,
+    "check_policy": 0.45555555555555555,
+    "close_ticket": 0.24444444444444444,
+    "deny_request": 0.4111111111111111,
+    "issue_refund": 0.26666666666666666,
+    "verify_order": 1.0,
+    "authorize_return": 0.14444444444444443,
+    "send_return_label": 0.2111111111111111,
+    "issue_store_credit": 0.1,
+    "escalate_supervisor": 0.24444444444444444,
+    "apply_restocking_fee": 0.022222222222222223,
+    "issue_partial_refund": 0.15555555555555556
+   },
+   "claim_reasons": {
+    "change_of_mind": 89,
+    "refund_request": 1
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "lifetime_guarantee_replacement_request",
+  "version": 1,
+  "name": "lifetime_guarantee_replacement_request",
+  "steps": [
+   {
+    "kind": "gather",
+    "name": "Collect failure details",
+    "tool": "extract_facts",
+    "step_id": "lifetime_guarantee_replacement_request.s1",
+    "clause_ids": [],
+    "instruction": "Ask the customer for the product name, a description of how it failed, and approximate purchase date. A receipt is not required for covered items.",
+    "staff_action": null,
+    "required_facts": [
+     "item.brand",
+     "item.category"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "Verify order record",
+    "tool": "lookup_order",
+    "step_id": "lifetime_guarantee_replacement_request.s2",
+    "clause_ids": [],
+    "instruction": "Look up the order or product record to confirm the item and whether it carries the lifetime guarantee.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.has_lifetime_guarantee"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check exclusions",
+    "tool": "rule",
+    "step_id": "lifetime_guarantee_replacement_request.s3",
+    "clause_ids": [
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "Determine whether the item is a power tool or sold as final sale, since these exclude it from return or replacement handling.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "item.is_power_tool",
+     "item.is_final_sale"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide guarantee eligibility",
+    "tool": "rule",
+    "step_id": "lifetime_guarantee_replacement_request.s4",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4"
+    ],
+    "instruction": "If the item is a Rockler router bit or a TopSlide/Centerline Lifetime drawer slide that failed to perform, it is covered for replacement with no proof of purchase required.",
+    "staff_action": null,
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.has_lifetime_guarantee"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Authorize and issue replacement",
+    "tool": "authorize",
+    "step_id": "lifetime_guarantee_replacement_request.s5",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4"
+    ],
+    "instruction": "After authorization, issue a free replacement of the covered item.",
+    "staff_action": "issue_replacement",
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.has_lifetime_guarantee"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "lifetime_guarantee_replacement_request.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "item.brand",
+   "item.category",
+   "item.has_lifetime_guarantee",
+   "item.is_final_sale",
+   "item.is_power_tool"
+  ],
+  "outcomes": [
+   {
+    "remedy": "issue free replacement",
+    "decision": "approve",
+    "condition": "Item is a Rockler router bit or TopSlide/Centerline Lifetime drawer slide that failed, regardless of receipt",
+    "clause_ids": [
+     "RK-GUAR-3",
+     "RK-GUAR-4"
+    ]
+   },
+   {
+    "remedy": "explain non-returnable status and do not process a return",
+    "decision": "deny_return_path",
+    "condition": "Item is a Laguna or Sawstop power tool",
+    "clause_ids": [
+     "RK-RET-13"
+    ]
+   },
+   {
+    "remedy": "explain final sale status and do not process a return",
+    "decision": "deny_return_path",
+    "condition": "Item is clearance and sold as final sale",
+    "clause_ids": [
+     "RK-RET-14"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 35,
+   "outcomes": {
+    "approve/replacement": 35
+   },
+   "common_path": [
+    "verify_order",
+    "issue_replacement"
+   ],
+   "conditional": [],
+   "frequencies": {
+    "acknowledge": 0.11428571428571428,
+    "provide_eta": 0.08571428571428572,
+    "check_policy": 0.02857142857142857,
+    "close_ticket": 0.05714285714285714,
+    "update_order": 0.02857142857142857,
+    "verify_order": 1.0,
+    "confirm_cause": 0.02857142857142857,
+    "issue_replacement": 1.0
+   },
+   "claim_reasons": {
+    "lifetime_guarantee": 35
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "order_cancellation_request",
+  "version": 1,
+  "name": "order_cancellation_request resolution procedure",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify order and shipping status",
+    "tool": "lookup_order",
+    "step_id": "order_cancellation_request.s1",
+    "clause_ids": [
+     "RK-ORD-12",
+     "RK-ORD-4"
+    ],
+    "instruction": "Look up the order and confirm whether it has shipped or been picked up and whether any item is backordered.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "order.has_shipped",
+     "order.is_backordered",
+     "order.days_since_order"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather proof of purchase and item condition",
+    "tool": "extract_facts",
+    "step_id": "order_cancellation_request.s2",
+    "clause_ids": [
+     "RK-RET-3"
+    ],
+    "instruction": "Ask the customer whether they have a valid receipt and, if the item is not cancellable, whether it is unopened and unused.",
+    "staff_action": null,
+    "required_facts": [
+     "claim.has_receipt",
+     "claim.item_unopened",
+     "claim.item_used"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather item details",
+    "tool": "extract_facts",
+    "step_id": "order_cancellation_request.s3",
+    "clause_ids": [
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6"
+    ],
+    "instruction": "Confirm the item brand, category, line total and whether it is a power tool or marked final sale.",
+    "staff_action": null,
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.is_power_tool",
+     "item.is_final_sale",
+     "item.line_total"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check cancellation and return eligibility",
+    "tool": "rule",
+    "step_id": "order_cancellation_request.s4",
+    "clause_ids": [
+     "RK-ORD-12",
+     "RK-ORD-2",
+     "RK-RET-1",
+     "RK-RET-3",
+     "RK-RET-8",
+     "RK-RET-12",
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6"
+    ],
+    "instruction": "If the order has not shipped, the cancellation is allowed. If it has shipped, evaluate return eligibility against the return window, proof of purchase, final sale, non-returnable brands and power tool authorization rules.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "order.has_shipped",
+     "order.days_since_order",
+     "claim.has_receipt",
+     "item.is_final_sale",
+     "item.brand",
+     "item.is_power_tool",
+     "claim.item_unopened",
+     "claim.item_used"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Determine refund adjustment for rewards cards",
+    "tool": "rule",
+    "step_id": "order_cancellation_request.s5",
+    "clause_ids": [
+     "RK-PAY-1"
+    ],
+    "instruction": "If the original transaction included promotional Rewards Cards, void unused cards or reduce the refund by the amount redeemed.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "order.rewards_discount",
+     "item.line_total"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Execute cancellation, refund, store credit or denial",
+    "tool": "authorize",
+    "step_id": "order_cancellation_request.s6",
+    "clause_ids": [
+     "RK-ORD-12",
+     "RK-ORD-2",
+     "RK-PAY-1"
+    ],
+    "instruction": "After authorization where required, cancel the order or issue the refund or store credit per the ruling; otherwise deny and explain the policy basis to the customer.",
+    "staff_action": "cancel_order",
+    "required_facts": [
+     "order.has_shipped"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "order_cancellation_request.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "claim.has_receipt",
+   "claim.item_unopened",
+   "claim.item_used",
+   "item.brand",
+   "item.category",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "item.line_total",
+   "order.days_since_order",
+   "order.has_shipped",
+   "order.is_backordered",
+   "order.rewards_discount"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Cancel the order and refund the full amount, adjusted for any promotional Rewards Card.",
+    "decision": "approve/cancel_order",
+    "condition": "Order not yet picked up or shipped",
+    "clause_ids": [
+     "RK-ORD-12",
+     "RK-PAY-1"
+    ]
+   },
+   {
+    "remedy": "Issue refund within the return window, adjusted for any promotional Rewards Card.",
+    "decision": "approve/refund",
+    "condition": "Order shipped or too late to cancel, item returnable with valid receipt, unopened or unused, not final sale, not non-returnable brand",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-1",
+     "RK-PAY-1"
+    ]
+   },
+   {
+    "remedy": "Issue store credit in place of cash refund.",
+    "decision": "approve/store_credit",
+    "condition": "Returnable item where store credit is the chosen remedy",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-1"
+    ]
+   },
+   {
+    "remedy": "Deny the request and cite the specific policy that applies.",
+    "decision": "deny/none",
+    "condition": "No valid proof of purchase, outside return window, final sale or clearance, non-returnable brand or software, or power tool without authorization",
+    "clause_ids": [
+     "RK-RET-3",
+     "RK-RET-1",
+     "RK-RET-14",
+     "RK-RET-6",
+     "RK-RET-13",
+     "RK-RET-8",
+     "RK-RET-12"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 32,
+   "outcomes": {
+    "deny/none": 15,
+    "approve/refund": 9,
+    "approve/cancel_order": 6,
+    "approve/store_credit": 2
+   },
+   "common_path": [
+    "verify_order"
+   ],
+   "conditional": [
+    "cancel_order",
+    "check_policy",
+    "issue_refund",
+    "acknowledge",
+    "deny_request"
+   ],
+   "frequencies": {
+    "other": 0.03125,
+    "acknowledge": 0.21875,
+    "provide_eta": 0.09375,
+    "cancel_order": 0.4375,
+    "check_policy": 0.46875,
+    "close_ticket": 0.03125,
+    "deny_request": 0.46875,
+    "issue_refund": 0.46875,
+    "verify_order": 1.0,
+    "issue_store_credit": 0.0625
+   },
+   "claim_reasons": {
+    "backorder": 7,
+    "cancel_order": 22,
+    "change_of_mind": 3
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "backorder_eta_inquiry",
+  "version": 1,
+  "name": "Backorder ETA Inquiry Resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify backorder status",
+    "tool": "lookup_order",
+    "step_id": "backorder_eta_inquiry.s1",
+    "clause_ids": [
+     "RK-ORD-4"
+    ],
+    "instruction": "Look up the customer's order and confirm whether the item in the inquiry is on backorder.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "order.is_backordered"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check backorder policy",
+    "tool": "rule",
+    "step_id": "backorder_eta_inquiry.s2",
+    "clause_ids": [
+     "RK-ORD-4"
+    ],
+    "instruction": "Evaluate whether the out-of-stock item is held on backorder with the rest of the order placed.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "order.is_backordered"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check return restrictions if raised",
+    "tool": "rule",
+    "step_id": "backorder_eta_inquiry.s3",
+    "clause_ids": [
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "Only if the customer's request also involves returning or cancelling the item, evaluate final-sale, clearance, and Laguna or Sawstop power tool restrictions.",
+    "staff_action": null,
+    "required_facts": [
+     "item.is_final_sale",
+     "item.is_power_tool",
+     "item.brand"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ETA eligibility",
+    "tool": "rule",
+    "step_id": "backorder_eta_inquiry.s4",
+    "clause_ids": [
+     "RK-ORD-4"
+    ],
+    "instruction": "If the item is on backorder, approve and provide the estimated ship date. If it is not on backorder, deny the ETA request.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "order.is_backordered"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Send ETA reply",
+    "tool": "draft_reply",
+    "step_id": "backorder_eta_inquiry.s5",
+    "clause_ids": [
+     "RK-ORD-4"
+    ],
+    "instruction": "Draft and send the reply with the estimated ship date for the backordered item.",
+    "staff_action": "provide_eta",
+    "required_facts": [
+     "order.is_backordered"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "backorder_eta_inquiry.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "item.brand",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "order.is_backordered"
+  ],
+  "outcomes": [
+   {
+    "remedy": "provide the estimated ship date for the backordered item",
+    "decision": "approve",
+    "condition": "order.is_backordered is true",
+    "clause_ids": [
+     "RK-ORD-4"
+    ]
+   },
+   {
+    "remedy": "explain that the item is not on backorder and no ETA applies",
+    "decision": "deny",
+    "condition": "order.is_backordered is false",
+    "clause_ids": [
+     "RK-ORD-4"
+    ]
+   },
+   {
+    "remedy": "decline the return and explain the final-sale terms",
+    "decision": "deny",
+    "condition": "request includes a return of a final-sale or clearance item",
+    "clause_ids": [
+     "RK-RET-14"
+    ]
+   },
+   {
+    "remedy": "decline the return because the brand is non-returnable",
+    "decision": "deny",
+    "condition": "request includes a return of a Laguna or Sawstop power tool",
+    "clause_ids": [
+     "RK-RET-13"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 21,
+   "outcomes": {
+    "None/None": 2,
+    "None/none": 3,
+    "deny/none": 3,
+    "approve/none": 11,
+    "escalate/none": 1,
+    "approve/store_credit": 1
+   },
+   "common_path": [
+    "verify_order",
+    "provide_eta"
+   ],
+   "conditional": [],
+   "frequencies": {
+    "other": 0.09523809523809523,
+    "acknowledge": 0.19047619047619047,
+    "provide_eta": 0.9523809523809523,
+    "check_policy": 0.14285714285714285,
+    "close_ticket": 0.047619047619047616,
+    "deny_request": 0.14285714285714285,
+    "update_order": 0.047619047619047616,
+    "verify_order": 1.0,
+    "issue_store_credit": 0.047619047619047616
+   },
+   "claim_reasons": {
+    "backorder": 21
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "post_shipment_address_change",
+  "version": 1,
+  "name": "Post-Shipment Address Change Resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify order shipped status",
+    "tool": "lookup_order",
+    "step_id": "post_shipment_address_change.s1",
+    "clause_ids": [],
+    "instruction": "Look up the order and confirm whether it has already shipped; if it has not shipped, the address change is handled as a pre-shipment edit outside this procedure.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "order.has_shipped"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather item details",
+    "tool": "extract_facts",
+    "step_id": "post_shipment_address_change.s2",
+    "clause_ids": [],
+    "instruction": "Ask the customer which item(s) they want redirected or returned and confirm the desired outcome (new address is not possible after shipment; they may choose return, store credit, or carrier contact).",
+    "staff_action": null,
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.is_final_sale",
+     "item.is_power_tool"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check return eligibility policy",
+    "tool": "rule",
+    "step_id": "post_shipment_address_change.s3",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6"
+    ],
+    "instruction": "Evaluate whether the shipped items are eligible for return under the returns policy, considering Laguna/Sawstop power tool exclusions, clearance final-sale status, and non-returnable software or plans.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "item.brand",
+     "item.category",
+     "item.is_final_sale",
+     "item.is_power_tool"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ruling",
+    "tool": "rule",
+    "step_id": "post_shipment_address_change.s4",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-13",
+     "RK-RET-14",
+     "RK-RET-6"
+    ],
+    "instruction": "Deny the address change request, since the order has shipped. If items are returnable, offer a return; if not returnable, offer store credit where policy allows or direct the customer to carrier contact.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "order.has_shipped",
+     "item.is_final_sale",
+     "item.is_power_tool",
+     "item.brand"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Issue remedy",
+    "tool": "authorize",
+    "step_id": "post_shipment_address_change.s5",
+    "clause_ids": [
+     "RK-ORD-2"
+    ],
+    "instruction": "Execute the approved remedy: send a return label, issue a refund, or issue store credit, only after authorization.",
+    "staff_action": "issue_store_credit",
+    "required_facts": [
+     "order.has_shipped",
+     "item.is_final_sale"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "post_shipment_address_change.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "item.brand",
+   "item.category",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "order.has_shipped"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Decline redirect; offer return, store credit, or carrier contact",
+    "decision": "deny",
+    "condition": "Order has shipped and address change requested",
+    "clause_ids": [
+     "RK-ORD-2"
+    ]
+   },
+   {
+    "remedy": "No return; offer store credit or carrier contact",
+    "decision": "deny",
+    "condition": "Shipped item is a Laguna or Sawstop power tool",
+    "clause_ids": [
+     "RK-RET-13"
+    ]
+   },
+   {
+    "remedy": "No return; offer store credit or carrier contact",
+    "decision": "deny",
+    "condition": "Shipped item is clearance or final sale",
+    "clause_ids": [
+     "RK-RET-14"
+    ]
+   },
+   {
+    "remedy": "No return; offer store credit or carrier contact",
+    "decision": "deny",
+    "condition": "Shipped item is software, downloadable plan, or clearance",
+    "clause_ids": [
+     "RK-RET-6"
+    ]
+   },
+   {
+    "remedy": "Offer return with return label or refund",
+    "decision": "approve",
+    "condition": "Shipped item is eligible for return under returns policy",
+    "clause_ids": [
+     "RK-ORD-2"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 11,
+   "outcomes": {
+    "deny/none": 5,
+    "approve/refund": 1,
+    "approve/store_credit": 4,
+    "partial/store_credit": 1
+   },
+   "common_path": [
+    "verify_order",
+    "deny_request"
+   ],
+   "conditional": [
+    "check_policy",
+    "issue_store_credit"
+   ],
+   "frequencies": {
+    "check_policy": 0.45454545454545453,
+    "deny_request": 1.0,
+    "issue_refund": 0.09090909090909091,
+    "verify_order": 1.0,
+    "send_return_label": 0.09090909090909091,
+    "issue_store_credit": 0.45454545454545453
+   },
+   "claim_reasons": {
+    "other": 2,
+    "order_change": 9
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "order_quantity_change_request",
+  "version": 1,
+  "name": "order_quantity_change_request_resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify order and shipment status",
+    "tool": "lookup_order",
+    "step_id": "order_quantity_change_request.s1",
+    "clause_ids": [],
+    "instruction": "Look up the order referenced by the customer and confirm whether it has already shipped or is on backorder.",
+    "staff_action": "verify_order",
+    "required_facts": [
+     "order.has_shipped"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather item details",
+    "tool": "extract_facts",
+    "step_id": "order_quantity_change_request.s2",
+    "clause_ids": [],
+    "instruction": "Confirm which item(s) the customer wants to change and the requested new quantity, and whether the item is a power tool, its brand, and whether it is final sale.",
+    "staff_action": null,
+    "required_facts": [
+     "item.brand",
+     "item.is_power_tool",
+     "item.is_final_sale"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Evaluate change eligibility policy",
+    "tool": "rule",
+    "step_id": "order_quantity_change_request.s3",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "If the order has already shipped or is on backorder, a quantity change cannot be applied to the existing order. Evaluate whether any return path applies to the affected items under the returns policy, noting that Laguna and Sawstop power tools and clearance final-sale items are not returnable.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "order.has_shipped",
+     "item.brand",
+     "item.is_power_tool",
+     "item.is_final_sale"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide quantity change ruling",
+    "tool": "rule",
+    "step_id": "order_quantity_change_request.s4",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-13",
+     "RK-RET-14"
+    ],
+    "instruction": "Deny the quantity change request when the order has shipped or is on backorder. If the customer is eligible for a return after failed cancellation, direct them to the returns policy instead of changing the order quantity.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "order.has_shipped",
+     "item.is_final_sale",
+     "item.is_power_tool",
+     "item.brand"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Act on ruling and communicate",
+    "tool": "draft_reply",
+    "step_id": "order_quantity_change_request.s5",
+    "clause_ids": [
+     "RK-ORD-2"
+    ],
+    "instruction": "Send the customer the denial with the reason and any applicable return option or estimated delivery information; escalate to a supervisor if the customer disputes the ruling.",
+    "staff_action": "escalate_supervisor",
+    "required_facts": [
+     "order.has_shipped"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "order_quantity_change_request.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "item.brand",
+   "item.is_final_sale",
+   "item.is_power_tool",
+   "order.has_shipped"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Deny the quantity change and explain that the order can no longer be modified; offer the returns path if eligible",
+    "decision": "deny",
+    "condition": "Order has shipped or is on backorder",
+    "clause_ids": [
+     "RK-ORD-2"
+    ]
+   },
+   {
+    "remedy": "Deny the quantity change and state that Laguna and Sawstop power tools are non-returnable",
+    "decision": "deny",
+    "condition": "Order has shipped and item is a Laguna or Sawstop power tool",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-13"
+    ]
+   },
+   {
+    "remedy": "Deny the quantity change and state that clearance items are final sale and not eligible for return",
+    "decision": "deny",
+    "condition": "Order has shipped and item is clearance final sale",
+    "clause_ids": [
+     "RK-ORD-2",
+     "RK-RET-14"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 11,
+   "outcomes": {
+    "deny/none": 11
+   },
+   "common_path": [
+    "verify_order",
+    "check_policy",
+    "deny_request"
+   ],
+   "conditional": [
+    "escalate_supervisor"
+   ],
+   "frequencies": {
+    "provide_eta": 0.18181818181818182,
+    "check_policy": 0.6363636363636364,
+    "close_ticket": 0.09090909090909091,
+    "deny_request": 1.0,
+    "verify_order": 1.0,
+    "escalate_supervisor": 0.36363636363636365
+   },
+   "claim_reasons": {
+    "order_change": 11
+   }
+  },
+  "status": "approved"
+ }
+]

@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-19.2",
+  "version": "2026-10-19.3",
   "clauses": 530,
   "relevant_clauses": 461,
   "ambiguous_clauses": 146,
@@ -404,5 +404,5 @@
     "added AK-BAG-134.m2",
     "added AK-FEE-3.m1"
   ],
-  "compiled_at": "2026-10-19T21:29:55+00:00"
+  "compiled_at": "2026-10-19T22:07:57+00:00"
 }

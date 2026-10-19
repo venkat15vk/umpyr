@@ -1,0 +1,31 @@
+{
+ "cases": 300,
+ "policy_decisions": {
+  "approve": 178,
+  "deny": 82,
+  "escalate": 15,
+  "needs_approval": 20,
+  "needs_fact": 5
+ },
+ "drift_findings": 32,
+ "unwritten_rule_candidates": 0,
+ "gold": 228,
+ "split": {
+  "train": 182,
+  "test": 46,
+  "held": 32
+ },
+ "rule_pack_version": "2026-10-19.4",
+ "vs_ground_truth": {
+  "scored": 300,
+  "claim_reason_accuracy": 0.957,
+  "policy_decision_agreement": 0.943,
+  "drift_precision": 0.625,
+  "drift_recall": 0.488,
+  "drift_tp_fp_fn": [
+   20,
+   12,
+   21
+  ]
+ }
+}

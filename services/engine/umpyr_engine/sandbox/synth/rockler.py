@@ -607,6 +607,9 @@ def _scenario(
     policy = _ruling_summary(ruling)
     staff_outcome, more_steps, drift, drift_reason = _staff_outcome(rng, cat, ruling, item, order, claim)
     steps.extend(more_steps)
+    if claim.get("has_photos") is False:
+        facts["claim"]["has_photos"] = False
+        steps[:] = [s for s in steps if s.action not in ("request_photos", "review_photos")]
     lo, hi = CATEGORY_HOURS[cat]
     hours = round(rng.uniform(lo, hi) * (1.6 if drift else 1.0), 1)
     return Scenario(
@@ -643,6 +646,7 @@ def _staff_outcome(
 
     if decision == "approve" and remedy == "replacement":
         if drift and claim.get("reason") in ("damaged_on_arrival", "defective"):
+            claim["has_photos"] = False  # customer never sent photos; staff replaced anyway
             steps.append(StaffStep("issue_replacement", "replacement sent without photo evidence"))
             return (
                 out("approve", "replacement", line_total, fault),
@@ -742,13 +746,19 @@ AGENTS = ["Jordan", "Sam", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Quinn
 
 
 def turn_plan(rng: random.Random, sc: Scenario, order: dict, item: dict) -> dict[str, Any]:
+    actions = [s.action for s in sc.staff_steps]
+    if sc.facts["claim"].get("has_photos") is False:
+        photos_note = " The customer does NOT attach or mention any photos."
+    elif "review_photos" in actions and "request_photos" not in actions:
+        photos_note = " Photos are attached to this first message."
+    else:
+        photos_note = ""
     turns: list[dict[str, str]] = [
         {
             "role": "customer",
-            "purpose": f"Describe the issue: {sc.issue_brief} Mention order {order['order_id']}. {sc.customer_asks}.",
+            "purpose": f"Describe the issue: {sc.issue_brief} Mention order {order['order_id']}. {sc.customer_asks}.{photos_note}",
         }
     ]
-    actions = [s.action for s in sc.staff_steps]
     if "request_photos" in actions:
         turns.append(
             {"role": "staff", "purpose": "Apologise, confirm the order, and ask for photos of the item and packaging."}

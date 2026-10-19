@@ -24,6 +24,16 @@ from ..db.models import RulePack as RulePackRow
 log = logging.getLogger(__name__)
 
 APPROVE_FAMILY = {"approve", "partial"}
+# remedies that are the same money movement for comparison purposes
+# facts whose absence means staff acted without evidence (soft facts like requested_amount do not count)
+EVIDENCE_FACTS = {"claim.has_photos", "claim.has_receipt", "bag.report_filed", "bag.report_filed_within_hours"}
+EQUIV = [{"refund", "partial_refund", "cancel_order"}, {"store_credit", "travel_credit", "voucher"}]
+
+
+def _same_remedy(a: str, b: str) -> bool:
+    if a == b:
+        return True
+    return any(a in g and b in g for g in EQUIV)
 
 
 def _family(decision: str | None) -> str | None:
@@ -38,6 +48,10 @@ def compare(policy, staff: dict[str, Any]) -> str | None:
     """Return a drift reason, or None when the staff outcome is consistent with the policy ruling."""
     pd = str(policy.decision)
     sd = staff.get("decision")
+    if pd == "needs_fact" and sd in APPROVE_FAMILY:
+        evidence = [f for f in policy.missing_facts if f in EVIDENCE_FACTS]
+        if evidence:
+            return f"staff granted {staff.get('remedy')} without establishing required evidence {evidence}"
     if pd in ("needs_approval", "escalate", "needs_fact") or sd in (None, "unknown", "escalate", "needs_approval"):
         return None
     pf, sf = _family(pd), _family(sd)
@@ -45,12 +59,10 @@ def compare(policy, staff: dict[str, Any]) -> str | None:
         return f"policy {pd}/{policy.remedy} ({policy.winning_rule_id}) but staff {sd}/{staff.get('remedy')}"
     if pf == "approve":
         pr, sr = str(policy.remedy or ""), str(staff.get("remedy") or "")
-        money = {"refund", "partial_refund", "store_credit", "travel_credit", "voucher"}
-        if pr != sr and not (pr in ("refund", "partial_refund") and sr in ("refund", "partial_refund")):
-            if pr in money and sr in money:
-                return f"policy remedy {pr} but staff gave {sr} ({policy.winning_rule_id})"
-            if pr != sr:
-                return f"policy remedy {pr} but staff gave {sr} ({policy.winning_rule_id})"
+        if pr == "none":
+            return None  # informational ruling: nothing owed, staff courtesy is not drift
+        if not _same_remedy(pr, sr):
+            return f"policy remedy {pr} but staff gave {sr} ({policy.winning_rule_id})"
         if policy.amount is not None and staff.get("amount") not in (None, ""):
             try:
                 sa = Decimal(str(staff["amount"]))

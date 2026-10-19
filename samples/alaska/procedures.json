@@ -1,0 +1,1768 @@
+[
+ {
+  "category_key": "airline_booking_cancellation",
+  "version": 1,
+  "name": "airline_booking_cancellation_refund_procedure",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "verify_booking",
+    "tool": "lookup_order",
+    "step_id": "airline_booking_cancellation.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm its status, fare class, refundability, purchase timing, departure timing, and whether travel has already been completed.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "booking.status",
+     "booking.fare_class",
+     "booking.is_refundable_fare",
+     "booking.hours_since_purchase",
+     "booking.hours_until_departure",
+     "booking.travel_completed"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "gather_cancellation_intent",
+    "tool": "extract_facts",
+    "step_id": "airline_booking_cancellation.s2",
+    "clause_ids": [],
+    "instruction": "Confirm with the customer that they cancelled the booking themselves and the amount they paid.",
+    "staff_action": null,
+    "required_facts": [
+     "booking.customer_cancelled",
+     "booking.total_paid"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "check_fare_rules",
+    "tool": "rule",
+    "step_id": "airline_booking_cancellation.s3",
+    "clause_ids": [
+     "AK-RET-44",
+     "AK-RET-48",
+     "AK-RET-49",
+     "AK-RET-57",
+     "AK-RET-6",
+     "AK-REF-20",
+     "AK-RET-11"
+    ],
+    "instruction": "Evaluate the fare rules: refundable fares and unused tickets inside the 24-hour window are refunded to original payment; Saver fares depend on days before departure; non-refundable Main, Premium, Business and First fares may receive future travel credit with no credit for unused flight value beyond that.",
+    "staff_action": "check_fare_rules",
+    "required_facts": [
+     "booking.is_refundable_fare",
+     "booking.fare_class",
+     "booking.hours_since_purchase",
+     "booking.hours_until_departure",
+     "booking.travel_completed"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "decide_ruling",
+    "tool": "rule",
+    "step_id": "airline_booking_cancellation.s4",
+    "clause_ids": [
+     "AK-RET-44",
+     "AK-RET-48",
+     "AK-RET-49",
+     "AK-RET-57",
+     "AK-RET-6"
+    ],
+    "instruction": "Issue the deterministic ruling: full refund to original payment, partial travel credit, or denial, based on the fare rule checks.",
+    "staff_action": null,
+    "required_facts": [
+     "booking.fare_class",
+     "booking.is_refundable_fare",
+     "booking.hours_since_purchase",
+     "booking.hours_until_departure",
+     "booking.total_paid",
+     "booking.travel_completed"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "authorize_remedy",
+    "tool": "authorize",
+    "step_id": "airline_booking_cancellation.s5",
+    "clause_ids": [
+     "AK-RET-11"
+    ],
+    "instruction": "Authorize the refund or travel credit amount before execution, confirming the ticket has not been surrendered beyond the 12-month limit.",
+    "staff_action": null,
+    "required_facts": [
+     "booking.total_paid",
+     "booking.status"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "execute_remedy",
+    "tool": "draft_reply",
+    "step_id": "airline_booking_cancellation.s6",
+    "clause_ids": [
+     "AK-RET-6",
+     "AK-RET-44",
+     "AK-RET-48",
+     "AK-RET-57"
+    ],
+    "instruction": "Issue the authorized refund to the original form of payment or the authorized travel credit, and draft the customer reply explaining the ruling.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "booking.total_paid",
+     "booking.status"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "airline_booking_cancellation.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "booking.customer_cancelled",
+   "booking.fare_class",
+   "booking.hours_since_purchase",
+   "booking.hours_until_departure",
+   "booking.is_refundable_fare",
+   "booking.status",
+   "booking.total_paid",
+   "booking.travel_completed"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Refund to original form of payment",
+    "decision": "approve",
+    "condition": "Booking cancelled within 24 hours of purchase, whole, unused, and nonrefundable",
+    "clause_ids": [
+     "AK-RET-44"
+    ]
+   },
+   {
+    "remedy": "Refund to original form of payment",
+    "decision": "approve",
+    "condition": "Refundable fare, unused, surrendered within 12 months of issue",
+    "clause_ids": [
+     "AK-RET-6",
+     "AK-RET-11"
+    ]
+   },
+   {
+    "remedy": "Travel credit for 50% of ticket value and 100% of taxes",
+    "decision": "partial",
+    "condition": "Saver fare cancelled 14 or more days before outbound departure",
+    "clause_ids": [
+     "AK-RET-48"
+    ]
+   },
+   {
+    "remedy": "No refund or credit; full ticket value forfeited",
+    "decision": "deny",
+    "condition": "Saver fare cancelled 13 or fewer days before outbound departure",
+    "clause_ids": [
+     "AK-RET-49"
+    ]
+   },
+   {
+    "remedy": "Travel credit for future flights; no credit for the unused flight value itself",
+    "decision": "partial",
+    "condition": "Non-refundable Main, Premium, Business or First fare cancelled for future travel",
+    "clause_ids": [
+     "AK-RET-57",
+     "AK-REF-20"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 51,
+   "outcomes": {
+    "deny/none": 6,
+    "approve/refund": 16,
+    "partial/travel_credit": 29
+   },
+   "common_path": [
+    "verify_booking",
+    "check_fare_rules"
+   ],
+   "conditional": [
+    "issue_travel_credit",
+    "deny_request",
+    "issue_refund"
+   ],
+   "frequencies": {
+    "acknowledge": 0.0196078431372549,
+    "check_policy": 0.11764705882352941,
+    "close_ticket": 0.0784313725490196,
+    "deny_request": 0.21568627450980393,
+    "issue_refund": 0.3137254901960784,
+    "verify_booking": 1.0,
+    "check_fare_rules": 1.0,
+    "issue_travel_credit": 0.5686274509803921
+   },
+   "claim_reasons": {
+    "refund_request": 51
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "delayed_checked_bag_guarantee",
+  "version": 1,
+  "name": "Delayed Checked Bag Guarantee Resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify booking",
+    "tool": "lookup_order",
+    "step_id": "delayed_checked_bag_guarantee.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm the passenger checked a bag on the flight in question.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "bag.checked"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather claim timing and bag arrival",
+    "tool": "extract_facts",
+    "step_id": "delayed_checked_bag_guarantee.s2",
+    "clause_ids": [],
+    "instruction": "Ask the customer when the bag guarantee claim was filed and how many minutes passed before the bag reached the carousel after the flight arrived at the gate.",
+    "staff_action": null,
+    "required_facts": [
+     "bag.guarantee_claim_filed_within_hours",
+     "bag.minutes_to_carousel"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "Check flight status and route",
+    "tool": "lookup_order",
+    "step_id": "delayed_checked_bag_guarantee.s3",
+    "clause_ids": [],
+    "instruction": "Confirm the flight's origin, destination and whether it is domestic, to establish whether the guarantee applies.",
+    "staff_action": "check_flight_status",
+    "required_facts": [
+     "flight.origin",
+     "flight.destination",
+     "flight.is_domestic"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check flight eligibility and delay threshold",
+    "tool": "rule",
+    "step_id": "delayed_checked_bag_guarantee.s4",
+    "clause_ids": [
+     "AK-BAG-184",
+     "AK-BAG-186"
+    ],
+    "instruction": "Confirm the flight is operated by an eligible carrier and flight number range, is not to or from Dutch Harbor, and does not require customs clearance. Confirm bags were not at baggage claim within 20 minutes of gate arrival.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "flight.origin",
+     "flight.destination",
+     "flight.is_domestic",
+     "bag.minutes_to_carousel"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide bag guarantee eligibility",
+    "tool": "rule",
+    "step_id": "delayed_checked_bag_guarantee.s5",
+    "clause_ids": [
+     "AK-BAG-184",
+     "AK-BAG-186",
+     "AK-BAG-145"
+    ],
+    "instruction": "If the flight is eligible and the bag arrived more than 20 minutes after gate arrival, approve the 20-minute bag guarantee offer as a voucher or bonus points. Otherwise deny the request. Carry-on items are excluded unless Alaska was at fault.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "bag.checked",
+     "bag.minutes_to_carousel",
+     "flight.is_domestic"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Issue bag guarantee remedy",
+    "tool": "authorize",
+    "step_id": "delayed_checked_bag_guarantee.s6",
+    "clause_ids": [
+     "AK-BAG-184"
+    ],
+    "instruction": "After authorization, issue the $25 discount code or 2,500 Atmos Rewards bonus points for an approved claim.",
+    "staff_action": "issue_bag_guarantee",
+    "required_facts": [
+     "bag.checked",
+     "bag.guarantee_claim_filed_within_hours"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "delayed_checked_bag_guarantee.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "bag.checked",
+   "bag.guarantee_claim_filed_within_hours",
+   "bag.minutes_to_carousel",
+   "flight.destination",
+   "flight.is_domestic",
+   "flight.origin"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Issue $25 discount code or 2,500 Atmos Rewards bonus points (voucher)",
+    "decision": "approve",
+    "condition": "Bag checked, flight eligible, bag not at carousel within 20 minutes of gate arrival",
+    "clause_ids": [
+     "AK-BAG-184",
+     "AK-BAG-186"
+    ]
+   },
+   {
+    "remedy": "No compensation; explain eligibility limits",
+    "decision": "deny",
+    "condition": "Flight not eligible (international requiring customs, Dutch Harbor, or outside flight number ranges)",
+    "clause_ids": [
+     "AK-BAG-186"
+    ]
+   },
+   {
+    "remedy": "No compensation; explain 20-minute threshold was not exceeded",
+    "decision": "deny",
+    "condition": "Bag arrived within 20 minutes of gate arrival",
+    "clause_ids": [
+     "AK-BAG-184"
+    ]
+   },
+   {
+    "remedy": "No compensation; carry-on remains passenger responsibility",
+    "decision": "deny",
+    "condition": "Carry-on item claimed as damaged, lost or delayed without Alaska fault",
+    "clause_ids": [
+     "AK-BAG-145"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 40,
+   "outcomes": {
+    "deny/none": 19,
+    "approve/refund": 2,
+    "approve/voucher": 19
+   },
+   "common_path": [
+    "verify_booking",
+    "check_flight_status"
+   ],
+   "conditional": [
+    "check_policy",
+    "deny_request",
+    "issue_bag_guarantee"
+   ],
+   "frequencies": {
+    "other": 0.025,
+    "check_policy": 0.475,
+    "close_ticket": 0.05,
+    "deny_request": 0.525,
+    "issue_refund": 0.05,
+    "verify_booking": 1.0,
+    "check_flight_status": 0.975,
+    "issue_bag_guarantee": 0.475
+   },
+   "claim_reasons": {
+    "bag_guarantee": 40
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "checked_bag_delayed",
+  "version": 1,
+  "name": "checked_bag_delayed_resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify booking and bag record",
+    "tool": "lookup_order",
+    "step_id": "checked_bag_delayed.s1",
+    "clause_ids": [],
+    "instruction": "Confirm the booking and that the checked bag was tagged and is recorded as delayed; pull the bag status and delay duration from merchant data.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "bag.checked",
+     "bag.status",
+     "bag.delay_days"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "Check flight status",
+    "tool": "lookup_order",
+    "step_id": "checked_bag_delayed.s2",
+    "clause_ids": [],
+    "instruction": "Confirm the flight and baggage routing details relevant to the delay so the carrier of record is identified.",
+    "staff_action": "check_flight_status",
+    "required_facts": [
+     "bag.status"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather report and expense facts",
+    "tool": "extract_facts",
+    "step_id": "checked_bag_delayed.s3",
+    "clause_ids": [],
+    "instruction": "Ask the customer whether a Mishandled Baggage Report was filed, the damage type if any, any bag fee paid, and essentials purchased while waiting with receipts.",
+    "staff_action": "request_report",
+    "required_facts": [
+     "bag.report_filed",
+     "bag.damage_type",
+     "bag.fee_paid",
+     "bag.interim_expenses"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check baggage liability and fee refund policy",
+    "tool": "rule",
+    "step_id": "checked_bag_delayed.s4",
+    "clause_ids": [
+     "AK-BAG-140",
+     "AK-BAG-134",
+     "AK-BAG-145",
+     "AK-BAG-7"
+    ],
+    "instruction": "Determine whether the bag was delayed or damaged so liability applies; a bag that is undamaged and not delayed is not covered. Confirm an MBR was filed before any bag fee refund.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "bag.checked",
+     "bag.status",
+     "bag.delay_days",
+     "bag.damage_type",
+     "bag.report_filed"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ruling",
+    "tool": "rule",
+    "step_id": "checked_bag_delayed.s5",
+    "clause_ids": [
+     "AK-BAG-134",
+     "AK-BAG-5",
+     "AK-BAG-7",
+     "AK-BAG-140"
+    ],
+    "instruction": "Rule on reimbursement of documented reasonable interim expenses for substantial delay and on refund of the bag fee where the MBR requirement is met. Deny if the bag was not delayed or damaged or the carrier is not at fault for carry-on items.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "bag.delay_days",
+     "bag.interim_expenses",
+     "bag.fee_paid",
+     "bag.report_filed"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Authorize and execute remedy",
+    "tool": "authorize",
+    "step_id": "checked_bag_delayed.s6",
+    "clause_ids": [
+     "AK-BAG-134",
+     "AK-BAG-5"
+    ],
+    "instruction": "After authorization, issue the bag fee refund and/or reimburse documented expenses per the ruling; escalate to a supervisor when the ruling is outside standard limits.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "bag.interim_expenses",
+     "bag.fee_paid"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "checked_bag_delayed.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "bag.checked",
+   "bag.damage_type",
+   "bag.delay_days",
+   "bag.fee_paid",
+   "bag.interim_expenses",
+   "bag.report_filed",
+   "bag.status"
+  ],
+  "outcomes": [
+   {
+    "remedy": "No compensation; explain that liability does not attach to undamaged, non-delayed checked bags.",
+    "decision": "deny",
+    "condition": "Bag not damaged, not delayed, or not lost",
+    "clause_ids": [
+     "AK-BAG-140"
+    ]
+   },
+   {
+    "remedy": "Reimburse documented reasonable essentials expenses as direct result of delay.",
+    "decision": "approve",
+    "condition": "Bag significantly delayed, documented reasonable interim expenses, reasonable effort shown",
+    "clause_ids": [
+     "AK-BAG-134"
+    ]
+   },
+   {
+    "remedy": "Refund the bag fee paid for the delayed bag.",
+    "decision": "approve",
+    "condition": "Bag significantly delayed and Mishandled Baggage Report filed",
+    "clause_ids": [
+     "AK-BAG-5",
+     "AK-BAG-7"
+    ]
+   },
+   {
+    "remedy": "Bag fee refund withheld until MBR is filed; request report filing.",
+    "decision": "deny",
+    "condition": "Bag significantly delayed but no Mishandled Baggage Report filed",
+    "clause_ids": [
+     "AK-BAG-7"
+    ]
+   },
+   {
+    "remedy": "Reimburse only the documented reasonable portion; decline carry-on items not attributable to carrier fault.",
+    "decision": "partial",
+    "condition": "Expense claim exceeds reasonable or documented amount, or item is carry-on not caused by carrier fault",
+    "clause_ids": [
+     "AK-BAG-134",
+     "AK-BAG-145"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 31,
+   "outcomes": {
+    "deny/none": 3,
+    "approve/none": 3,
+    "approve/refund": 4,
+    "partial/refund": 11,
+    "approve/travel_credit": 1,
+    "approve/expense_reimbursement": 8,
+    "partial/expense_reimbursement": 1
+   },
+   "common_path": [
+    "verify_booking",
+    "check_flight_status"
+   ],
+   "conditional": [
+    "escalate_supervisor",
+    "issue_refund",
+    "reimburse_expenses"
+   ],
+   "frequencies": {
+    "other": 0.03225806451612903,
+    "acknowledge": 0.16129032258064516,
+    "provide_eta": 0.03225806451612903,
+    "check_policy": 0.0967741935483871,
+    "close_ticket": 0.06451612903225806,
+    "deny_request": 0.1935483870967742,
+    "issue_refund": 0.5806451612903226,
+    "confirm_cause": 0.03225806451612903,
+    "review_photos": 0.06451612903225806,
+    "request_report": 0.16129032258064516,
+    "verify_booking": 1.0,
+    "request_receipt": 0.06451612903225806,
+    "reimburse_expenses": 0.2903225806451613,
+    "check_flight_status": 0.8387096774193549,
+    "escalate_supervisor": 0.25806451612903225,
+    "issue_travel_credit": 0.03225806451612903
+   },
+   "claim_reasons": {
+    "bag_delayed": 31
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "flight_delay_expenses",
+  "version": 1,
+  "name": "Flight Delay Expense Reimbursement",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify booking",
+    "tool": "lookup_order",
+    "step_id": "flight_delay_expenses.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm the fare type and amount paid before evaluating the claim.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "booking.is_refundable_fare",
+     "booking.total_paid"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "Check flight status",
+    "tool": "lookup_order",
+    "step_id": "flight_delay_expenses.s2",
+    "clause_ids": [],
+    "instruction": "Pull the flight record to establish whether the flight was cancelled or delayed, the delay length, the stated cause, and whether the change was significant or required an overnight stay.",
+    "staff_action": "check_flight_status",
+    "required_facts": [
+     "flight.is_cancelled_by_airline",
+     "flight.delay_minutes",
+     "flight.cause",
+     "flight.is_significant_change",
+     "flight.overnight_required"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Confirm cause and customer choice",
+    "tool": "extract_facts",
+    "step_id": "flight_delay_expenses.s3",
+    "clause_ids": [],
+    "instruction": "Ask the customer what remedy they want and whether they accepted any alternative flight, rebooking, voucher or surface transport. Confirm the cause of the delay or cancellation if the record is unclear.",
+    "staff_action": "confirm_cause",
+    "required_facts": [
+     "claim.requested_remedy",
+     "flight.customer_accepted_alternative",
+     "flight.cause"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check applicable policy",
+    "tool": "rule",
+    "step_id": "flight_delay_expenses.s4",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-DLY-13",
+     "AK-DLY-35",
+     "AK-DLY-36",
+     "AK-DLY-52",
+     "AK-REF-1",
+     "AK-RET-20"
+    ],
+    "instruction": "Retrieve the governing clauses for the flight status and customer choice, and confirm which refund, meal and hotel provisions apply.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "flight.is_cancelled_by_airline",
+     "flight.is_significant_change",
+     "flight.customer_accepted_alternative",
+     "flight.delay_minutes",
+     "flight.overnight_required"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ruling",
+    "tool": "rule",
+    "step_id": "flight_delay_expenses.s5",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-DLY-13",
+     "AK-DLY-35",
+     "AK-DLY-36",
+     "AK-REF-1",
+     "AK-RET-20"
+    ],
+    "instruction": "Apply the clauses to the verified facts. Refund airfare on cancellation without an offered alternative or on rejection of a significant change. Reimburse meals after three hours of delay and hotel costs for an overnight stay 100 or more miles from home when the cause is within carrier control. Deny when alternative surface transport was accepted or no clause applies.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "flight.is_cancelled_by_airline",
+     "flight.is_significant_change",
+     "flight.customer_accepted_alternative",
+     "flight.delay_minutes",
+     "flight.overnight_required",
+     "flight.cause",
+     "booking.is_refundable_fare",
+     "claim.requested_remedy"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Execute remedy",
+    "tool": "authorize",
+    "step_id": "flight_delay_expenses.s6",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-DLY-13",
+     "AK-DLY-35",
+     "AK-DLY-36",
+     "AK-REF-1"
+    ],
+    "instruction": "After authorization, issue the airfare refund or expense reimbursement that the ruling specifies and notify the customer of the outcome.",
+    "staff_action": "reimburse_expenses",
+    "required_facts": [
+     "claim.requested_remedy",
+     "booking.total_paid"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "flight_delay_expenses.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "booking.is_refundable_fare",
+   "booking.total_paid",
+   "claim.requested_remedy",
+   "flight.cause",
+   "flight.customer_accepted_alternative",
+   "flight.delay_minutes",
+   "flight.is_cancelled_by_airline",
+   "flight.is_significant_change",
+   "flight.overnight_required"
+  ],
+  "outcomes": [
+   {
+    "remedy": "refund",
+    "decision": "approve",
+    "condition": "Flight cancelled by airline and no alternative flight, voucher or compensation offered",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-REF-1"
+    ]
+   },
+   {
+    "remedy": "refund",
+    "decision": "approve",
+    "condition": "Significantly delayed or changed flight rejected by customer, including rebooking or compensation declined",
+    "clause_ids": [
+     "AK-DLY-13",
+     "AK-DLY-52",
+     "AK-REF-1"
+    ]
+   },
+   {
+    "remedy": "expense_reimbursement",
+    "decision": "approve",
+    "condition": "Delay of 3 or more hours within carrier control with overnight stay 100+ miles from home and hotels available",
+    "clause_ids": [
+     "AK-DLY-35",
+     "AK-DLY-36"
+    ]
+   },
+   {
+    "remedy": "expense_reimbursement",
+    "decision": "partial",
+    "condition": "Delay extends beyond 3 hours and customer is at the airport",
+    "clause_ids": [
+     "AK-DLY-36"
+    ]
+   },
+   {
+    "remedy": "none",
+    "decision": "deny",
+    "condition": "Alternative surface transportation provided and acceptable to the passenger",
+    "clause_ids": [
+     "AK-RET-20"
+    ]
+   },
+   {
+    "remedy": "none",
+    "decision": "deny",
+    "condition": "No governing clause applies to the delay, cause or customer request",
+    "clause_ids": [
+     "AK-DLY-35",
+     "AK-DLY-36"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 47,
+   "outcomes": {
+    "deny/none": 36,
+    "approve/refund": 4,
+    "partial/points": 1,
+    "approve/expense_reimbursement": 5,
+    "partial/expense_reimbursement": 1
+   },
+   "common_path": [
+    "verify_booking",
+    "check_flight_status",
+    "deny_request"
+   ],
+   "conditional": [
+    "confirm_cause",
+    "check_policy"
+   ],
+   "frequencies": {
+    "acknowledge": 0.1276595744680851,
+    "award_points": 0.02127659574468085,
+    "check_policy": 0.574468085106383,
+    "close_ticket": 0.0851063829787234,
+    "deny_request": 0.7872340425531915,
+    "issue_refund": 0.0851063829787234,
+    "confirm_cause": 0.5957446808510638,
+    "review_photos": 0.0425531914893617,
+    "request_report": 0.0851063829787234,
+    "verify_booking": 1.0,
+    "request_receipt": 0.02127659574468085,
+    "reimburse_expenses": 0.1276595744680851,
+    "check_flight_status": 0.9361702127659575,
+    "escalate_supervisor": 0.19148936170212766
+   },
+   "claim_reasons": {
+    "flight_delayed": 28,
+    "flight_cancelled": 19
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "checked_bag_damage",
+  "version": 1,
+  "name": "checked_bag_damage_resolution",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify booking and bag status",
+    "tool": "lookup_order",
+    "step_id": "checked_bag_damage.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm the bag was checked on this itinerary and its current status.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "bag.checked",
+     "bag.status"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Collect damage report",
+    "tool": "extract_facts",
+    "step_id": "checked_bag_damage.s2",
+    "clause_ids": [],
+    "instruction": "If no damage report has been filed, ask the customer to file a report and describe the damage type (zipper, shell crack, handle).",
+    "staff_action": "request_report",
+    "required_facts": [
+     "bag.report_filed",
+     "bag.damage_type"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "Review damage photos",
+    "tool": "extract_facts",
+    "step_id": "checked_bag_damage.s3",
+    "clause_ids": [],
+    "instruction": "Review submitted photos to confirm the bag is damaged and identify the damage type.",
+    "staff_action": "review_photos",
+    "required_facts": [
+     "bag.damage_type",
+     "bag.status"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Capture requested amount",
+    "tool": "extract_facts",
+    "step_id": "checked_bag_damage.s4",
+    "clause_ids": [
+     "AK-BAG-134"
+    ],
+    "instruction": "Record the customer's requested repair or replacement amount with supporting documentation.",
+    "staff_action": "request_receipt",
+    "required_facts": [
+     "claim.requested_amount"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check policy eligibility",
+    "tool": "rule",
+    "step_id": "checked_bag_damage.s5",
+    "clause_ids": [
+     "AK-BAG-134",
+     "AK-BAG-140",
+     "AK-BAG-141",
+     "AK-BAG-143",
+     "AK-BAG-144",
+     "AK-BAG-145"
+    ],
+    "instruction": "Evaluate whether the bag was damaged, whether the damage is excluded as normal wear, manufacturing defect, protruding part, or carry-on, and whether it qualifies for documented damages compensation.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "bag.checked",
+     "bag.damage_type",
+     "bag.report_filed",
+     "bag.status",
+     "claim.requested_amount"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Issue ruling",
+    "tool": "rule",
+    "step_id": "checked_bag_damage.s6",
+    "clause_ids": [
+     "AK-BAG-134",
+     "AK-BAG-140",
+     "AK-BAG-141",
+     "AK-BAG-143",
+     "AK-BAG-144"
+    ],
+    "instruction": "Apply the deterministic ruling: deny when the bag is undamaged or damage falls under an exclusion; approve documented reasonable damages when covered.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "bag.checked",
+     "bag.damage_type",
+     "bag.status",
+     "claim.requested_amount"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Execute remedy if approved",
+    "tool": "authorize",
+    "step_id": "checked_bag_damage.s7",
+    "clause_ids": [
+     "AK-BAG-134"
+    ],
+    "instruction": "If approved, authorize and issue the reimbursement for documented reasonable damages up to the liability limit; otherwise communicate the denial.",
+    "staff_action": "reimburse_expenses",
+    "required_facts": [
+     "claim.requested_amount",
+     "bag.status"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "checked_bag_damage.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "bag.checked",
+   "bag.damage_type",
+   "bag.report_filed",
+   "bag.status",
+   "claim.requested_amount"
+  ],
+  "outcomes": [
+   {
+    "remedy": "none; explain no liability for undamaged bag",
+    "decision": "deny",
+    "condition": "Bag not damaged, delayed, or lost",
+    "clause_ids": [
+     "AK-BAG-140"
+    ]
+   },
+   {
+    "remedy": "none; explain ordinary standard of care",
+    "decision": "deny",
+    "condition": "Damage is incidental scuff, dent, scratch or normal wear",
+    "clause_ids": [
+     "AK-BAG-141",
+     "AK-BAG-144"
+    ]
+   },
+   {
+    "remedy": "none; explain protruding-parts exclusion",
+    "decision": "deny",
+    "condition": "Damage to protruding exterior part such as zipper, handle or wheel from inherent handling",
+    "clause_ids": [
+     "AK-BAG-143"
+    ]
+   },
+   {
+    "remedy": "reimburse documented repair or replacement cost up to limit or declared value",
+    "decision": "approve",
+    "condition": "Documented reasonable damage caused by airline handling within liability limit",
+    "clause_ids": [
+     "AK-BAG-134"
+    ]
+   },
+   {
+    "remedy": "voucher or partial reimbursement for documented amount",
+    "decision": "partial",
+    "condition": "Damage covered but documentation partial or reasonable amount below request",
+    "clause_ids": [
+     "AK-BAG-134"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 27,
+   "outcomes": {
+    "deny/none": 21,
+    "approve/points": 1,
+    "partial/voucher": 2,
+    "approve/expense_reimbursement": 3
+   },
+   "common_path": [
+    "verify_booking",
+    "review_photos",
+    "check_policy",
+    "deny_request"
+   ],
+   "conditional": [
+    "request_report",
+    "close_ticket"
+   ],
+   "frequencies": {
+    "other": 0.037037037037037035,
+    "acknowledge": 0.1111111111111111,
+    "award_points": 0.037037037037037035,
+    "check_policy": 0.7777777777777778,
+    "close_ticket": 0.25925925925925924,
+    "deny_request": 0.8148148148148148,
+    "review_photos": 0.8148148148148148,
+    "request_report": 0.37037037037037035,
+    "verify_booking": 1.0,
+    "request_receipt": 0.037037037037037035,
+    "reimburse_expenses": 0.1111111111111111,
+    "escalate_supervisor": 0.1111111111111111,
+    "issue_bag_guarantee": 0.07407407407407407
+   },
+   "claim_reasons": {
+    "bag_damaged": 27
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "seat_fee_refund",
+  "version": 1,
+  "name": "seat_fee_refund_procedure",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "Verify booking and seat fee",
+    "tool": "lookup_order",
+    "step_id": "seat_fee_refund.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm the seat selection or upgrade fee charged to the customer.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "booking.ancillary_seat_fee"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "Gather cause of seat change",
+    "tool": "extract_facts",
+    "step_id": "seat_fee_refund.s2",
+    "clause_ids": [],
+    "instruction": "Ask the customer how they were moved from the paid seat or whether they were reassigned at the gate, and record the details.",
+    "staff_action": null,
+    "required_facts": [
+     "flight.cause_detail"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "Check automatic refund eligibility",
+    "tool": "rule",
+    "step_id": "seat_fee_refund.s3",
+    "clause_ids": [
+     "AK-FEE-3"
+    ],
+    "instruction": "Evaluate whether the paid seat service was not provided and whether the failure was through no fault of the consumer, and whether the carrier is merchant of record.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "booking.ancillary_seat_fee",
+     "flight.cause_detail"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "Decide ruling",
+    "tool": "rule",
+    "step_id": "seat_fee_refund.s4",
+    "clause_ids": [
+     "AK-FEE-3"
+    ],
+    "instruction": "If the paid seat was not provided through no fault of the consumer, rule for a full refund of the seat fee; otherwise deny the request and state the reason.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "booking.ancillary_seat_fee",
+     "flight.cause_detail"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Authorize and execute remedy",
+    "tool": "authorize",
+    "step_id": "seat_fee_refund.s5",
+    "clause_ids": [
+     "AK-FEE-3"
+    ],
+    "instruction": "After authorization, issue the refund of the seat fee to the original payment method, or a travel credit where the customer has elected it.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "booking.ancillary_seat_fee"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "Draft customer reply",
+    "tool": "draft_reply",
+    "step_id": "seat_fee_refund.s6",
+    "clause_ids": [
+     "AK-FEE-3"
+    ],
+    "instruction": "Draft a reply confirming the refund or travel credit, or explaining the denial with the reason.",
+    "staff_action": "acknowledge",
+    "required_facts": []
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "seat_fee_refund.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "booking.ancillary_seat_fee",
+   "flight.cause_detail"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Automatic refund of the seat fee to the original payment method",
+    "decision": "approve",
+    "condition": "Paid seat not provided through no fault of consumer and carrier is merchant of record",
+    "clause_ids": [
+     "AK-FEE-3"
+    ]
+   },
+   {
+    "remedy": "Travel credit equal to the seat fee",
+    "decision": "approve",
+    "condition": "Customer elects travel credit in lieu of refund",
+    "clause_ids": [
+     "AK-FEE-3"
+    ]
+   },
+   {
+    "remedy": "No refund; explain reason to customer",
+    "decision": "deny",
+    "condition": "Seat change caused by consumer or service was provided",
+    "clause_ids": [
+     "AK-FEE-3"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 23,
+   "outcomes": {
+    "deny/none": 6,
+    "approve/refund": 12,
+    "partial/voucher": 1,
+    "approve/travel_credit": 3,
+    "partial/travel_credit": 1
+   },
+   "common_path": [
+    "verify_booking"
+   ],
+   "conditional": [
+    "check_policy",
+    "issue_refund",
+    "issue_travel_credit",
+    "deny_request"
+   ],
+   "frequencies": {
+    "acknowledge": 0.08695652173913043,
+    "check_policy": 0.2608695652173913,
+    "close_ticket": 0.043478260869565216,
+    "deny_request": 0.2608695652173913,
+    "issue_refund": 0.5217391304347826,
+    "verify_booking": 1.0,
+    "issue_travel_credit": 0.21739130434782608
+   },
+   "claim_reasons": {
+    "seat_refund": 23
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "missing_loyalty_points",
+  "version": 1,
+  "name": "missing_loyalty_points",
+  "steps": [
+   {
+    "kind": "gather",
+    "name": "collect_flight_details",
+    "tool": "extract_facts",
+    "step_id": "missing_loyalty_points.s1",
+    "clause_ids": [],
+    "instruction": "Ask the customer for the flight booking reference, flight numbers and travel date, and the loyalty account number, and note whether the flight was operated by a partner or booked as an Atmos Rewards award.",
+    "staff_action": null,
+    "required_facts": []
+   },
+   {
+    "kind": "verify",
+    "name": "verify_booking",
+    "tool": "lookup_order",
+    "step_id": "missing_loyalty_points.s2",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm the flight was flown, the passenger matches the loyalty account, and the flight is eligible for points (own-operated or partner, not a cancelled or no-show segment).",
+    "staff_action": "verify_booking",
+    "required_facts": []
+   },
+   {
+    "kind": "check",
+    "name": "check_points_eligibility",
+    "tool": "rule",
+    "step_id": "missing_loyalty_points.s3",
+    "clause_ids": [],
+    "instruction": "Evaluate whether the verified flight earns points under the loyalty programme rules for the operating carrier or Atmos Rewards partner, and whether the points were already credited.",
+    "staff_action": null,
+    "required_facts": []
+   },
+   {
+    "kind": "decide",
+    "name": "supervisor_review",
+    "tool": "authorize",
+    "step_id": "missing_loyalty_points.s4",
+    "clause_ids": [],
+    "instruction": "Where the flight is eligible but the points are not on the account, escalate to a supervisor for approval before crediting. Record the supervisor decision.",
+    "staff_action": "escalate_supervisor",
+    "required_facts": []
+   },
+   {
+    "kind": "act",
+    "name": "award_missing_points",
+    "tool": "draft_reply",
+    "step_id": "missing_loyalty_points.s5",
+    "clause_ids": [],
+    "instruction": "After approval, credit the missing points to the loyalty account for the verified flight and confirm the new balance.",
+    "staff_action": "award_points",
+    "required_facts": []
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "missing_loyalty_points.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [],
+  "outcomes": [
+   {
+    "remedy": "Award the missing points to the loyalty account",
+    "decision": "approve",
+    "condition": "Flight verified as eligible and points missing from account",
+    "clause_ids": []
+   },
+   {
+    "remedy": "Escalate to supervisor before awarding points",
+    "decision": "needs_approval",
+    "condition": "Flight verified but eligibility or supervisor approval is unclear",
+    "clause_ids": []
+   },
+   {
+    "remedy": "Explain the eligibility rule to the customer and make no award",
+    "decision": "deny",
+    "condition": "Flight not eligible for points or booking not verified",
+    "clause_ids": []
+   }
+  ],
+  "mining": {
+   "cases": 21,
+   "outcomes": {
+    "approve/points": 20,
+    "needs_approval/points": 1
+   },
+   "common_path": [
+    "verify_booking",
+    "escalate_supervisor",
+    "award_points"
+   ],
+   "conditional": [],
+   "frequencies": {
+    "acknowledge": 0.14285714285714285,
+    "award_points": 1.0,
+    "verify_booking": 1.0,
+    "escalate_supervisor": 1.0
+   },
+   "claim_reasons": {
+    "loyalty_points": 21
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "flight_delay_refund_request",
+  "version": 1,
+  "name": "flight_delay_refund_request",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "verify_booking",
+    "tool": "lookup_order",
+    "step_id": "flight_delay_refund_request.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm status, fare class, refundability, payment total, purchase timing and whether travel was completed.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "booking.status",
+     "booking.fare_class",
+     "booking.is_refundable_fare",
+     "booking.total_paid",
+     "booking.travel_completed",
+     "booking.hours_since_purchase",
+     "booking.hours_until_departure",
+     "booking.customer_cancelled"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "check_flight_status",
+    "tool": "find_neighbours",
+    "step_id": "flight_delay_refund_request.s2",
+    "clause_ids": [],
+    "instruction": "Verify the flight cause, whether the airline cancelled it, delay length, significant change status, and overnight requirement.",
+    "staff_action": "check_flight_status",
+    "required_facts": [
+     "flight.cause",
+     "flight.is_cancelled_by_airline",
+     "flight.delay_minutes",
+     "flight.is_significant_change",
+     "flight.overnight_required"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "gather_cause_and_remedy",
+    "tool": "extract_facts",
+    "step_id": "flight_delay_refund_request.s3",
+    "clause_ids": [],
+    "instruction": "Ask the customer to confirm the cause of disruption and the remedy they want (refund or alternative), and whether they accepted any alternative or voucher.",
+    "staff_action": "confirm_cause",
+    "required_facts": [
+     "claim.requested_remedy",
+     "flight.customer_accepted_alternative",
+     "flight.cause"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "check_refund_eligibility",
+    "tool": "rule",
+    "step_id": "flight_delay_refund_request.s4",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-DLY-13",
+     "AK-DLY-52",
+     "AK-REF-1",
+     "AK-RET-44",
+     "AK-RET-48",
+     "AK-RET-49",
+     "AK-RET-57"
+    ],
+    "instruction": "Determine refund eligibility: refund is due for a cancelled or significantly delayed/changed flight the customer declines, including automatic refund when no alternative or compensation was offered. Apply 24-hour cancellation rule for fresh purchases and Saver fare rules by days before departure. Fare-class non-refundable without qualifying disruption yields travel credit or denial.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "flight.is_cancelled_by_airline",
+     "flight.is_significant_change",
+     "flight.customer_accepted_alternative",
+     "flight.delay_minutes",
+     "booking.is_refundable_fare",
+     "booking.fare_class",
+     "booking.hours_since_purchase",
+     "booking.hours_until_departure"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "decide_ruling",
+    "tool": "rule",
+    "step_id": "flight_delay_refund_request.s5",
+    "clause_ids": [
+     "AK-RET-6",
+     "AK-RET-20",
+     "AK-RET-11",
+     "AK-REF-20"
+    ],
+    "instruction": "Issue the deterministic ruling: full refund to original payment for qualifying disruption; travel credit where only credit applies; deny otherwise. Refunds are not available if customer accepted alternative surface transport or after surrender window.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "booking.status",
+     "booking.total_paid",
+     "booking.travel_completed",
+     "claim.requested_remedy",
+     "flight.customer_accepted_alternative"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "issue_remedy",
+    "tool": "authorize",
+    "step_id": "flight_delay_refund_request.s6",
+    "clause_ids": [
+     "AK-RET-6",
+     "AK-DLY-35",
+     "AK-DLY-36"
+    ],
+    "instruction": "After authorization, issue the refund to the original form of payment or the travel credit, and provide meal or hotel entitlements if the delay applies.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "booking.total_paid",
+     "claim.requested_remedy"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "flight_delay_refund_request.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "booking.customer_cancelled",
+   "booking.fare_class",
+   "booking.hours_since_purchase",
+   "booking.hours_until_departure",
+   "booking.is_refundable_fare",
+   "booking.status",
+   "booking.total_paid",
+   "booking.travel_completed",
+   "claim.requested_remedy",
+   "flight.cause",
+   "flight.customer_accepted_alternative",
+   "flight.delay_minutes",
+   "flight.is_cancelled_by_airline",
+   "flight.is_significant_change",
+   "flight.overnight_required"
+  ],
+  "outcomes": [
+   {
+    "remedy": "full refund to original form of payment",
+    "decision": "approve",
+    "condition": "Flight cancelled by airline or significantly delayed/changed, no alternative or compensation accepted, customer declines travel, refundable or qualifying fare",
+    "clause_ids": [
+     "AK-DLY-12",
+     "AK-DLY-13",
+     "AK-DLY-52",
+     "AK-REF-1",
+     "AK-RET-6"
+    ]
+   },
+   {
+    "remedy": "future travel credit",
+    "decision": "approve",
+    "condition": "Non-refundable fare cancelled with qualifying disruption but only credit applies (Main/Premium/Business/First fare)",
+    "clause_ids": [
+     "AK-RET-57",
+     "AK-REF-1"
+    ]
+   },
+   {
+    "remedy": "travel credit for 50% of ticket value and 100% of taxes",
+    "decision": "partial",
+    "condition": "Saver fare cancelled 14 or more days before departure",
+    "clause_ids": [
+     "AK-RET-48"
+    ]
+   },
+   {
+    "remedy": "no refund",
+    "decision": "deny",
+    "condition": "Saver fare cancelled 13 or fewer days before departure, or delay under 3 hours with customer travelling, or customer accepted alternative surface transport",
+    "clause_ids": [
+     "AK-RET-49",
+     "AK-RET-20",
+     "AK-DLY-52"
+    ]
+   },
+   {
+    "remedy": "full refund to original form of payment",
+    "decision": "approve",
+    "condition": "Booking cancelled within 24 hours of purchase",
+    "clause_ids": [
+     "AK-RET-44"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 46,
+   "outcomes": {
+    "deny/none": 7,
+    "approve/refund": 36,
+    "approve/travel_credit": 1,
+    "partial/travel_credit": 2
+   },
+   "common_path": [
+    "verify_booking",
+    "check_flight_status",
+    "issue_refund"
+   ],
+   "conditional": [
+    "confirm_cause"
+   ],
+   "frequencies": {
+    "other": 0.06521739130434782,
+    "acknowledge": 0.15217391304347827,
+    "check_policy": 0.15217391304347827,
+    "close_ticket": 0.08695652173913043,
+    "deny_request": 0.17391304347826086,
+    "issue_refund": 0.782608695652174,
+    "confirm_cause": 0.43478260869565216,
+    "verify_booking": 1.0,
+    "check_flight_status": 1.0,
+    "issue_travel_credit": 0.06521739130434782
+   },
+   "claim_reasons": {
+    "flight_delayed": 4,
+    "refund_request": 16,
+    "flight_cancelled": 26
+   }
+  },
+  "status": "approved"
+ },
+ {
+  "category_key": "flight_schedule_change",
+  "version": 1,
+  "name": "flight_schedule_change_refund",
+  "steps": [
+   {
+    "kind": "verify",
+    "name": "verify_booking",
+    "tool": "lookup_order",
+    "step_id": "flight_schedule_change.s1",
+    "clause_ids": [],
+    "instruction": "Look up the booking and confirm status, fare class, refundability, total paid, purchase time and whether the customer already travelled or cancelled.",
+    "staff_action": "verify_booking",
+    "required_facts": [
+     "booking.status",
+     "booking.fare_class",
+     "booking.is_refundable_fare",
+     "booking.total_paid",
+     "booking.hours_since_purchase",
+     "booking.travel_completed",
+     "booking.customer_cancelled"
+    ]
+   },
+   {
+    "kind": "gather",
+    "name": "gather_requested_remedy",
+    "tool": "extract_facts",
+    "step_id": "flight_schedule_change.s2",
+    "clause_ids": [],
+    "instruction": "Ask the customer whether they want a full refund or accept an alternative flight or travel credit, and record the requested remedy.",
+    "staff_action": null,
+    "required_facts": [
+     "claim.requested_remedy",
+     "flight.customer_accepted_alternative"
+    ]
+   },
+   {
+    "kind": "verify",
+    "name": "check_flight_status",
+    "tool": "lookup_order",
+    "step_id": "flight_schedule_change.s3",
+    "clause_ids": [],
+    "instruction": "Check the flight schedule change: measure the departure time change in minutes and whether the change is significant.",
+    "staff_action": "check_flight_status",
+    "required_facts": [
+     "flight.schedule_change_minutes",
+     "flight.is_significant_change",
+     "booking.hours_until_departure"
+    ]
+   },
+   {
+    "kind": "check",
+    "name": "check_refund_eligibility",
+    "tool": "rule",
+    "step_id": "flight_schedule_change.s4",
+    "clause_ids": [
+     "AK-DLY-45",
+     "AK-DLY-13",
+     "AK-REF-1",
+     "AK-RET-44",
+     "AK-RET-11"
+    ],
+    "instruction": "Evaluate whether an automatic or full refund applies: departure change over 120 minutes, or significant change with customer rejection of the new flight or alternative. Also apply the 24-hour cancellation window and the 12-month surrender limit.",
+    "staff_action": "check_policy",
+    "required_facts": [
+     "flight.schedule_change_minutes",
+     "flight.is_significant_change",
+     "flight.customer_accepted_alternative",
+     "claim.requested_remedy",
+     "booking.hours_since_purchase",
+     "booking.is_refundable_fare",
+     "booking.travel_completed"
+    ]
+   },
+   {
+    "kind": "decide",
+    "name": "decide_ruling",
+    "tool": "rule",
+    "step_id": "flight_schedule_change.s5",
+    "clause_ids": [
+     "AK-REF-1",
+     "AK-DLY-13",
+     "AK-RET-20",
+     "AK-RET-48",
+     "AK-RET-49",
+     "AK-RET-57",
+     "AK-REF-20"
+    ],
+    "instruction": "Rule approve/refund when the change exceeds 120 minutes or a significant change is rejected without accepted alternative; rule partial travel credit when the customer accepts a credit or non-refundable fare is eligible for future travel credit; otherwise deny. Refuse refund where alternative surface transport was accepted or the fare is an unused non-refundable Saver within the forfeiture window.",
+    "staff_action": "deny_request",
+    "required_facts": [
+     "flight.schedule_change_minutes",
+     "flight.customer_accepted_alternative",
+     "booking.fare_class",
+     "booking.is_refundable_fare",
+     "booking.hours_until_departure"
+    ]
+   },
+   {
+    "kind": "act",
+    "name": "act_issue_remedy",
+    "tool": "authorize",
+    "step_id": "flight_schedule_change.s6",
+    "clause_ids": [
+     "AK-RET-6",
+     "AK-DLY-13",
+     "AK-REF-20"
+    ],
+    "instruction": "After authorization, issue the refund to the original form of payment for approved full refunds, or issue a future travel credit for partial rulings. Credits do not convert to cash.",
+    "staff_action": "issue_refund",
+    "required_facts": [
+     "booking.total_paid",
+     "booking.status"
+    ]
+   },
+   {
+    "kind": "closeout",
+    "name": "Close-out (placeholder)",
+    "tool": "none",
+    "step_id": "flight_schedule_change.closeout",
+    "clause_ids": [],
+    "instruction": "After the customer is resolved: disposition of the item (restock / open-box / return to vendor / carrier claim) for retail; recovery within policy for airlines. Designed, not implemented, in the POC.",
+    "staff_action": null,
+    "required_facts": []
+   }
+  ],
+  "required_facts": [
+   "booking.customer_cancelled",
+   "booking.fare_class",
+   "booking.hours_since_purchase",
+   "booking.hours_until_departure",
+   "booking.is_refundable_fare",
+   "booking.status",
+   "booking.total_paid",
+   "booking.travel_completed",
+   "claim.requested_remedy",
+   "flight.customer_accepted_alternative",
+   "flight.is_significant_change",
+   "flight.schedule_change_minutes"
+  ],
+  "outcomes": [
+   {
+    "remedy": "Full refund to original form of payment",
+    "decision": "approve/refund",
+    "condition": "Departure time changed over 120 minutes, or significant change rejected with no accepted alternative, and booking refundable and within surrender window",
+    "clause_ids": [
+     "AK-DLY-45",
+     "AK-DLY-13",
+     "AK-REF-1",
+     "AK-RET-6"
+    ]
+   },
+   {
+    "remedy": "Future travel credit for the fare value; no cash refund",
+    "decision": "partial/travel_credit",
+    "condition": "Significant change where non-refundable fare is eligible for future travel credit, or customer accepts a carrier credit",
+    "clause_ids": [
+     "AK-RET-57",
+     "AK-REF-20"
+    ]
+   },
+   {
+    "remedy": "No refund issued; explain policy basis to customer",
+    "decision": "deny/none",
+    "condition": "Alternative surface transport or acceptable rebooking accepted, travel completed, or refund window passed",
+    "clause_ids": [
+     "AK-RET-20",
+     "AK-RET-11",
+     "AK-RET-49"
+    ]
+   }
+  ],
+  "mining": {
+   "cases": 14,
+   "outcomes": {
+    "deny/none": 6,
+    "approve/refund": 5,
+    "partial/travel_credit": 3
+   },
+   "common_path": [
+    "verify_booking",
+    "check_flight_status"
+   ],
+   "conditional": [
+    "check_policy",
+    "issue_refund",
+    "deny_request",
+    "other",
+    "issue_travel_credit"
+   ],
+   "frequencies": {
+    "other": 0.21428571428571427,
+    "acknowledge": 0.07142857142857142,
+    "check_policy": 0.42857142857142855,
+    "deny_request": 0.5,
+    "issue_refund": 0.35714285714285715,
+    "verify_booking": 1.0,
+    "check_flight_status": 0.9285714285714286,
+    "issue_travel_credit": 0.21428571428571427
+   },
+   "claim_reasons": {
+    "refund_request": 3,
+    "schedule_change": 11
+   }
+  },
+  "status": "approved"
+ }
+]

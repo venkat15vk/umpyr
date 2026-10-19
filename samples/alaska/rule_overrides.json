@@ -231,7 +231,10 @@
         "amount": {
           "min": [
             {
-              "var": "claim.requested_amount"
+              "var": [
+                "claim.requested_amount",
+                25
+              ]
             },
             25
           ]
@@ -861,19 +864,32 @@
         "bag_delayed"
       ],
       "requires": [
-        "bag.status"
+        "bag.status",
+        "bag.damage_type"
       ],
       "when": {
-        "==": [
+        "and": [
           {
-            "var": "bag.status"
+            "==": [
+              {
+                "var": "bag.status"
+              },
+              "delivered"
+            ]
           },
-          "delivered"
+          {
+            "==": [
+              {
+                "var": "bag.damage_type"
+              },
+              "contents"
+            ]
+          }
         ]
       },
       "effect": {
         "fault": "customer",
-        "note": "Rule 15: no liability for missing or damaged items when the checked bag itself was not damaged, delayed or lost."
+        "note": "Rule 15: no liability for missing or damaged contents when the checked bag itself was not damaged, delayed or lost."
       }
     },
     "AK-BAG-184.r1": {

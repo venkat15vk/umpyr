@@ -151,7 +151,13 @@ SYSTEM = f"""You extract structured case records from customer-support threads f
 ([NAME], [EMAIL], [PHONE], [ADDRESS]); keep those tokens, never guess identities.
 
 Extract only what the thread states or clearly implies. Use null when unknown.
-- claim.reason: the primary reason, one of {", ".join(CLAIM_REASONS)}.
+- claim.reason: the primary reason, one of {", ".join(CLAIM_REASONS)}. The reason is what the customer ASKS FOR:
+  a customer who wants to cancel a backordered item is cancel_order (not backorder); backorder is only for status/ETA questions.
+  Airline reasons: flight_cancelled = the airline cancelled the flight; flight_delayed = the flight operated late
+  (any request arising from it: refund, meals, hotel); schedule_change = the airline moved the schedule before travel;
+  refund_request = the CUSTOMER chose to cancel and wants money or credit back; bag_guarantee = the bag was late to the
+  carousel / 20-minute guarantee (bag arrived the same day); bag_delayed = bag delivered hours or days later;
+  bag_lost = never returned; bag_damaged = physical damage; seat_refund = paid seat/upgrade fee; loyalty_points = miles/points.
 - Unknown values: "unknown" for yes/no fields, -1 for numbers, "" for strings. Never guess.
 - claim facts: has_photos = customer provided or attached photos at any point in the thread; has_receipt = proof of
   purchase available (an order number from the merchant counts as proof); reported_within_days = days between
