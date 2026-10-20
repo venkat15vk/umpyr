@@ -37,13 +37,14 @@ events and citations, API routes. Spend: $0 (no model calls in tests or backfill
 Measured: 600 historical cases embedded locally at no cost; one extra Haiku call per turn (`resolve.plan`, ~$0.0003).
 Decisions D43–D45.
 
-## Phase 3 — Customer experience (changes what customers see; **ask first**)
+## Phase 3 — Customer experience — **implemented 2026-10-20** (user: "Go phase 3"; queued customer = pending message + SLA)
 
 1. Status events rendered as interim customer messages.
 2. Public citations in customer replies (contract of carriage, DOT rule); SOPs never shown.
 3. Next-question prediction and proactive answers (refund timeline first).
 4. Refund options menu with cash-first rule; customer choice logged.
-5. Queued-customer experience (open item: pending message and/or approval SLA).
+5. Queued-customer experience: pending message always, `approval_sla_hours` per workspace, overdue → honest escalation.
+Decisions D46–D49. Interim streaming of status messages deferred (synchronous turn); the settlement-time model (§13) is phase 4.
 
 ## Phase 4 — Execution and governance
 

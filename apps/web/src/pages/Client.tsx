@@ -53,7 +53,7 @@ export function Client() {
     setMessages((m) => [...m, { role: "customer", text }]);
     try {
       const r = await sendMessage(session.id, text);
-      setMessages((m) => [...m, { role: "assistant", text: r.reply, ops: r.ops }]);
+      setMessages((m) => [...m, { role: "assistant", text: r.reply, ops: r.ops, customer: r.customer ?? null }]);
       setSession(r.session);
     } catch (e) {
       if (e instanceof ApiError && e.isBudgetExceeded) setBudgetHit(true);
@@ -143,7 +143,29 @@ export function Client() {
               {messages.map((m, i) => (
                 <div key={i} className={`max-w-[92%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${m.role === "customer" ? "ml-auto" : ""}`} style={{ background: m.role === "customer" ? "var(--accent-soft)" : "var(--bg)", border: "1px solid var(--border)" }}>
                   <div className="muted mb-1 text-xs">{m.role === "customer" ? "Customer" : session?.channel === "agent" && m.ops?.agent_message ? "Umpyr → customer's agent" : "Umpyr"}{m.ops ? ` · ${m.ops.status.replace("_", " ")}` : ""}</div>
+                  {m.role === "assistant" && m.customer && m.customer.status_lines.length > 0 && (
+                    <div className="muted mb-1 text-xs">{m.customer.status_lines.join(" · ")}</div>
+                  )}
                   {m.role === "assistant" && m.ops?.agent_message ? <pre className="overflow-x-auto text-xs">{JSON.stringify(m.ops.agent_message, null, 2)}</pre> : m.text}
+                  {m.role === "assistant" && m.customer && m.customer.options.length > 1 && !m.customer.chosen_remedy && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {m.customer.options.map((o) => (
+                        <button key={o.remedy} className="btn text-xs" disabled={busy} onClick={() => send(`I'll take the ${o.label}.`)}>
+                          {o.label}{o.amount ? ` · $${o.amount}` : ""}{o.guaranteed_by_regulation ? " · your right" : ""}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {m.role === "assistant" && m.customer && m.customer.queue?.sla && (
+                    <div className="muted mt-1 text-xs">{m.customer.queue.overdue ? "Authorisation overdue: a specialist now owns this." : `You will hear back ${m.customer.queue.sla}.`}</div>
+                  )}
+                  {m.role === "assistant" && m.customer && m.customer.citations.length > 0 && (
+                    <div className="muted mt-1 text-xs">
+                      Sources: {m.customer.citations.map((c, j) => (
+                        <span key={j}>{j > 0 ? "; " : ""}{c.url ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}{c.page ? `, p.${c.page}` : ""}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               {busy && <div className="muted text-sm">Umpyr is working through the procedure…</div>}

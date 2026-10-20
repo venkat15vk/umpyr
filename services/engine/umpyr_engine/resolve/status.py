@@ -20,6 +20,7 @@ TEMPLATES: dict[str, str] = {
     "execution": "Processing your {remedy}.",
     "escalation": "A specialist is taking a look; this can take a little longer and we will follow up directly.",
     "needs_fact": "We need one or two more details from you to finish this.",
+    "queue.overdue": "The authorisation took longer than we promised; a specialist now owns your case.",
     "decision.resolved": "Done. Details are in the reply below.",
     "decision.denied": "We have reviewed this and explain the outcome in the reply below.",
 }

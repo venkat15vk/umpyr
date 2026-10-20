@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     planner_gate: bool = Field(
         True, description="Queue an auto-approved money action when the live plan diverges from history"
     )
+    proactive_min: float = Field(0.3, description="Answer a predicted next question proactively above this probability")
     check_provider: str = Field("none", description="Umpyr Check hooks provider; only 'none' exists (deferred)")
     assume_reference_exists: bool = (
         True  # POC: an unknown reference gets a stand-in record cloned from the nearest case

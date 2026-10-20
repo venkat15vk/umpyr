@@ -341,9 +341,24 @@ class ResolveCase(Base, TimestampMixin):
     head_hash: Mapped[str | None] = mapped_column(String(64))
     decision_hash: Mapped[str | None] = mapped_column(String(64))
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # approval SLA deadline (v2 §11)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
+
+
+class NextQuestion(Base):
+    """P(next customer question | category), mined from historical follow-ups (design v2 §5)."""
+
+    __tablename__ = "next_questions"
+    __table_args__ = (UniqueConstraint("workspace_id", "category_key", "question", name="uq_next_question"),)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("workspaces.id", ondelete="CASCADE"), index=True)
+    category_key: Mapped[str] = mapped_column(String(80))
+    question: Mapped[str] = mapped_column(String(40))
+    probability: Mapped[Decimal] = mapped_column(Numeric(6, 4), default=Decimal(0))
+    support: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
 class CaseEvent(Base):

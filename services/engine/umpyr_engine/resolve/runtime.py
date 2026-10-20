@@ -26,6 +26,7 @@ from ..embeddings import EmbeddingProvider
 from ..llm import LLMProvider
 from ..llm.meter import CostMeter, metered
 from ..sandbox.synth.core import NOW as SANDBOX_NOW
+from . import customer as cx
 from . import tools
 from .facts import build_facts, find_reference
 from .ledger import CaseLedger
@@ -446,6 +447,10 @@ def _run_turn(
         },
     )
 
+    # 5a. refund-option choice (options were offered on an earlier turn)
+    prior_options = list(state.get("options") or [])
+    chosen = cx.detect_choice(prior_options, extracted, text) or state.get("chosen_remedy")
+
     # 5b. plan: historical (neighbours' consensus) vs live (model), compared by step type and order
     settings = get_settings()
     plan = plan_case(
@@ -555,6 +560,25 @@ def _run_turn(
                 explanation="The merchant record is needed before a ruling can be made.",
             )
             status = "needs_fact"
+    options = cx.refund_options(ruling, pack) if status in ("resolved", "pending_approval") else []
+    if ruling is not None and chosen and options:
+        ruling = cx.apply_choice(ruling, options, chosen, facts)
+    if options and not prior_options:
+        ledger.append(
+            "umpyr",
+            "options_offered",
+            basis={"rule": "policy lists the options; cash first when regulation guarantees it; never defaulted"},
+            result={
+                "options": [
+                    {k: o[k] for k in ("remedy", "amount", "rule_id", "guaranteed_by_regulation")} for o in options
+                ]
+            },
+        )
+        emit("options.review")
+    if chosen and chosen != state.get("chosen_remedy") and options:
+        ledger.append(
+            "customer", "choice", basis={"offered": [o["remedy"] for o in options]}, result={"chosen": chosen}
+        )
     steps_log.append(
         {
             "tool": "rule",
@@ -689,6 +713,53 @@ def _run_turn(
     elif authorization is not None and authorization.decision == "allow":
         emit("gate.allowed")
 
+    # 7b. queued customer: pending message always, SLA when configured, honest escalation when overdue (v2 §11)
+    sla_hours = (ws.settings or {}).get("approval_sla_hours")
+    queue = None
+    if status == "pending_approval":
+        queue = cx.queue_state(state.get("queue"), sla_hours, cx.now_utc())
+        if queue["overdue"]:
+            status = "escalated"
+            escalation = {
+                "type": "governance_gate",
+                "reason": f"approval SLA of {sla_hours} hours missed; a specialist now owns the case",
+                "overdue": True,
+            }
+            ledger.append("umpyr", "queue.overdue", basis={"due_at": queue["due_at"]}, result={"sla_hours": sla_hours})
+            emit("queue.overdue")
+
+    # 7c. next-question prediction -> prefetch the refund timeline and answer it proactively (v2 §5, §13)
+    predicted = cx.predict_next_questions(session, ws.id, key)
+    proactive: list[dict[str, Any]] = []
+    wants_timeline = bool(facts["claim"].get("timeline_ask")) or any(
+        p["question"] == "timeline" and p["probability"] >= settings.proactive_min for p in predicted
+    )
+    if (
+        wants_timeline
+        and ruling is not None
+        and str(ruling.decision) in ("approve", "partial")
+        and ruling.remedy in ("refund", "partial_refund")
+        and status in ("resolved", "pending_approval")
+    ):
+        tl = cx.timeline_answer(pack, (record or {}).get("payment_method"))
+        if tl:
+            proactive.append(tl)
+    ledger.append(
+        "umpyr",
+        "prefetch",
+        basis={"predicted_next_questions": predicted, "timeline_asked": bool(facts["claim"].get("timeline_ask"))},
+        result={
+            "proactive": [
+                {
+                    "question": p["question"],
+                    "days": p.get("days"),
+                    "clause_id": (p.get("citation") or {}).get("clause_id"),
+                }
+                for p in proactive
+            ]
+        },
+    )
+
     # 8. draft reply (+ 9. supervisor)
     clause_notes = []
     if ruling and pack:
@@ -706,7 +777,16 @@ def _run_turn(
         "authorization": authorization.decision if authorization else None,
         "clauses": clause_notes,
         "citations": ruling_citations,
+        "public_citations": cx.public_citations(ruling_citations),
         "escalation": escalation,
+        "options": [
+            {k: o[k] for k in ("remedy", "label", "amount", "guaranteed_by_regulation", "is_cash")} for o in options
+        ],
+        "chosen_remedy": chosen if options else None,
+        "proactive": [{"question": p["question"], "answer": p["answer"]} for p in proactive],
+        "queue": {"sla": cx.sla_sentence(sla_hours), "overdue": bool(queue and queue.get("overdue"))}
+        if queue
+        else None,
         "record_lookup": {
             "reference_given": reference,
             "found": record is not None,
@@ -719,6 +799,7 @@ def _run_turn(
         "customer_message": text,
         "known_record": _record_summary(record, kind),
         "ruling": ruling_payload,
+        "customer_status": cx.status_lines(status_events, kind),
         "fallback_reply": _fallback_reply(ruling_payload),
     }
     reply = tools.draft_reply(llm, ws.id, draft_payload)
@@ -800,6 +881,11 @@ def _run_turn(
     if status in ("resolved", "denied"):
         emit(f"decision.{status}")
     case.status = status
+    case.due_at = (
+        datetime.fromisoformat(queue["due_at"])
+        if queue and queue.get("due_at") and status == "pending_approval"
+        else None
+    )
     case.category_key = key
     case.reference = reference if record else None
     case.escalation = escalation
@@ -834,6 +920,10 @@ def _run_turn(
         "audit_hash": h,
         "case_id": str(case.id),
         "decision_hash": decision_hash,
+        "status_events": status_events,
+        "options": ruling_payload["options"],
+        "proactive": ruling_payload["proactive"],
+        "queue": ruling_payload["queue"],
         "citations": [
             {
                 k: c.get(k)
@@ -844,8 +934,21 @@ def _run_turn(
         ],
     }
 
+    customer_block = {
+        "status_lines": cx.status_lines(status_events, kind),
+        "citations": ruling_payload["public_citations"],
+        "options": ruling_payload["options"],
+        "chosen_remedy": ruling_payload["chosen_remedy"],
+        "proactive": ruling_payload["proactive"],
+        "queue": (
+            {"sla": cx.sla_sentence(sla_hours), "due_at": queue.get("due_at"), "overdue": bool(queue.get("overdue"))}
+            if queue
+            else None
+        ),
+    }
     ops = {
         "turn": turn,
+        "customer": customer_block,
         "status": status,
         "classification": classification,
         "neighbours": neighbours,
@@ -928,6 +1031,9 @@ def _run_turn(
         "item_hint": extracted.get("item_hint") or state.get("item_hint"),
         "intents": intents,
         "party": party,
+        "options": options,
+        "chosen_remedy": chosen if options else None,
+        "queue": queue,
         "category_key": key,
         "last_status": status,
     }
@@ -938,7 +1044,7 @@ def _run_turn(
     session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="customer", content=text, payload={}))
     session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="assistant", content=reply, payload=ops))
     session.commit()
-    return {"reply": reply, "ops": ops}
+    return {"reply": reply, "ops": ops, "customer": customer_block}
 
 
 FRIENDLY = {
@@ -969,6 +1075,25 @@ def _friendly_missing(paths: list[str]) -> list[str]:
 
 
 def _fallback_reply(rp: dict[str, Any]) -> str:
+    """Template reply (used when the drafter fails the supervisor twice): core sentence per status plus the
+    customer-experience extras of design v2 §11-§14 (options, proactive answers, SLA)."""
+    parts = [_fallback_core(rp)]
+    q = rp.get("queue") or {}
+    if rp["status"] == "pending_approval" and q.get("sla"):
+        parts.append(f"You will hear back from us {q['sla']}.")
+    opts = rp.get("options") or []
+    if len(opts) > 1 and rp["status"] in ("resolved", "pending_approval"):
+        first, rest = opts[0], opts[1:]
+        lead = f"Your {first['label']}" + (f" of ${first['amount']}" if first.get("amount") else "")
+        lead += " is guaranteed by regulation" if first.get("guaranteed_by_regulation") else " is the default"
+        alts = "; ".join(o["label"] + (f" (${o['amount']})" if o.get("amount") else "") for o in rest)
+        parts.append(f"{lead}; if you prefer, you may choose {alts} instead. Just reply with your choice.")
+    for p in rp.get("proactive") or []:
+        parts.append(p["answer"])
+    return " ".join(x for x in parts if x)
+
+
+def _fallback_core(rp: dict[str, Any]) -> str:
     st = rp["status"]
     lk = rp.get("record_lookup") or {}
     if st == "needs_fact" and lk.get("reference_given") and not lk.get("found"):
@@ -987,6 +1112,11 @@ def _fallback_reply(rp: dict[str, Any]) -> str:
             f"Thanks for the details. Policy provides for a {rp['remedy']} here"
             + (f" of ${rp['amount']}" if rp["amount"] else "")
             + ", and the request has been sent to a supervisor for authorization. We will follow up shortly."
+        )
+    if st == "escalated" and (rp.get("queue") or {}).get("overdue"):
+        return (
+            "We are sorry: the authorisation we promised has taken longer than it should have. A specialist now owns "
+            "your case and will follow up with you directly."
         )
     if st == "escalated" and lk.get("reference_given") and not lk.get("found"):
         return (

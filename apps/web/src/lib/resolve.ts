@@ -27,12 +27,15 @@ export type Ops = {
   tools: { tool: string; ok: boolean; detail: string }[];
   agent_message: Record<string, unknown> | null;
 };
-export type Message = { role: "customer" | "assistant"; text: string; ops?: Ops | null };
+export type CustomerCitation = { document: string | null; section: string | null; page: number | null; url: string | null; document_version: string | null; quote: string };
+export type RefundOption = { remedy: string; label: string; amount: string | null; guaranteed_by_regulation: boolean; is_cash: boolean };
+export type CustomerBlock = { status_lines: string[]; citations: CustomerCitation[]; options: RefundOption[]; chosen_remedy: string | null; proactive: { question: string; answer: string }[]; queue: { sla: string | null; due_at: string | null; overdue: boolean } | null };
+export type Message = { role: "customer" | "assistant"; text: string; ops?: Ops | null; customer?: CustomerBlock | null };
 export type Example = { category_key: string; text: string; expected: { decision: string; remedy: string | null; amount: string | null } };
 
 export const createSession = (ws: string, body: Partial<ChatSession>) => api<ChatSession>(`/workspaces/${ws}/sessions`, { method: "POST", body: JSON.stringify(body) });
 export const patchSession = (id: string, body: Partial<ChatSession>) => api<ChatSession>(`/sessions/${id}`, { method: "PATCH", body: JSON.stringify(body) });
-export const sendMessage = (id: string, text: string) => api<{ reply: string; ops: Ops; session: ChatSession }>(`/sessions/${id}/messages`, { method: "POST", body: JSON.stringify({ text }) });
+export const sendMessage = (id: string, text: string) => api<{ reply: string; ops: Ops; session: ChatSession; customer?: CustomerBlock }>(`/sessions/${id}/messages`, { method: "POST", body: JSON.stringify({ text }) });
 export const getExamples = (ws: string) => api<Example[]>(`/workspaces/${ws}/examples`);
 export const askMerchant = (ws: string, question: string) => api<{ answer: string }>(`/workspaces/${ws}/merchant-chat`, { method: "POST", body: JSON.stringify({ question }) });
 export const getSummary = (ws: string) => api<Record<string, unknown>>(`/workspaces/${ws}/summary`);

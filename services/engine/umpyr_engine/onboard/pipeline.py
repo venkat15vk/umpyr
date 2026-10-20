@@ -197,6 +197,9 @@ def run_onboarding(session: Session, workspace_id: str, emit: Emit, *, eval_n: i
     )
     report["mine"] = res
     emit("mine", f"{res['cases']} cases mined ({res['failed']} failed)", progress=55)
+    from ..resolve.customer import mine_next_questions
+
+    mine_next_questions(session, workspace_id)
 
     emit("taxonomy", "clustering cases and naming categories", progress=60)
     tx = build_taxonomy(session, get_llm(), get_embedder(), workspace_id)

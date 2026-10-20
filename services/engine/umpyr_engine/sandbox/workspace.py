@@ -19,6 +19,7 @@ def ensure_workspace(session: Session, workspace_id: str, name: str, kind: str =
                 "reply_channel": "email",
                 "as_of": "2026-10-01T12:00:00",  # synthetic data is dated relative to this day
                 "record_kind": "booking" if workspace_id == "alaska" else "order",
+                "approval_sla_hours": 4 if workspace_id == "alaska" else 24,  # queued-customer SLA (v2 §11)
             },
             is_synthetic=True,
         )

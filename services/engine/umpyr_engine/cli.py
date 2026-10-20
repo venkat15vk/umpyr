@@ -124,6 +124,22 @@ def _refresh_provenance_if_needed(client: str, report: dict) -> None:
     with get_session_factory()() as s:
         if needs_plan_embeddings(s, client):
             report[client] = {**report.get(client, {}), "plans": refresh_plan_embeddings(s, client)}
+    from sqlalchemy import func, select
+
+    from .db import models as m
+    from .resolve.customer import mine_next_questions
+
+    with get_session_factory()() as s:
+        n = s.execute(
+            select(func.count()).select_from(m.NextQuestion).where(m.NextQuestion.workspace_id == client)
+        ).scalar()
+        if not n:
+            report[client] = {**report.get(client, {}), "next_questions": len(mine_next_questions(s, client))}
+        ws = s.get(m.Workspace, client)
+        if ws is not None and "approval_sla_hours" not in (ws.settings or {}):
+            ws.settings = {**(ws.settings or {}), "approval_sla_hours": 4 if client == "alaska" else 24}
+            s.add(ws)
+            s.commit()
 
 
 def cmd_seed(args: argparse.Namespace) -> int:
@@ -212,6 +228,17 @@ def cmd_sandbox(args: argparse.Namespace) -> int:
         from .sandbox.synth_job import run_synth
 
         print(json.dumps(run_synth(args.client, n=args.n, rebuild=args.rebuild, limit=args.limit), indent=2))
+        return 0
+    if args.sb_cmd == "next-questions":
+        from .db.base import get_session_factory
+        from .resolve.customer import mine_next_questions
+
+        out = {}
+        for client in args.clients:
+            with get_session_factory()() as s:
+                rows = mine_next_questions(s, client)
+                out[client] = {"rows": len(rows), "top": sorted(rows, key=lambda r: -r["probability"])[:6]}
+        print(json.dumps(out, indent=2, default=str))
         return 0
     if args.sb_cmd == "plans":
         from .db.base import get_session_factory
@@ -303,6 +330,10 @@ def main(argv: list[str] | None = None) -> int:
     sy.add_argument("--n", type=int, default=300)
     sy.add_argument("--limit", type=int, default=None, help="only write threads for the first N scenarios (dev)")
     sy.add_argument("--rebuild", action="store_true")
+    nq = sbs.add_parser(
+        "next-questions", help="mine P(next customer question | category) from historical threads (no LLM)"
+    )
+    nq.add_argument("clients", nargs="*", default=["rockler", "alaska"])
     pl = sbs.add_parser("plans", help="embed historical cases for the historical planner (local embedder; no LLM)")
     pl.add_argument("clients", nargs="*", default=["rockler", "alaska"])
     pl.add_argument("--rebuild", action="store_true")
