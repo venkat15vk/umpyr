@@ -394,7 +394,13 @@ def _run_turn(
     )
     emit("record.lookup" if record else "record.missing")
     prior_claim = (state.get("facts") or {}).get("claim", {})
-    claim = {**prior_claim, **{k: v for k, v in (extracted.get("claim") or {}).items() if v is not None}}
+    new_claim = {k: v for k, v in (extracted.get("claim") or {}).items() if v is not None}
+    if known:  # delta mode: enum fields have no "unknown" sentinel, so "other" means "unchanged"
+        if new_claim.get("reason") == "other" and prior_claim.get("reason"):
+            new_claim.pop("reason")
+        if new_claim.get("requested_remedy") in (None, "unknown") and prior_claim.get("requested_remedy"):
+            new_claim.pop("requested_remedy", None)
+    claim = {**prior_claim, **new_claim}
     facts = build_facts(
         claim,
         airline,
