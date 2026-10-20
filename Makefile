@@ -31,7 +31,9 @@ smoke:            ## one tiny Haiku call (costs < $0.001)
 	cd services/engine && uv run umpyr llm smoke
 
 # --- release (tokens from .env; run as `make deploy`, or `! make deploy` inside Claude Code) ---
-.PHONY: deploy deploy-engine deploy-web deploy-secrets
+.PHONY: bootstrap deploy deploy-engine deploy-web deploy-secrets
+bootstrap:        ## first time: create Railway + Pages resources, domain, secrets, deploy, verify (idempotent)
+	infra/deploy.sh bootstrap
 deploy:           ## secrets + engine (Railway) + web (Cloudflare Pages)
 	infra/deploy.sh all
 deploy-engine:    ## engine only

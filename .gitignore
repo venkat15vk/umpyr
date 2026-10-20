@@ -41,3 +41,6 @@ services/engine/data/
 # wrangler local secrets
 .dev.vars
 .wrangler/
+
+# deploy bootstrap state (generated secrets, discovered ids)
+infra/.deploy.state

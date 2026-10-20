@@ -2,6 +2,27 @@
 
 Target: `https://www.umpyr.org/alaska` and `https://www.umpyr.org/rockler`, both behind one shared password.
 
+## Fastest path: `make bootstrap`
+
+Everything in sections 1 and 2 below is automated by `infra/deploy.sh bootstrap` (idempotent, safe to
+re-run). It needs, in the repo-root `.env`:
+
+```
+RAILWAY_API_TOKEN=      # Railway -> Account settings -> Tokens (account token: can create the project)
+CLOUDFLARE_API_TOKEN=   # custom token: Account/Cloudflare Pages/Edit, Account/Account Settings/Read,
+                        #               Zone/Zone/Read and Zone/DNS/Edit on the umpyr.org zone
+DEMO_PASSWORD=          # the shared password
+```
+
+plus a payment method on the Railway account (Hobby plan). `ANTHROPIC_API_KEY` and `CLAUDE_MODEL` are
+already there. The script then creates the Railway project, Postgres and service, sets variables,
+deploys the engine, generates its domain, creates the Pages project, pushes secrets, builds and deploys
+the web app, attaches `www.umpyr.org` with its DNS record, and waits for the login page to answer.
+Generated secrets and discovered ids land in `infra/.deploy.state` (gitignored). After that, every
+release is `make deploy`.
+
+The manual steps below are the same thing done by hand, kept for reference and troubleshooting.
+
 ```
 browser ──► Cloudflare Pages (www.umpyr.org)
              │  functions/_middleware.ts: password cookie, /login, /api/* proxy
