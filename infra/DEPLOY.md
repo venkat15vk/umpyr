@@ -1,6 +1,9 @@
-# Deploying the POC to www.umpyr.org
+# Deploying the POC to demo.umpyr.org
 
-Target: `https://www.umpyr.org/alaska` and `https://www.umpyr.org/rockler`, both behind one shared password.
+Live since 2026-10-20: `https://demo.umpyr.org/alaska` and `https://demo.umpyr.org/rockler`, both behind one shared
+password. The landing page on `www.umpyr.org` (Pages project `umpyr`) is untouched. The default `PUBLIC_HOST` in
+`infra/deploy.sh` is still `www.umpyr.org`; the chosen host is remembered in `infra/.deploy.state`, so plain
+`make deploy` keeps `demo.umpyr.org`.
 
 ## Fastest path: `make bootstrap`
 

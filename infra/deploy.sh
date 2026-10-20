@@ -180,6 +180,7 @@ bootstrap_cloudflare() {
 
 bootstrap() {
   need DEMO_PASSWORD
+  state_set PUBLIC_HOST "$PUBLIC_HOST"   # remembered for later `make deploy` runs
   ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET
   bootstrap_railway
   bootstrap_cloudflare
