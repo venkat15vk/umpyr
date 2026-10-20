@@ -404,3 +404,157 @@ def test_damaged_bag_with_unknown_code_resolves_without_re_asking(session_factor
         assert ops["status"] == "resolved" and ops["ruling"]["remedy"] == "voucher", ops["ruling"]
         rec = s.query(m.OrderRecord).filter_by(workspace_id=airline_ws, order_id="ZZZ999").one()
         assert rec.data["bags"][0]["status"] == "damaged" and rec.data["bags"][0]["checked"] is True
+
+
+class WheelFakeLLM(BagFakeLLM):
+    """Wheel damage (excluded) and, on later turns, a new ask for credit."""
+
+    def __init__(self, later_intents: list[str] | None = None):
+        super().__init__()
+        self.later_intents = later_intents or ["compensation"]
+        self.turns = 0
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        resp = super().complete(req)
+        if req.step == "resolve.extract":
+            self.turns += 1
+            out = json.loads(resp.text)
+            if self.turns > 1:
+                out["intents"] = self.later_intents
+                out["claim"]["requested_remedy"] = "travel_credit"
+            resp = LLMResponse(
+                text=json.dumps(out),
+                content=[],
+                tool_uses=[],
+                stop_reason="end_turn",
+                usage=Usage(10, 10),
+                model="fake",
+                parsed=out,
+            )
+        return resp
+
+
+def _ensure_wheel_deny_rule(s, ws):
+    from umpyr_rules import Clause, Effect, Rule, RulePack
+
+    rp = s.query(m.RulePack).filter_by(workspace_id=ws, status="active").one()
+    pack = RulePack.model_validate(rp.pack)
+    if not any(r.rule_id == "A-BAG-9.r1" for r in pack.rules):
+        pack.clauses.append(
+            Clause(
+                clause_id="A-BAG-9",
+                title="Excluded parts",
+                text="Not liable for wheels, handles or zippers.",
+                source_url="https://coc",
+                tier="contract",
+            )
+        )
+        pack.rules.append(
+            Rule(
+                rule_id="A-BAG-9.r1",
+                clause_id="A-BAG-9",
+                tier="contract",
+                priority=5,
+                claim_reasons=["bag_damaged"],
+                requires=["bag.damage_type"],
+                when={"==": [{"var": "bag.damage_type"}, "wheel"]},
+                effect=Effect(decision="deny"),
+            )
+        )
+        rp.pack = json.loads(pack.model_dump_json())
+        s.add(rp)
+        s.commit()
+
+
+def _seed_goodwill_history(session_factory, ws, n):
+    with session_factory() as s:
+        for i in range(n):
+            s.add(
+                m.Case(
+                    workspace_id=ws,
+                    ticket_id=f"GW-{i}",
+                    category_key="delays",
+                    summary="wheel broke; staff gave a voucher",
+                    facts={"claim": {"reason": "bag_damaged"}},
+                    record={
+                        "policy": {"decision": "deny"},
+                        "outcome": {"decision": "approve", "remedy": "voucher", "amount": 50},
+                        "staff_actions": [],
+                    },
+                    is_drift=True,
+                )
+            )
+        for i in range(3):
+            s.add(
+                m.Case(
+                    workspace_id=ws,
+                    ticket_id=f"DN-{i}",
+                    category_key="delays",
+                    summary="wheel broke; denied",
+                    facts={"claim": {"reason": "bag_damaged"}},
+                    record={
+                        "policy": {"decision": "deny"},
+                        "outcome": {"decision": "deny", "remedy": None},
+                        "staff_actions": [],
+                    },
+                )
+            )
+        s.commit()
+
+
+def _clear_cases(session_factory, ws):
+    from sqlalchemy import delete
+
+    with session_factory() as s:
+        s.execute(delete(m.Case).where(m.Case.workspace_id == ws))
+        s.commit()
+
+
+def test_uncovered_ask_with_precedent_escalates_with_evidence(session_factory, airline_ws):
+    _seed_goodwill_history(session_factory, airline_ws, n=2)
+    try:
+        with session_factory() as s:
+            _ensure_wheel_deny_rule(s, airline_ws)
+            chat = _chat(s, airline_ws)
+            llm, emb = WheelFakeLLM(later_intents=["refund"]), FakeEmbedder()
+            o1 = run_turn(s, llm, emb, chat, "My stroller lost a wheel, confirmation ZZZ999.")["ops"]
+            assert o1["status"] == "denied" and o1["turn_delta"]["turn"] == 1
+            o2 = run_turn(s, llm, emb, chat, "What else can you do? Can you give me credits?")["ops"]
+            d = o2["turn_delta"]
+            assert (
+                d["intents_added"] == ["refund"] and d["pushback"] is True and d["message_category"] is not None
+            )
+            assert d["precedent"]["count"] == 2 and d["precedent"]["denied"] == 5 and d["precedent"]["exists"] is True
+            assert o2["status"] == "escalated"
+            esc = o2["ruling"]["escalation"]
+            assert (
+                esc["type"] == "policy_gap"
+                and "goodwill in 2 of 5" in esc["reason"]
+                and esc["precedent"]["remedies"] == {"voucher": 2}
+            )
+            assert (
+                o2["ruling"]["decision"] == "deny"
+            )  # the policy ruling itself is unchanged; a person decides goodwill
+            actions = [
+                e.action
+                for e in s.query(m.CaseEvent).filter_by(case_id=uuid.UUID(o2["case"]["id"])).order_by(m.CaseEvent.seq)
+            ]
+            assert "precedent.goodwill" in actions
+    finally:
+        _clear_cases(session_factory, airline_ws)
+
+
+def test_uncovered_ask_without_precedent_offers_review_then_escalates_on_second_pushback(session_factory, airline_ws):
+    with session_factory() as s:
+        _ensure_wheel_deny_rule(s, airline_ws)
+        chat = _chat(s, airline_ws)
+        llm, emb = WheelFakeLLM(), FakeEmbedder()
+        o1 = run_turn(s, llm, emb, chat, "My stroller lost a wheel, confirmation ZZZ999.")["ops"]
+        assert o1["status"] == "denied"
+        o2 = run_turn(s, llm, emb, chat, "Can you give me credits?")["ops"]
+        assert o2["status"] == "denied" and o2["turn_delta"]["uncovered_ask"]["offer_review"] is True
+        assert o2["turn_delta"]["precedent"]["exists"] is False
+        o3 = run_turn(s, llm, emb, chat, "I really think you should do something.")["ops"]
+        assert o3["status"] == "escalated" and o3["ruling"]["escalation"]["type"] == "policy_gap"
+        assert "pushed back 2 times" in o3["ruling"]["escalation"]["reason"]
+        assert chat.state["pushbacks"] == 2

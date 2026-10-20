@@ -375,3 +375,65 @@ def public_citations(citations: list[dict[str, Any]]) -> list[dict[str, Any]]:
             }
         )
     return out
+
+
+# ---------------------------------------------------------------- uncovered asks: precedent for goodwill
+GOODWILL_REMEDIES = ("points", "voucher", "travel_credit", "store_credit", "partial_refund", "expense_reimbursement")
+PRECEDENT_MIN_COUNT = 2  # at least this many similar policy-denied cases where staff still granted goodwill
+
+
+def goodwill_precedent(session: Session, workspace_id: str, category_key: str | None) -> dict[str, Any]:
+    """How often staff granted goodwill in this category where compiled policy denied (precedent-vs-policy gap).
+    The engine never grants goodwill itself; it hands the precedent to a person (design v2 §7, §16)."""
+    if not category_key:
+        return {"count": 0, "denied": 0, "rate": 0.0, "remedies": {}, "examples": [], "exists": False}
+    from collections import Counter
+
+    denied = 0
+    remedies: Counter[str] = Counter()
+    examples: list[dict[str, Any]] = []
+    for c in session.execute(
+        select(m.Case).where(m.Case.workspace_id == workspace_id, m.Case.category_key == category_key)
+    ).scalars():
+        rec = c.record or {}
+        if (rec.get("policy") or {}).get("decision") != "deny":
+            continue
+        denied += 1
+        out = rec.get("outcome") or {}
+        if out.get("decision") in ("approve", "partial") and out.get("remedy") in GOODWILL_REMEDIES:
+            remedies[out["remedy"]] += 1
+            if len(examples) < 5:
+                examples.append(
+                    {
+                        "ticket_id": c.ticket_id,
+                        "remedy": out.get("remedy"),
+                        "amount": out.get("amount"),
+                        "summary": (c.summary or "")[:160],
+                    }
+                )
+    count = sum(remedies.values())
+    return {
+        "count": count,
+        "denied": denied,
+        "rate": round(count / denied, 3) if denied else 0.0,
+        "remedies": dict(remedies),
+        "examples": examples,
+        "exists": count >= PRECEDENT_MIN_COUNT,
+    }
+
+
+def facts_changed(before: dict[str, Any] | None, after: dict[str, Any] | None) -> list[str]:
+    """Dotted paths whose value changed or appeared this turn (one level of nesting, as facts are)."""
+    out: list[str] = []
+    before = before or {}
+    after = after or {}
+    for sect, vals in after.items():
+        if not isinstance(vals, dict):
+            if before.get(sect) != vals:
+                out.append(sect)
+            continue
+        prev = before.get(sect) or {}
+        for k, v in vals.items():
+            if prev.get(k) != v:
+                out.append(f"{sect}.{k}")
+    return sorted(out)

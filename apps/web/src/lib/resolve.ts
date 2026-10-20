@@ -7,8 +7,10 @@ export type Escalation = { type: "data_gap" | "policy_gap" | "planner_disagreeme
 export type CaseSummary = { id: string; status: string; turns: number; event_count: number; head_hash: string | null; decision_hash: string | null; cost_usd: string; turn_cost_usd: string; llm_calls: number; escalation: Escalation | null };
 export type Plan = { case_text: string; historical: { k: number; steps: string[]; support: Record<string, number>; agreement: number; mean_similarity: number | null; confident?: boolean; neighbours: { ticket_id: string; similarity: number; steps: string[] }[] }; live: { raw: string[]; steps: string[]; rationale: string }; comparison: { kind: string; missing_in_live: string[]; extra_in_live: string[] }; novel: boolean; chosen: string; steps: string[]; disagreement: boolean };
 export type Neighbour = { ticket_id: string; similarity: number; category_key: string; summary: string; staff_outcome: Record<string, unknown> | null; is_drift: boolean; drift_reason: string | null; hours_to_resolve: number | null };
+export type TurnDelta = { turn: number; message_category: { category_key: string | null; confidence: number; new_category: boolean } | null; intents_added: string[]; facts_changed: string[]; status_before: string | null; status: string; ruling_changed: boolean; plan_comparison: string; pushback: boolean; uncovered_ask: { intents: string[]; offer_review: boolean } | null; precedent: { count: number; denied: number; rate: number; remedies: Record<string, number>; examples: { ticket_id: string; remedy: string; amount: number | null; summary: string }[]; exists: boolean } | null };
 export type Ops = {
   turn: number;
+  turn_delta?: TurnDelta;
   status: string;
   classification: { category_key: string; category_name?: string; confidence: number; source: string; probabilities?: Record<string, number>; multi_issue?: boolean; secondary_category_key?: string | null };
   neighbours: Neighbour[];

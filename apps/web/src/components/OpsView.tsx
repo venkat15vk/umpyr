@@ -39,8 +39,29 @@ export function OpsView({ ops }: { ops?: Ops }) {
   }
   const r = ops.ruling;
   const decisionTone = r.decision === "approve" || r.decision === "partial" ? "accent" : r.decision === "deny" ? "amber" : "muted";
+  const d = ops.turn_delta;
   return (
     <aside className="space-y-3 text-sm">
+      {d && d.turn > 1 && (
+        <section className="panel p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-semibold">This turn</h2>
+            <Pill text={`turn ${d.turn}`} tone="muted" />
+            {d.message_category && <Pill text={`message: ${d.message_category.category_key ?? "?"} ${(d.message_category.confidence * 100).toFixed(0)}%`} tone={d.message_category.new_category ? "amber" : "muted"} />}
+            {d.intents_added.length > 0 && <Pill text={`new ask: ${d.intents_added.join(", ")}`} tone="amber" />}
+            <Pill text={d.ruling_changed ? "ruling changed" : "ruling unchanged"} tone={d.ruling_changed ? "accent" : "muted"} />
+            {d.pushback && <Pill text="pushback on a denial" tone="amber" />}
+          </div>
+          <div className="muted mt-1 text-xs">{d.facts_changed.length ? `facts changed: ${d.facts_changed.join(", ")}` : "no facts changed"} · plan {d.plan_comparison} · {d.status_before ?? "new"} → {d.status}</div>
+          {d.precedent && (
+            <div className="mt-1 text-xs">
+              Precedent for goodwill where policy denied: <span className="font-mono">{d.precedent.count}/{d.precedent.denied}</span> similar cases ({Object.entries(d.precedent.remedies).map(([k, v]) => `${k} ×${v}`).join(", ") || "none"}) → {d.precedent.exists ? "handed to a person with the precedent" : "no precedent; policy stands"}
+              {d.precedent.examples.length > 0 && <ul className="muted mt-1">{d.precedent.examples.map((e) => <li key={e.ticket_id}><span className="font-mono">{e.ticket_id}</span> {e.remedy}{e.amount ? ` $${e.amount}` : ""}: {e.summary}</li>)}</ul>}
+            </div>
+          )}
+          {d.uncovered_ask && <div className="muted mt-1 text-xs">Ask not covered by policy ({d.uncovered_ask.intents.join(", ")}); reply offers a specialist review.</div>}
+        </section>
+      )}
       <section className="panel p-3">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-semibold">Classification</h2>

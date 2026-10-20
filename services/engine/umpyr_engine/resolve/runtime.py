@@ -290,11 +290,20 @@ def _run_turn(
             "detail": f"{key} @ {classification['confidence']} ({classification['source']})",
         }
     )
+    turn_classification = None
+    if turn > 1:  # the latest message on its own: is this a new ask? (design v2 §2, follow-ups)
+        t_key, t_conf, _, _ = tools.classify_router(session, embedder, ws.id, text)
+        turn_classification = {
+            "category_key": str(t_key) if t_key is not None else None,
+            "confidence": round(t_conf, 3),
+            "new_category": bool(t_key and t_key != key and t_conf >= tools.router_threshold()),
+        }
+        classification["latest_message"] = turn_classification
     stage(
         "umpyr",
         "classification",
         basis={"source": classification["source"], "router_threshold": tools.router_threshold()},
-        result={"category_key": key, "confidence": classification["confidence"]},
+        result={"category_key": key, "confidence": classification["confidence"], "latest_message": turn_classification},
     )
 
     # 2. neighbours
@@ -416,7 +425,9 @@ def _run_turn(
         or extracted.get("item_hint")
         or state.get("item_hint"),
     )
-    intents = list(dict.fromkeys([*(state.get("intents") or []), *(extracted.get("intents") or [])]))
+    prior_intents = list(state.get("intents") or [])
+    intents = list(dict.fromkeys([*prior_intents, *(extracted.get("intents") or [])]))
+    intents_added = [i for i in intents if i not in prior_intents] if turn > 1 else []
     party = {
         **(state.get("party") or {}),
         **{k: v for k, v in (extracted.get("party") or {}).items() if v not in (None, [])},
@@ -741,6 +752,37 @@ def _run_turn(
     elif authorization is not None and authorization.decision == "allow":
         emit("gate.allowed")
 
+    # 7a. a follow-up ask that policy does not cover (design v2 §7): check precedent, never deny on a loop
+    pushback = turn > 1 and state.get("last_status") == "denied" and status == "denied"
+    pushbacks = int(state.get("pushbacks") or 0) + (1 if pushback else 0)
+    uncovered_ask = None
+    precedent = None
+    if status == "denied" and turn > 1 and (pushback or intents_added):
+        precedent = cx.goodwill_precedent(session, ws.id, key)
+        ledger.append(
+            "umpyr",
+            "precedent.goodwill",
+            basis={"category_key": key, "ask": intents_added or intents, "pushbacks": pushbacks},
+            result={k: precedent[k] for k in ("count", "denied", "rate", "remedies", "exists")},
+        )
+        if precedent["exists"] or pushbacks >= 2:
+            status = "escalated"
+            forced_escalation = {
+                "type": "policy_gap",
+                "reason": (
+                    f"policy denies, but staff granted goodwill in {precedent['count']} of {precedent['denied']} similar "
+                    f"denied cases ({', '.join(precedent['remedies']) or 'none'}); a person decides"
+                    if precedent["exists"]
+                    else f"policy denies and the customer has pushed back {pushbacks} times; a person decides"
+                ),
+                "ask": intents_added or intents,
+                "precedent": {k: precedent[k] for k in ("count", "denied", "rate", "remedies", "examples")},
+            }
+            escalation = forced_escalation
+            emit("escalation")
+        else:
+            uncovered_ask = {"intents": intents_added or intents, "offer_review": True}
+
     # 7b. queued customer: pending message always, SLA when configured, honest escalation when overdue (v2 §11)
     sla_hours = (ws.settings or {}).get("approval_sla_hours")
     queue = None
@@ -828,6 +870,21 @@ def _run_turn(
         "known_record": _record_summary(record, kind),
         "ruling": ruling_payload,
         "customer_status": cx.status_lines(status_events, kind),
+        "follow_up": (
+            {
+                "turn": turn,
+                "intents_added": intents_added,
+                "pushback": pushback,
+                "already_explained": bool(
+                    set(ruling.clause_ids if ruling else []) & set(state.get("explained_clause_ids") or [])
+                ),
+                "uncovered_ask": uncovered_ask,
+                "goodwill_review": status == "escalated"
+                and bool(forced_escalation and forced_escalation.get("precedent") is not None),
+            }
+            if turn > 1
+            else None
+        ),
         "fallback_reply": _fallback_reply(ruling_payload),
     }
     reply = tools.draft_reply(llm, ws.id, draft_payload)
@@ -974,8 +1031,29 @@ def _run_turn(
             else None
         ),
     }
+    turn_delta = {
+        "turn": turn,
+        "message_category": turn_classification,
+        "intents_added": intents_added,
+        "facts_changed": cx.facts_changed(state.get("facts"), _jsonable(facts)),
+        "status_before": state.get("last_status"),
+        "status": status,
+        "ruling_changed": (state.get("last_ruling") or {})
+        != {
+            "decision": ruling_payload["decision"],
+            "remedy": ruling_payload["remedy"],
+            "amount": ruling_payload["amount"],
+        },
+        "plan_comparison": plan["comparison"]["kind"],
+        "pushback": pushback,
+        "uncovered_ask": uncovered_ask,
+        "precedent": {k: precedent[k] for k in ("count", "denied", "rate", "remedies", "examples", "exists")}
+        if precedent
+        else None,
+    }
     ops = {
         "turn": turn,
+        "turn_delta": turn_delta,
         "customer": customer_block,
         "status": status,
         "classification": classification,
@@ -1060,6 +1138,15 @@ def _run_turn(
         "intents": intents,
         "party": party,
         "asked_facts": asked,
+        "pushbacks": pushbacks,
+        "last_ruling": {
+            "decision": ruling_payload["decision"],
+            "remedy": ruling_payload["remedy"],
+            "amount": ruling_payload["amount"],
+        },
+        "explained_clause_ids": sorted(
+            set(state.get("explained_clause_ids") or []) | set(ruling.clause_ids if ruling else [])
+        ),
         "options": options,
         "chosen_remedy": chosen if options else None,
         "queue": queue,

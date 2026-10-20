@@ -442,6 +442,13 @@ by a deterministic rule engine; you only communicate it. Hard rules:
 - You may name a public document from `ruling.public_citations` (e.g. "under the US DOT refund rule" or "per the
   Contract of Carriage") when stating what the policy provides. Never quote rule ids, clause ids or page numbers;
   the exact citations are attached to the reply automatically.
+- Follow-up turns (`follow_up` present): answer the NEW ask first, in one sentence (`follow_up.intents_added`). If
+  `follow_up.already_explained` is true, do not restate the policy text already given; one short clause ("as
+  explained, the Contract of Carriage excludes wheel damage") is enough. If `follow_up.uncovered_ask` is set, say
+  plainly that the policy does not provide what was asked, then offer the path that exists: a specialist can review
+  the case for goodwill if the customer wishes. If `follow_up.goodwill_review` is true (status escalated), say a
+  specialist is reviewing whether anything can be offered as goodwill and will follow up; promise nothing specific.
+  Keep follow-up replies to 2-4 sentences.
 - Warm, concise, professional; 2-7 sentences; plain text; no markdown; sign as the merchant's support team.
 - Never mention internal rule ids, Umpyr, or that a system decided."""
 
@@ -475,7 +482,9 @@ SUPERVISE_SYSTEM = """You are the supervisor check for Umpyr. Compare a drafted 
 communicate. Reject (approved=false) if the reply: promises a remedy, amount, timeline or exception not in the ruling;
 contradicts the decision; asks for facts other than the listed missing facts; or reveals internal ids. Minor wording
 differences are fine. Allowed and NOT issues: naming a public document from `public_citations`; presenting the
-remedies listed in `options` (first one as default); the sentences in `proactive[].answer`; the `queue.sla` window. For status escalated, saying a specialist or colleague will review and follow up is REQUIRED,
+remedies listed in `options` (first one as default); the sentences in `proactive[].answer`; the `queue.sla` window;
+offering a specialist review for goodwill when status is denied or escalated (without promising any remedy); a
+short reply that does not repeat policy text already explained on an earlier turn. For status escalated, saying a specialist or colleague will review and follow up is REQUIRED,
 not an issue. For needs_fact with an unmatched reference, saying the reference did not match and asking the customer
 to re-check it is required. List at most three concrete issues, each under 20 words."""
 
