@@ -25,6 +25,8 @@ from ..sandbox.synth.core import NOW as SANDBOX_NOW
 from . import tools
 from .facts import build_facts, find_reference
 
+MAX_LOOKUP_MISSES = 3  # after this many unmatched references, hand the case to a person
+
 log = logging.getLogger(__name__)
 
 PROTOCOL = "umpyr-resolve/0.1"
@@ -227,6 +229,7 @@ def run_turn(
     # 4. lookup record (reference from this message, earlier state, or extraction)
     reference = state.get("reference") or find_reference(text, kind)
     record = tools.lookup_record(session, ws.id, reference) if reference else None
+    missed: list[str] = list(state.get("missed_references") or [])
 
     # 5. extract facts
     required = list(procedure.required_facts) if procedure else []
@@ -234,11 +237,16 @@ def run_turn(
     if not record and extracted.get("reference"):
         reference = extracted["reference"].upper()
         record = tools.lookup_record(session, ws.id, reference)
+    repeated_miss = bool(reference and not record and reference in missed)  # customer re-confirmed a bad code
+    if reference and not record and reference not in missed:
+        missed.append(reference)
+    lookup_miss = reference if (reference and not record) else None
     steps_log.append(
         {
             "tool": "lookup_order",
             "ok": record is not None,
-            "detail": f"{reference or 'no reference'} -> {'found' if record else 'not found'}",
+            "detail": f"{reference or 'no reference'} -> {'found' if record else 'not found'}"
+            + (f" ({len(missed)} unmatched so far)" if lookup_miss else ""),
         }
     )
     prior_claim = (state.get("facts") or {}).get("claim", {})
@@ -281,22 +289,41 @@ def run_turn(
         }[str(ruling.decision)]
         if ruling.conflicts:
             status = "escalated"
-    if ruling is not None and not record and str(ruling.decision) == "needs_fact":
-        # without the merchant record, the only useful question is the reference itself
-        ruling.missing_facts = ["order reference" if kind == "order" else "confirmation code"]
-        ruling.explanation = "The merchant record is needed before a ruling can be made."
-    if ruling is not None and not record and str(ruling.decision) in ("approve", "partial", "deny", "escalate"):
-        # never rule without the merchant record: ask for it first
+    if ruling is not None and not record:
+        # never rule without the merchant record: ask for the reference, or hand off after repeated misses
         from umpyr_rules import Ruling as _R
 
-        ruling = _R(
-            decision="needs_fact",
-            missing_facts=["order reference" if kind == "order" else "confirmation code"],
-            checks=ruling.checks,
-            rule_pack_version=ruling.rule_pack_version,
-            explanation="The merchant record is needed before a ruling can be made.",
-        )
-        status = "needs_fact"
+        ref_name = "order number" if kind == "order" else "confirmation code"
+        if repeated_miss or len(missed) >= MAX_LOOKUP_MISSES:
+            ruling = _R(
+                decision="escalate",
+                checks=ruling.checks,
+                rule_pack_version=ruling.rule_pack_version,
+                explanation=(
+                    (
+                        f"The customer confirmed {lookup_miss} twice and it matches no record; "
+                        if repeated_miss
+                        else f"None of the references given ({', '.join(missed)}) match a record; "
+                    )
+                    + "a person will locate the record from the customer's name and travel or order date."
+                ),
+            )
+            status = "escalated"
+        else:
+            ask = (
+                f"{ref_name} ({lookup_miss} did not match any record; please double-check it against the itinerary"
+                " or receipt)"
+                if lookup_miss
+                else ref_name
+            )
+            ruling = _R(
+                decision="needs_fact",
+                missing_facts=[ask],
+                checks=ruling.checks,
+                rule_pack_version=ruling.rule_pack_version,
+                explanation="The merchant record is needed before a ruling can be made.",
+            )
+            status = "needs_fact"
     steps_log.append(
         {
             "tool": "rule",
@@ -359,6 +386,11 @@ def run_turn(
         "missing_facts": _friendly_missing(ruling.missing_facts) if ruling else [],
         "authorization": authorization.decision if authorization else None,
         "clauses": clause_notes,
+        "record_lookup": {
+            "reference_given": reference,
+            "found": record is not None,
+            "unmatched_references": missed,
+        },
     }
     draft_payload = {
         "merchant": ws.name,
@@ -457,6 +489,7 @@ def run_turn(
             **(ruling.model_dump(mode="json", exclude={"checks"}) if ruling else {}),
             "status": status,
             "clause_notes": clause_notes,
+            "record_lookup": ruling_payload["record_lookup"],
         },
         "checks": [c.model_dump(mode="json") for c in (ruling.checks if ruling else []) if c.applicable],
         "authorization": authorization.model_dump(mode="json") if authorization else None,
@@ -481,7 +514,8 @@ def run_turn(
         "turn": turn,
         "facts": _jsonable(facts),
         "airline": airline,
-        "reference": reference,
+        "reference": reference if record else None,
+        "missed_references": missed,
         "item_hint": extracted.get("item_hint") or state.get("item_hint"),
         "category_key": key,
         "last_status": status,
@@ -525,6 +559,13 @@ def _friendly_missing(paths: list[str]) -> list[str]:
 
 def _fallback_reply(rp: dict[str, Any]) -> str:
     st = rp["status"]
+    lk = rp.get("record_lookup") or {}
+    if st == "needs_fact" and lk.get("reference_given") and not lk.get("found"):
+        return (
+            f"Thanks for sending that. I could not find a record under {lk['reference_given']}, so it may have a typo. "
+            "Could you double-check the reference on your itinerary or receipt and send it again? "
+            "As soon as it matches I can confirm what we can do."
+        )
     if st == "needs_fact":
         asks = "; ".join(rp["missing_facts"]) or "a few more details"
         return (
@@ -535,6 +576,12 @@ def _fallback_reply(rp: dict[str, Any]) -> str:
             f"Thanks for the details. Policy provides for a {rp['remedy']} here"
             + (f" of ${rp['amount']}" if rp["amount"] else "")
             + ", and the request has been sent to a supervisor for authorization. We will follow up shortly."
+        )
+    if st == "escalated" and lk.get("reference_given") and not lk.get("found"):
+        return (
+            f"Thanks for confirming. {lk['reference_given']} still does not match any record on our side, so rather than "
+            "ask you again I have passed this to a colleague who will locate it from your name and travel or order "
+            "date and follow up with you directly."
         )
     if st == "escalated":
         return "Thanks for the details. This one needs a specialist to review; we have passed it on and will follow up with you directly."

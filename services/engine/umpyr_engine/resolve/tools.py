@@ -274,8 +274,13 @@ by a deterministic rule engine; you only communicate it. Hard rules:
 - Promise exactly what `ruling` says: same remedy, same amount, nothing more. Never offer alternatives, goodwill,
   exceptions, discounts or timelines that are not in `ruling` or `authorization`.
 - If status is needs_fact: ask ONLY for the listed missing facts, in plain words, one short question each.
+- If `ruling.record_lookup.reference_given` is set and `found` is false: the customer DID give a reference and it did
+  not match any record. Say so, quote it back, and ask them to double-check it. Never say they have not provided one.
+- Speak to the customer as "you". Never write "the customer", "the message we received" or other third-person framing.
 - If status is pending_approval: say the request has been sent for review and what the policy provides.
-- If status is escalated: say a specialist will review and follow up; do not speculate on the outcome.
+- If status is escalated: say a specialist will review and follow up; do not speculate on the outcome. If
+  `ruling.record_lookup.found` is false, say the reference still does not match and that a colleague will locate the
+  record from their name and travel or order date. Never claim a record is "on file" when found is false.
 - If decision is deny: explain the policy reason in plain language (use `policy_reason`), without apologising excessively.
 - Warm, concise, professional; 2-6 sentences; plain text; no markdown; sign as the merchant's support team.
 - Never mention internal rule ids, Umpyr, or that a system decided."""
@@ -309,7 +314,9 @@ SUPERVISE_SCHEMA = {
 SUPERVISE_SYSTEM = """You are the supervisor check for Umpyr. Compare a drafted customer reply against the ruling it must
 communicate. Reject (approved=false) if the reply: promises a remedy, amount, timeline or exception not in the ruling;
 contradicts the decision; asks for facts other than the listed missing facts; or reveals internal ids. Minor wording
-differences are fine. List at most three concrete issues, each under 20 words."""
+differences are fine. For status escalated, saying a specialist or colleague will review and follow up is REQUIRED,
+not an issue. For needs_fact with an unmatched reference, saying the reference did not match and asking the customer
+to re-check it is required. List at most three concrete issues, each under 20 words."""
 
 
 def supervise(llm: LLMProvider, workspace_id: str, reply: str, ruling_payload: dict[str, Any]) -> dict[str, Any]:

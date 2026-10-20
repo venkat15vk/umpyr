@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from decimal import Decimal
 
@@ -285,3 +286,76 @@ def test_modes_and_limit_route_through_pdp(session_factory, tiny_workspace):
             assert out["ops"]["status"] == expected, (mode, limit)
             msg = out["ops"]["agent_message"]
             assert msg["protocol"] == "umpyr-resolve/0.1" and msg["status"] == expected and msg["audit_hash"]
+
+
+class MissingRefLLM(FakeLLM):
+    """Extracts whatever order-looking token the customer typed, so lookups can miss."""
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        if req.step == "resolve.extract":
+            import re
+
+            user = req.messages[-1]["content"] if req.messages else ""
+            found = re.findall(r"R-\d{6}", user)
+            res = super().complete(req)
+            data = json.loads(res.text)
+            data["reference"] = found[-1] if found else ""
+            return dataclasses.replace(res, text=json.dumps(data), parsed=data)
+        return super().complete(req)
+
+
+def test_find_reference_accepts_short_keyword_codes():
+    from umpyr_engine.resolve.facts import find_reference
+
+    assert find_reference("Confirmation COde: XVZLT", "booking") == "XVZLT"
+    assert find_reference("my record locator is ab12cd", "booking") == "AB12CD"
+    assert find_reference("Please cancel my flight, thanks", "booking") is None
+    assert find_reference("ok, i booked a ticket to New York and my flight is delayed", "booking") is None
+    assert find_reference("fine, it is ZBFRKV", "booking") == "ZBFRKV"
+    assert find_reference("my order arrived broken", "order") is None
+    assert find_reference("order R-900001 arrived broken", "order") == "R-900001"
+
+
+def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(session_factory, tiny_workspace):
+    llm, emb = MissingRefLLM(), FakeEmbedder()
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "My clamp from order R-123456 arrived broken, photos attached.")["ops"]
+        assert ops["status"] == "needs_fact"
+        assert ops["record"] == {"reference": "R-123456", "found": False, "summary": None}
+        assert "R-123456 did not match" in ops["ruling"]["missing_facts"][0]
+        assert ops["ruling"]["record_lookup"]["unmatched_references"] == ["R-123456"]
+        assert chat.state["reference"] is None  # a miss must not stick
+
+        # the customer corrects the number: the new one is looked up, not the stale one
+        ops2 = run_turn(s, llm, emb, chat, "Sorry, typo, it is R-900001. Photos attached.")["ops"]
+        assert ops2["record"]["found"] and ops2["record"]["reference"] == "R-900001"
+        assert ops2["status"] == "resolved"
+
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        for ref in ("R-123456", "R-123457"):
+            ops = run_turn(s, llm, emb, chat, f"Broken clamp, order {ref}, photos attached.")["ops"]
+            assert ops["status"] == "needs_fact"
+        ops = run_turn(s, llm, emb, chat, "Broken clamp, order R-123458, photos attached.")["ops"]
+        assert ops["status"] == "escalated"
+        assert "R-123456, R-123457, R-123458" in ops["ruling"]["explanation"]
+
+    with session_factory() as s:  # the customer insists on the same bad reference: hand off, do not loop
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        assert run_turn(s, llm, emb, chat, "Broken clamp, order R-123456.")["ops"]["status"] == "needs_fact"
+        ops = run_turn(s, llm, emb, chat, "I already told you, it is R-123456. Read my message.")["ops"]
+        assert ops["status"] == "escalated"
+        assert "confirmed R-123456 twice" in ops["ruling"]["explanation"]

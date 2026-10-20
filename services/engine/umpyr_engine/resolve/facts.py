@@ -10,11 +10,68 @@ from datetime import datetime
 from typing import Any
 
 ORDER_RE = re.compile(r"\b(R-\d{5,7})\b", re.I)
-PNR_RE = re.compile(r"\b([A-Z]{6})\b")
+PNR_RE = re.compile(r"\b([A-Z0-9]{6})\b")  # bare tokens must be upper-case in the source text
 ORDER_WORDS_RE = re.compile(
-    r"(?:order|confirmation|booking|record locator|pnr|reference)\s*(?:#|number|no\.?|code|:)?\s*([A-Z0-9-]{5,12})",
+    r"(?:order|confirmation|booking|record locator|pnr|reference)(?:\s*(?:#|number|no\.?|code|locator|is|:))*\s*([A-Z0-9-]{5,12})",
     re.I,
 )
+STOP_TOKENS = {
+    "PLEASE",
+    "THANKS",
+    "FLIGHT",
+    "REFUND",
+    "CREDIT",
+    "TICKET",
+    "ALASKA",
+    "SEATTLE",
+    "BOSTON",
+    "DENVER",
+    "CANCEL",
+    "CHANGE",
+    "REBOOK",
+    "HOTELS",
+    "BOOKED",
+    "NUMBER",
+    "ONLINE",
+    "MOBILE",
+    "STATUS",
+    "DELAYED",
+    "BEFORE",
+    "ARRIVED",
+    "BROKEN",
+    "EMAIL",
+    "PHONE",
+    "AGAIN",
+    "TODAY",
+    "ISSUE",
+}
+
+
+def _looks_like_code(token: str, source: str) -> bool:
+    """A booking code is 5-8 alphanumerics with a letter; a dictionary word only counts if typed in upper case."""
+    t = token.upper()
+    if t in STOP_TOKENS or not re.fullmatch(r"(?=.*[A-Z])[A-Z0-9]{5,8}", t):
+        return False
+    return any(ch.isdigit() for ch in t) or token.isupper() or len(t) == 6
+
+
+def find_reference(text: str, kind: str) -> str | None:
+    """Pull an order number (R-xxxxxx) or a confirmation code out of free text."""
+    if kind == "booking":
+        m = ORDER_WORDS_RE.search(text)
+        if m and _looks_like_code(m.group(1), text):
+            return m.group(1).upper()
+        for cand in PNR_RE.findall(text):  # not upper-cased: "booked" must not become a code
+            if cand not in STOP_TOKENS and any(ch.isalpha() for ch in cand):
+                return cand
+        return None
+    m = ORDER_RE.search(text)
+    if m:
+        return m.group(1).upper()
+    m = ORDER_WORDS_RE.search(text)
+    if m and any(ch.isdigit() for ch in m.group(1)):
+        return m.group(1).upper()
+    return None
 
 
 def parse_dt(s: str | None) -> datetime | None:
@@ -24,34 +81,6 @@ def parse_dt(s: str | None) -> datetime | None:
         return datetime.fromisoformat(str(s).replace("Z", "+00:00")).replace(tzinfo=None)
     except ValueError:
         return None
-
-
-def find_reference(text: str, kind: str) -> str | None:
-    """Pull an order number (R-xxxxxx) or a 6-letter confirmation code out of free text."""
-    if kind == "booking":
-        m = ORDER_WORDS_RE.search(text)
-        if m and PNR_RE.fullmatch(m.group(1).upper()):
-            return m.group(1).upper()
-        for cand in PNR_RE.findall(text.upper()):
-            if cand not in {
-                "PLEASE",
-                "THANKS",
-                "FLIGHT",
-                "REFUND",
-                "CREDIT",
-                "TICKET",
-                "ALASKA",
-                "SEATTLE",
-                "BOSTON",
-                "DENVER",
-            }:
-                return cand
-        return None
-    m = ORDER_RE.search(text)
-    if m:
-        return m.group(1).upper()
-    m = ORDER_WORDS_RE.search(text)
-    return m.group(1).upper() if m else None
 
 
 def _item_for(items: list[dict], hint: str | None) -> dict | None:

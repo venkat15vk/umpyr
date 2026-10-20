@@ -79,3 +79,11 @@ Short entries, newest last. Each: what we chose, why, and what it rules out.
 **D34. Retention is a hard delete.** The sweeper deletes the workspace row (cascades through every tenant table) and its stored files once `expires_at` passes; sandboxes never expire.
 
 **D35. The dev API runs without auto-reload during demos.** Uvicorn's reloader hung after a burst of file changes; `ENGINE_ENV=prod` disables it.
+
+## D36. Unmatched references are named, never sticky, and hand off after a repeat
+A reference the customer gives that matches no record is quoted back ("XVZLT did not match any record; please
+double-check it") instead of re-asking for "the confirmation code". A missed reference is never kept in session
+state, so the customer's correction is read on the next turn. If the customer confirms the same bad reference
+again, or three different ones miss, the turn escalates to a person who can locate the record by name and date.
+Bare 6-character tokens count as codes only when typed in upper case; keyword-prefixed codes accept 5-8 characters.
+Why: the first Alaska demo looped three times asking for a code the customer had already sent (2026-10-19).
