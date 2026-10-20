@@ -113,8 +113,13 @@ def cmd_llm(args: argparse.Namespace) -> int:
 def _refresh_provenance_if_needed(client: str, report: dict) -> None:
     """Backfill clause provenance (design v2 §6) for a sandbox loaded before phase 1. No model calls."""
     from .db.base import get_session_factory
+    from .sandbox.compile_job import refresh_pack_if_stale
     from .sandbox.provenance_job import needs_provenance, refresh_provenance
 
+    with get_session_factory()() as s:
+        r = refresh_pack_if_stale(s, client)
+        if r:
+            report[client] = {**report.get(client, {}), "rule_pack": r}
     with get_session_factory()() as s:
         if needs_provenance(s, client):
             r = refresh_provenance(s, client, write_samples=False)

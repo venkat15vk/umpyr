@@ -207,3 +207,20 @@ def run_compile(
     report_path.write_text(json.dumps(report, indent=2, default=str))
     persist(session, client, docs, clauses, pack, report)
     return report
+
+
+def refresh_pack_if_stale(session: Session, client: str) -> dict | None:
+    """At boot: when the cached samples/<client>/rule_pack.json is a newer version than the active pack in the
+    database (e.g. a merchant override added and reassembled locally), persist the cached pack. No model calls."""
+    pack_path = client_dir(client) / "rule_pack.json"
+    if not pack_path.exists():
+        return None
+    cached_version = json.loads(pack_path.read_text()).get("version")
+    active = session.execute(
+        select(m.RulePack.version).where(m.RulePack.workspace_id == client, m.RulePack.status == "active")
+    ).scalar_one_or_none()
+    if active == cached_version:
+        return None
+    report = run_compile(session, client, rebuild=False)
+    log.info("rule pack %s refreshed from cache: %s -> %s", client, active, cached_version)
+    return {"from": active, "to": cached_version, "rules": report.get("rules") if isinstance(report, dict) else None}
