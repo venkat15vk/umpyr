@@ -170,7 +170,19 @@ bootstrap() {
   echo "Later releases: make deploy"
 }
 
+check() { # read-only: are the tokens usable?
+  need_railway; need CLOUDFLARE_API_TOKEN DEMO_PASSWORD ANTHROPIC_API_KEY
+  echo "==> Railway whoami (fails for workspace tokens, that is fine): $(railway whoami 2>&1 | head -1)"
+  echo "==> Railway projects visible: $(railway list 2>&1 | tr '\n' ' ' | cut -c1-200)"
+  echo "==> Cloudflare token: $(cf "$CF_API/user/tokens/verify" | jpy 'print(d["result"]["status"] if d.get("success") else d.get("errors"))')"
+  echo "==> Cloudflare zone $ZONE_NAME: $(cf "$CF_API/zones?name=$ZONE_NAME" | jpy 'r=d.get("result") or []; print("visible, id " + r[0]["id"] if r else "NOT visible (token needs Zone:Read on it)")')"
+  echo "==> Cloudflare account: $(cf "$CF_API/accounts?per_page=1" | jpy 'r=d.get("result") or []; print(r[0]["name"] + " " + r[0]["id"] if r else "none visible (token needs Account Settings:Read)")')"
+  echo "==> www record now: $(cf "$CF_API/zones/$(cf "$CF_API/zones?name=$ZONE_NAME" | jpy 'print(d["result"][0]["id"])')/dns_records?name=$PUBLIC_HOST" | jpy 'r=d.get("result") or []; print(", ".join(x["type"] + " -> " + x["content"] + " (proxied=" + str(x["proxied"]) + ")" for x in r) or "no record")')"
+  echo "==> .env has: DEMO_PASSWORD, ANTHROPIC_API_KEY, CLAUDE_MODEL=${CLAUDE_MODEL:-unset}, DAILY_COST_CAP_USD=${DAILY_COST_CAP_USD:-unset (Railway will get 1)}"
+}
+
 case "${1:-}" in
+  check)     check ;;
   bootstrap) bootstrap ;;
   engine)    deploy_engine ;;
   web)       deploy_web ;;

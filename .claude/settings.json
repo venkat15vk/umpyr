@@ -4,13 +4,14 @@
       "Bash(npm *)", "Bash(npx *)", "Bash(pnpm *)",
       "Bash(python *)", "Bash(uv *)", "Bash(pip *)", "Bash(pytest *)",
       "Bash(docker compose *)",
-      "Bash(git init)", "Bash(git add *)", "Bash(git commit *)", "Bash(git status)", "Bash(git diff *)"
+      "Bash(git init)", "Bash(git add *)", "Bash(git commit *)", "Bash(git status)", "Bash(git diff *)",
+      "Bash(make bootstrap)", "Bash(make deploy)", "Bash(make deploy-*)",
+      "Bash(infra/deploy.sh *)", "Bash(./infra/deploy.sh *)", "Bash(bash -n infra/deploy.sh)",
+      "Bash(railway *)", "Bash(curl *)", "Bash(dig *)"
     ],
     "deny": [
       "Read(./.env)", "Edit(./.env)",
-      "Bash(git push *)",
-      "Bash(wrangler deploy *)", "Bash(wrangler pages deploy *)",
-      "Bash(railway up *)"
+      "Bash(git push *)"
     ]
   }
 }
