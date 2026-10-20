@@ -42,7 +42,19 @@ CF_API="https://api.cloudflare.com/client/v4"
 WRANGLER="npx -y wrangler@3"
 
 need() { for v in "$@"; do [ -n "${!v:-}" ] || { echo "missing $v in .env" >&2; exit 1; }; done; }
-need_railway() { [ -n "${RAILWAY_API_TOKEN:-}${RAILWAY_TOKEN:-}" ] || { echo "missing RAILWAY_API_TOKEN (account token) or RAILWAY_TOKEN (project token) in .env" >&2; exit 1; }; }
+need_railway() {
+  # The CLI only accepts account tokens (or a `railway login` session). A workspace token in .env is
+  # rejected by the CLI even though the API accepts it, so fall back to the login session if present.
+  if railway whoami >/dev/null 2>&1; then return 0; fi
+  if [ -n "${RAILWAY_API_TOKEN:-}" ]; then
+    local saved="$RAILWAY_API_TOKEN"; unset RAILWAY_API_TOKEN
+    if railway whoami >/dev/null 2>&1; then echo "   (RAILWAY_API_TOKEN in .env is a workspace token; using your 'railway login' session instead)"; return 0; fi
+    export RAILWAY_API_TOKEN="$saved"
+  fi
+  echo "Railway CLI is not authorised. Either put an ACCOUNT token in .env as RAILWAY_API_TOKEN (railway.com/account/tokens," >&2
+  echo "workspace left empty) or run: railway login" >&2
+  exit 1
+}
 state_get() { [ -f "$STATE" ] && sed -n "s/^$1=//p" "$STATE" | tail -1 || true; }
 state_set() { touch "$STATE"; chmod 600 "$STATE"; { grep -v "^$1=" "$STATE" || true; echo "$1=$2"; } > "$STATE.tmp"; mv "$STATE.tmp" "$STATE"; }
 ensure_secret() { # NAME: .env value, else state, else generate
