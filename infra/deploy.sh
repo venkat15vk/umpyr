@@ -3,6 +3,8 @@
 #
 #   infra/deploy.sh bootstrap  FIRST TIME: create Railway project + Postgres + service, Pages project, secrets,
 #                              custom domain + DNS record, deploy everything, verify. Idempotent: safe to re-run.
+#   infra/deploy.sh bootstrap-railway     only the Railway half of bootstrap (no DNS, no Cloudflare)
+#   infra/deploy.sh bootstrap-cloudflare  only the Cloudflare half (Pages project, secrets, web, domain + DNS)
 #   infra/deploy.sh engine     build + deploy the engine to Railway        (needs RAILWAY_API_TOKEN or RAILWAY_TOKEN)
 #   infra/deploy.sh web        build + deploy the web app to Cloudflare    (needs CLOUDFLARE_API_TOKEN)
 #   infra/deploy.sh secrets    push DEMO_PASSWORD / SESSION_SECRET / API_GATEWAY_SECRET / API_ORIGIN to Pages
@@ -93,6 +95,8 @@ push_railway_var() { # NAME (value read from the env var of the same name)
 }
 
 deploy_secrets_railway() {
+  # public demo gets its own daily Haiku cap (DAILY_COST_CAP_USD_PROD, default $1), not the local one
+  local DAILY_COST_CAP_USD="${DAILY_COST_CAP_USD_PROD:-1}"
   for n in ANTHROPIC_API_KEY CLAUDE_MODEL API_GATEWAY_SECRET DAILY_COST_CAP_USD VOYAGE_API_KEY; do push_railway_var "$n"; done
   railway variables set --service "$RAILWAY_SERVICE" --skip-deploys \
     LLM_PROVIDER=claude LLM_BATCH=false ENGINE_ENV=prod SEED_ON_BOOT=true ASSUME_REFERENCE_EXISTS=true \
@@ -114,7 +118,8 @@ bootstrap_railway() {
   need_railway
   echo "==> Railway project '$RAILWAY_PROJECT'"
   if ! railway status >/dev/null 2>&1; then
-    railway init --name "$RAILWAY_PROJECT" >/dev/null
+    if [ -n "${RAILWAY_WORKSPACE:-}" ]; then railway init --name "$RAILWAY_PROJECT" --workspace "$RAILWAY_WORKSPACE" >/dev/null
+    else railway init --name "$RAILWAY_PROJECT" >/dev/null; fi
     echo "   created project"
   fi
   local svc
@@ -196,6 +201,8 @@ check() { # read-only: are the tokens usable?
 case "${1:-}" in
   check)     check ;;
   bootstrap) bootstrap ;;
+  bootstrap-railway)    need DEMO_PASSWORD; ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET; bootstrap_railway ;;
+  bootstrap-cloudflare) need DEMO_PASSWORD; ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET; API_ORIGIN="${API_ORIGIN:-$(state_get API_ORIGIN)}"; export API_ORIGIN; bootstrap_cloudflare ;;
   engine)    deploy_engine ;;
   web)       deploy_web ;;
   secrets)   deploy_secrets ;;

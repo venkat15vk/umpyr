@@ -21,6 +21,18 @@ the web app, attaches `www.umpyr.org` with its DNS record, and waits for the log
 Generated secrets and discovered ids land in `infra/.deploy.state` (gitignored). After that, every
 release is `make deploy`.
 
+Variants:
+
+- `PUBLIC_HOST=demo.umpyr.org make bootstrap` puts the demo on a subdomain and leaves `www` alone.
+- `make bootstrap-railway` runs only the Railway half (no DNS, no Cloudflare); `make bootstrap-cloudflare`
+  runs only the Cloudflare half afterwards. Both are idempotent.
+- The public engine gets `DAILY_COST_CAP_USD_PROD` (default `1`) as its daily Haiku cap, never the local value.
+- Railway's CLI only accepts **account** tokens. A workspace token in `RAILWAY_API_TOKEN` is detected and the
+  script falls back to your `railway login` session. Inside Claude Code the login needs a pseudo-terminal:
+  `script -q /dev/null railway login --browserless`, then open the printed link.
+- If the Claude Code agent is not allowed to run the deploy itself, type `! make bootstrap` (the `!` prefix
+  runs it as you, outside the agent's permission rules).
+
 The manual steps below are the same thing done by hand, kept for reference and troubleshooting.
 
 ```
