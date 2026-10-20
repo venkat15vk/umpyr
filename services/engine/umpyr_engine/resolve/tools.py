@@ -137,6 +137,79 @@ def lookup_record(session: Session, workspace_id: str, reference: str | None) ->
     return row.data if row else None
 
 
+def stand_in_record(
+    session: Session,
+    workspace_id: str,
+    reference: str,
+    kind: str,
+    neighbour_ticket_ids: list[str],
+    airline: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """POC behaviour: treat any reference the customer gives as real by cloning the record behind the nearest
+    historical case (falling back to any record of the right kind) under that reference. Customer PII is dropped."""
+    template: m.OrderRecord | None = None
+    for tid in neighbour_ticket_ids:
+        order_id = session.execute(
+            select(m.Ticket.order_id).where(m.Ticket.workspace_id == workspace_id, m.Ticket.ticket_id == tid)
+        ).scalar_one_or_none()
+        if order_id:
+            template = (
+                session.execute(
+                    select(m.OrderRecord).where(
+                        m.OrderRecord.workspace_id == workspace_id, m.OrderRecord.order_id == order_id
+                    )
+                )
+                .scalars()
+                .first()
+            )
+            if template:
+                break
+    if template is None:
+        template = (
+            session.execute(
+                select(m.OrderRecord)
+                .where(m.OrderRecord.workspace_id == workspace_id, m.OrderRecord.kind == kind)
+                .order_by(m.OrderRecord.order_id)
+            )
+            .scalars()
+            .first()
+        )
+    if template is None:
+        return None
+    data = json.loads(json.dumps(template.data, default=str))
+    data["order_id"] = reference
+    if kind == "booking":
+        data["pnr"] = reference
+    cust = data.get("customer") or {}
+    data["customer"] = {k: v for k, v in cust.items() if k in ("customer_id", "loyalty_member", "loyalty_tier")}
+    if kind == "booking" and data.get("flights"):
+        # the template carries its own scenario; align it with what the customer actually described
+        air = {k: v for k, v in (airline or {}).items() if v is not None}
+        f = data["flights"][0]
+        if air.get("is_cancelled_by_airline") is True:
+            f.update(status="cancelled", is_cancelled_by_airline=True)
+        elif (air.get("delay_minutes") or 0) > 0 or air.get("is_cancelled_by_airline") is False:
+            f.update(
+                status="delayed" if (air.get("delay_minutes") or 0) > 0 else "scheduled",
+                is_cancelled_by_airline=False,
+                schedule_change_minutes=0,
+                is_significant_change=False,
+                customer_accepted_alternative=bool(air.get("customer_accepted_alternative")),
+            )
+            data["customer_cancelled"] = bool(air.get("customer_cancelled"))
+            data["status"] = "active"
+        if "delay_minutes" in air:
+            f["delay_minutes"] = air["delay_minutes"]
+            f["arrival_delay_minutes"] = air["delay_minutes"]
+        if "cause" in air:
+            f["cause"] = air["cause"]
+    data["stand_in"] = True
+    data["stand_in_template"] = template.order_id
+    session.add(m.OrderRecord(workspace_id=workspace_id, order_id=reference, kind=kind, data=data, is_synthetic=True))
+    session.flush()
+    return data
+
+
 # ---------------------------------------------------------------- extract facts
 YNU = {"type": "string", "enum": ["yes", "no", "unknown"]}
 INT_U = {"type": "integer", "description": "-1 when unknown"}
@@ -277,6 +350,8 @@ by a deterministic rule engine; you only communicate it. Hard rules:
 - If `ruling.record_lookup.reference_given` is set and `found` is false: the customer DID give a reference and it did
   not match any record. Say so, quote it back, and ask them to double-check it. Never say they have not provided one.
 - Speak to the customer as "you". Never write "the customer", "the message we received" or other third-person framing.
+- Do not recite route, dates, flight numbers or product names from `known_record`; the customer knows their own trip
+  or order. Refer to it as "your booking" / "your order" plus the reference.
 - If status is pending_approval: say the request has been sent for review and what the policy provides.
 - If status is escalated: say a specialist will review and follow up; do not speculate on the outcome. If
   `ruling.record_lookup.found` is false, say the reference still does not match and that a colleague will locate the

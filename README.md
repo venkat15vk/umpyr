@@ -131,3 +131,6 @@ Engine tests start an ephemeral embedded Postgres; no services or API keys neede
 - [x] **M3 — Resolve chat**: `/rockler`, `/alaska` with ops view, toggles, audit.
 - [x] **M4 — Upload flow**: `/try`, column mapping, live onboarding, setup/approve.
 - [ ] **M5 — Eval scoreboard + deploy**.
+
+> **POC note:** any order number or confirmation code typed in the chat is treated as real. The engine clones the record behind the nearest historical case under that reference (PII stripped, flight state aligned with what the customer said) and marks it `stand_in` in the ops panel. Set `ASSUME_REFERENCE_EXISTS=false` to get the strict behaviour (unmatched reference quoted back, hand-off to a person on repeat).
+

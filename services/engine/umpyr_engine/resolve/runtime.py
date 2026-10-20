@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from umpyr_rules import Actor, PDPPolicy, Resource, RulePack, audit_hash, authorize, evaluate
 from umpyr_rules.pdp import Action, Mode
 
+from ..config import get_settings
 from ..db import models as m
 from ..embeddings import EmbeddingProvider
 from ..llm import LLMProvider
@@ -237,6 +238,21 @@ def run_turn(
     if not record and extracted.get("reference"):
         reference = extracted["reference"].upper()
         record = tools.lookup_record(session, ws.id, reference)
+    stand_in = False
+    airline = {
+        **(state.get("airline") or {}),
+        **{k: v for k, v in (extracted.get("airline") or {}).items() if v is not None},
+    }
+    if reference and not record and get_settings().assume_reference_exists:
+        record = tools.stand_in_record(
+            session,
+            ws.id,
+            reference,
+            kind,
+            [n["ticket_id"] for n in neighbours],
+            airline if kind == "booking" else None,
+        )
+        stand_in = record is not None
     repeated_miss = bool(reference and not record and reference in missed)  # customer re-confirmed a bad code
     if reference and not record and reference not in missed:
         missed.append(reference)
@@ -245,16 +261,15 @@ def run_turn(
         {
             "tool": "lookup_order",
             "ok": record is not None,
-            "detail": f"{reference or 'no reference'} -> {'found' if record else 'not found'}"
+            "detail": f"{reference or 'no reference'} -> "
+            + ("stand-in record created (POC: references are assumed to exist)" if stand_in else "")
+            + ("found" if record and not stand_in else "")
+            + ("not found" if not record else "")
             + (f" ({len(missed)} unmatched so far)" if lookup_miss else ""),
         }
     )
     prior_claim = (state.get("facts") or {}).get("claim", {})
     claim = {**prior_claim, **{k: v for k, v in (extracted.get("claim") or {}).items() if v is not None}}
-    airline = {
-        **(state.get("airline") or {}),
-        **{k: v for k, v in (extracted.get("airline") or {}).items() if v is not None},
-    }
     facts = build_facts(
         claim,
         airline,
@@ -483,7 +498,12 @@ def run_turn(
             "name": procedure.name if procedure else None,
             "steps": _step_table(procedure, facts, ruling, pack),
         },
-        "record": {"reference": reference, "found": record is not None, "summary": _record_summary(record, kind)},
+        "record": {
+            "reference": reference,
+            "found": record is not None,
+            "stand_in": stand_in,
+            "summary": _record_summary(record, kind),
+        },
         "facts": _jsonable(facts),
         "ruling": {
             **(ruling.model_dump(mode="json", exclude={"checks"}) if ruling else {}),

@@ -109,7 +109,9 @@ def build_facts(
         return facts
     if kind == "booking":
         booking = {
-            k: v for k, v in record.items() if k not in ("flights", "bags", "customer", "order_id") and v is not None
+            k: v
+            for k, v in record.items()
+            if k not in ("flights", "bags", "customer", "order_id", "stand_in", "stand_in_template") and v is not None
         }
         facts["booking"] = booking
         flights = record.get("flights") or []
@@ -154,7 +156,11 @@ def build_facts(
                 k: v for k, v in record["customer"].items() if k in ("customer_id", "loyalty_member", "loyalty_tier")
             }
         return facts
-    facts["order"] = {k: v for k, v in record.items() if k not in ("items", "shipments", "customer") and v is not None}
+    facts["order"] = {
+        k: v
+        for k, v in record.items()
+        if k not in ("items", "shipments", "customer", "stand_in", "stand_in_template") and v is not None
+    }
     placed = parse_dt(record.get("placed_at"))
     if placed:
         facts["order"]["days_since_order"] = max(0, (at - placed).days)

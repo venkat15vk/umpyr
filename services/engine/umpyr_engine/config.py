@@ -61,6 +61,9 @@ class Settings(BaseSettings):
     worker_poll_seconds: float = 1.0
     max_upload_tickets: int = 2000
     max_upload_mb: int = 20
+    assume_reference_exists: bool = (
+        True  # POC: an unknown reference gets a stand-in record cloned from the nearest case
+    )
 
     @property
     def root(self) -> Path:

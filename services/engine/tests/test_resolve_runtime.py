@@ -316,7 +316,7 @@ def test_find_reference_accepts_short_keyword_codes():
     assert find_reference("order R-900001 arrived broken", "order") == "R-900001"
 
 
-def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(session_factory, tiny_workspace):
+def test_unknown_reference_gets_a_stand_in_record_by_default(session_factory, tiny_workspace):
     llm, emb = MissingRefLLM(), FakeEmbedder()
     with session_factory() as s:
         chat = m.ChatSession(
@@ -325,10 +325,34 @@ def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(sessi
         s.add(chat)
         s.commit()
         ops = run_turn(s, llm, emb, chat, "My clamp from order R-123456 arrived broken, photos attached.")["ops"]
+        assert ops["record"]["found"] and ops["record"]["stand_in"] and ops["record"]["reference"] == "R-123456"
+        assert ops["status"] == "resolved" and ops["ruling"]["remedy"] == "replacement"
+        assert "stand-in" in next(t["detail"] for t in ops["tools"] if t["tool"] == "lookup_order")
+        assert "order" in ops["facts"] and "stand_in" not in ops["facts"]["order"]
+        rec = s.query(m.OrderRecord).filter_by(workspace_id=tiny_workspace, order_id="R-123456").one()
+        assert rec.data["stand_in_template"] == "R-900001" and "name" not in rec.data["customer"]
+        assert chat.state["reference"] == "R-123456"  # persisted: later turns reuse it
+
+
+def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(
+    session_factory, tiny_workspace, monkeypatch
+):
+    from umpyr_engine.config import get_settings
+
+    monkeypatch.setenv("ASSUME_REFERENCE_EXISTS", "false")
+    get_settings.cache_clear()
+    llm, emb = MissingRefLLM(), FakeEmbedder()
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "My clamp from order R-553456 arrived broken, photos attached.")["ops"]
         assert ops["status"] == "needs_fact"
-        assert ops["record"] == {"reference": "R-123456", "found": False, "summary": None}
-        assert "R-123456 did not match" in ops["ruling"]["missing_facts"][0]
-        assert ops["ruling"]["record_lookup"]["unmatched_references"] == ["R-123456"]
+        assert ops["record"] == {"reference": "R-553456", "found": False, "stand_in": False, "summary": None}
+        assert "R-553456 did not match" in ops["ruling"]["missing_facts"][0]
+        assert ops["ruling"]["record_lookup"]["unmatched_references"] == ["R-553456"]
         assert chat.state["reference"] is None  # a miss must not stick
 
         # the customer corrects the number: the new one is looked up, not the stale one
@@ -342,12 +366,12 @@ def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(sessi
         )
         s.add(chat)
         s.commit()
-        for ref in ("R-123456", "R-123457"):
+        for ref in ("R-553456", "R-553457"):
             ops = run_turn(s, llm, emb, chat, f"Broken clamp, order {ref}, photos attached.")["ops"]
             assert ops["status"] == "needs_fact"
-        ops = run_turn(s, llm, emb, chat, "Broken clamp, order R-123458, photos attached.")["ops"]
+        ops = run_turn(s, llm, emb, chat, "Broken clamp, order R-553458, photos attached.")["ops"]
         assert ops["status"] == "escalated"
-        assert "R-123456, R-123457, R-123458" in ops["ruling"]["explanation"]
+        assert "R-553456, R-553457, R-553458" in ops["ruling"]["explanation"]
 
     with session_factory() as s:  # the customer insists on the same bad reference: hand off, do not loop
         chat = m.ChatSession(
@@ -355,7 +379,7 @@ def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(sessi
         )
         s.add(chat)
         s.commit()
-        assert run_turn(s, llm, emb, chat, "Broken clamp, order R-123456.")["ops"]["status"] == "needs_fact"
-        ops = run_turn(s, llm, emb, chat, "I already told you, it is R-123456. Read my message.")["ops"]
+        assert run_turn(s, llm, emb, chat, "Broken clamp, order R-553456.")["ops"]["status"] == "needs_fact"
+        ops = run_turn(s, llm, emb, chat, "I already told you, it is R-553456. Read my message.")["ops"]
         assert ops["status"] == "escalated"
-        assert "confirmed R-123456 twice" in ops["ruling"]["explanation"]
+        assert "confirmed R-553456 twice" in ops["ruling"]["explanation"]
