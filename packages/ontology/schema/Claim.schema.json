@@ -64,6 +64,22 @@
       "description": "Customer has proof of purchase",
       "title": "Has Receipt"
     },
+    "intents": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Ordered customer intents: refund, cancel, rebook, replacement, return, status, timeline, compensation, complaint, bag, other",
+      "title": "Intents"
+    },
     "item_unopened": {
       "anyOf": [
         {
@@ -102,6 +118,19 @@
       "default": null,
       "description": "Primary reason: damaged_on_arrival, defective, wrong_item, missing_item, change_of_mind, lifetime_guarantee, backorder, order_change, cancel_order, flight_cancelled, flight_delayed, schedule_change, refund_request, credit_request, bag_delayed, bag_damaged, bag_lost, bag_guarantee, seat_refund, ancillary_refund, loyalty_points, other",
       "title": "Reason"
+    },
+    "reference_kind": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "confirmation_code | order_number | none",
+      "title": "Reference Kind"
     },
     "reported_within_days": {
       "anyOf": [
@@ -143,6 +172,19 @@
       ],
       "default": null,
       "description": "Remedy the customer asked for"
+    },
+    "timeline_ask": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Customer asked when the money or item will arrive",
+      "title": "Timeline Ask"
     },
     "wants_credit_instead_of_refund": {
       "anyOf": [

@@ -294,4 +294,7 @@ def apply_cached_taxonomy(
         c.embedding = vec
         session.add(c)
     session.commit()
+    from ..resolve.planner import backfill_plan_embeddings
+
+    backfill_plan_embeddings(session, embedder, workspace_id, only_missing=False)
     return {"method": cached.get("method"), "embedding_model": emb.model, "categories": cached["categories"]}

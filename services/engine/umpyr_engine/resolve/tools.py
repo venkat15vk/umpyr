@@ -19,6 +19,7 @@ from ..learn.router import THRESHOLD, load_router
 from ..learn.vocab import CLAIM_REASONS, REMEDIES
 from ..llm import LLMProvider
 from ..llm.helpers import json_request, llm_json
+from .planner import INTENTS
 
 log = logging.getLogger(__name__)
 
@@ -218,7 +219,23 @@ EXTRACT_SCHEMA = {
     "type": "object",
     "properties": {
         "reference": {"type": "string", "description": "order number or confirmation code mentioned, else empty"},
+        "reference_kind": {"type": "string", "enum": ["confirmation_code", "order_number", "none"]},
         "item_hint": {"type": "string", "description": "product the issue is about, else empty"},
+        "intents": {
+            "type": "array",
+            "items": {"type": "string", "enum": INTENTS},
+            "description": "What the customer wants, in the order asked",
+        },
+        "party": {
+            "type": "object",
+            "properties": {
+                "pax_count": INT_U,
+                "pax_types": {"type": "array", "items": {"type": "string", "enum": ["adult", "child", "infant"]}},
+            },
+            "required": ["pax_count", "pax_types"],
+            "additionalProperties": False,
+        },
+        "timeline_ask": YNU,
         "claim": {
             "type": "object",
             "properties": {
@@ -280,7 +297,7 @@ EXTRACT_SCHEMA = {
             "additionalProperties": False,
         },
     },
-    "required": ["reference", "item_hint", "claim", "airline"],
+    "required": ["reference", "reference_kind", "item_hint", "intents", "party", "timeline_ask", "claim", "airline"],
     "additionalProperties": False,
 }
 EXTRACT_SYSTEM = f"""You extract claim facts from a customer conversation for Umpyr's rule engine. Only state what the customer
@@ -293,7 +310,17 @@ actually said or clearly implied; use "unknown"/-1/"" otherwise. Never guess. Te
   confirmation, receipt or order number.
 - If the customer answered a question from the assistant (e.g. "yes, the box is unopened"), record that fact.
 - airline fields only when the conversation is about a flight or bag; cause = controllable (crew, maintenance, IT)
-  or uncontrollable (weather, air traffic control) only if the customer states the cause."""
+  or uncontrollable (weather, air traffic control) ONLY if the customer names the reason; otherwise "unknown".
+- A customer who wants to cancel or be refunded BECAUSE the airline delayed or cancelled the flight is
+  flight_delayed / flight_cancelled (never refund_request), with customer_accepted_alternative = no and
+  customer_cancelled = unknown. refund_request and customer_cancelled = yes are only for a voluntary cancellation
+  with no disruption behind it.
+- intents: every distinct thing the customer wants, in the order asked (refund, cancel, rebook, replacement, return,
+  status, timeline, compensation, complaint, bag, other). "When will I get the money" is timeline (and sets
+  timeline_ask = yes). party: how many people travel or ordered and their types, only when stated.
+- reference_kind: confirmation_code for a 5-6 character airline locator, order_number for a merchant order id.
+- Delta mode: when "Facts already known" is given you see only the latest message. Return ONLY what that message
+  adds or changes; answer unknown/-1/empty for everything else, and never restate known facts."""
 
 
 def _clean(value):
@@ -311,13 +338,29 @@ def _clean(value):
 
 
 def extract_facts(
-    llm: LLMProvider, workspace_id: str, history: list[dict[str, str]], record_summary: str | None, required: list[str]
+    llm: LLMProvider,
+    workspace_id: str,
+    history: list[dict[str, str]],
+    record_summary: str | None,
+    required: list[str],
+    known: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    convo = "\n\n".join(f"[{h['role'].upper()}]\n{h['text']}" for h in history)
-    user = (
-        f"Merchant record on file: {record_summary or 'none found yet'}\n"
-        f"Facts the procedure needs: {required}\n\nConversation so far:\n{convo}"
-    )
+    """Schema-based extraction. With `known` (turn 2+) this is delta extraction: the model sees the known facts and
+    only the latest customer message, and returns just what changed (design v2 §2)."""
+    if known:
+        latest = next((h["text"] for h in reversed(history) if h["role"] == "customer"), "")
+        user = (
+            f"Merchant record on file: {record_summary or 'none found yet'}\n"
+            f"Facts the procedure needs: {required}\n"
+            f"Facts already known (from earlier messages): {json.dumps(known, default=str)}\n\n"
+            f"Latest customer message:\n{latest}"
+        )
+    else:
+        convo = "\n\n".join(f"[{h['role'].upper()}]\n{h['text']}" for h in history)
+        user = (
+            f"Merchant record on file: {record_summary or 'none found yet'}\n"
+            f"Facts the procedure needs: {required}\n\nConversation so far:\n{convo}"
+        )
     res = (
         llm_json(
             llm,
@@ -326,7 +369,7 @@ def extract_facts(
                 system=EXTRACT_SYSTEM,
                 user=user,
                 schema=EXTRACT_SCHEMA,
-                max_tokens=900,
+                max_tokens=1400,
                 workspace_id=workspace_id,
             ),
         )

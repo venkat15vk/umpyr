@@ -246,6 +246,7 @@ def test_turn_asks_for_missing_fact_then_rules_and_audits(session_factory, tiny_
             "get_procedure",
             "lookup_order",
             "extract_facts",
+            "plan",
             "rule",
             "authorize",
             "draft_reply",
@@ -493,3 +494,188 @@ def test_escalations_are_typed(session_factory, tiny_workspace, monkeypatch):
     finally:
         monkeypatch.delenv("ASSUME_REFERENCE_EXISTS", raising=False)
         get_settings.cache_clear()
+
+
+class PlanningFakeLLM(FakeLLM):
+    """FakeLLM with a live planner answer and a record of every extraction prompt (for delta-mode checks)."""
+
+    def __init__(self, live_steps: list[str]):
+        super().__init__()
+        self.live_steps = live_steps
+        self.extract_prompts: list[str] = []
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        if req.step == "resolve.plan":
+            self.calls.append(req.step)
+            out = {"steps": self.live_steps, "rationale": "fake plan"}
+            return LLMResponse(
+                text=json.dumps(out),
+                content=[],
+                tool_uses=[],
+                stop_reason="end_turn",
+                usage=Usage(10, 10),
+                model="fake",
+                parsed=out,
+            )
+        if req.step == "resolve.extract":
+            self.extract_prompts.append(req.messages[-1]["content"])
+        return super().complete(req)
+
+
+def _seed_history(session_factory, ws: str, ticket_ids: list[str], actions: list[str]) -> None:
+    from umpyr_engine.resolve.planner import historical_case_text
+
+    emb = FakeEmbedder()
+    with session_factory() as s:
+        for tid in ticket_ids:
+            c = m.Case(
+                workspace_id=ws,
+                ticket_id=tid,
+                category_key="returns",
+                summary="damaged clamp, photos, store credit",
+                facts={
+                    "claim": {"reason": "damaged_on_arrival", "requested_remedy": "replacement", "has_photos": True},
+                    "item": {"condition": "damaged"},
+                },
+                record={
+                    "staff_actions": [{"seq": i + 1, "action": a} for i, a in enumerate(actions)],
+                    "outcome": {"decision": "approve", "remedy": "store_credit"},
+                },
+            )
+            s.add(c)
+            s.flush()
+            c.plan_embedding = emb.embed([historical_case_text(c)], step="t", workspace_id=ws).vectors[0]
+        s.commit()
+
+
+def _clear_history(session_factory, ws: str) -> None:
+    from sqlalchemy import delete
+
+    with session_factory() as s:
+        s.execute(delete(m.Case).where(m.Case.workspace_id == ws))
+        s.commit()
+
+
+def test_delta_extraction_and_plan_events(session_factory, tiny_workspace):
+    llm, emb = PlanningFakeLLM(["verify_order", "review_photos", "issue_replacement"]), FakeEmbedder()
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+        assert ops["status"] == "resolved"
+        plan = ops["plan"]
+        assert (
+            plan["live"]["steps"] == ["verify", "evidence", "issue_replacement"]
+            and plan["live"]["rationale"] == "fake plan"
+        )
+        assert plan["case_text"].startswith("category: returns | intents:")
+        assert (
+            plan["comparison"]["kind"] in ("no_history", "agree", "order_differs", "diverge")
+            and plan["disagreement"] is False
+            or plan["historical"]["k"] == 0
+        )
+        actions = [
+            e.action
+            for e in s.query(m.CaseEvent)
+            .filter_by(case_id=__import__("uuid").UUID(ops["case"]["id"]))
+            .order_by(m.CaseEvent.seq)
+        ]
+        i = actions.index("extraction")
+        assert actions[i + 1 : i + 4] == ["plan.historical", "plan.live", "plan.compared"]
+        assert "Conversation so far" in llm.extract_prompts[0] and "Facts already known" not in llm.extract_prompts[0]
+        # turn 2 is a delta: known facts + latest message only
+        ops2 = run_turn(s, llm, emb, chat, "Also, when will the replacement ship?")["ops"]
+        assert "Facts already known" in llm.extract_prompts[1] and "Latest customer message" in llm.extract_prompts[1]
+        assert "arrived broken" not in llm.extract_prompts[1].split("Latest customer message")[1]
+        assert ops2["facts"]["claim"]["reason"] == "damaged_on_arrival"  # known facts survive the delta merge
+        ev = next(
+            e
+            for e in s.query(m.CaseEvent).filter_by(case_id=__import__("uuid").UUID(ops["case"]["id"]))
+            if e.action == "extraction" and e.turn == 2
+        )
+        assert ev.basis["mode"] == "delta" and ev.basis["schema"] == "v2"
+
+
+def test_planner_disagreement_queues_the_money_action(session_factory, tiny_workspace):
+    _seed_history(
+        session_factory, tiny_workspace, ["H-1", "H-2", "H-3"], ["verify_order", "request_photos", "issue_store_credit"]
+    )
+    try:
+        emb = FakeEmbedder()
+        with session_factory() as s:  # live planner says replacement, history says store credit -> diverge -> queue
+            llm = PlanningFakeLLM(["verify_order", "issue_replacement"])
+            chat = m.ChatSession(
+                workspace_id=tiny_workspace,
+                channel="email",
+                mode="autonomous",
+                auto_approve_limit=Decimal("100"),
+                state={},
+            )
+            s.add(chat)
+            s.commit()
+            ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+            plan = ops["plan"]
+            assert plan["historical"]["k"] == 3 and plan["historical"]["steps"] == [
+                "verify",
+                "evidence",
+                "issue_store_credit",
+            ]
+            assert plan["historical"]["agreement"] == 1.0 and plan["novel"] is False
+            assert plan["comparison"]["kind"] == "diverge" and plan["disagreement"] is True
+            assert ops["status"] == "pending_approval"
+            assert ops["ruling"]["escalation"]["type"] == "planner_disagreement"
+            assert ops["authorization"]["decision"] == "allow"  # the PDP allowed it; the planner gate queued it
+        with session_factory() as s:  # live planner agrees with history -> history wins, nothing queued
+            llm = PlanningFakeLLM(["verify_order", "request_photos", "issue_store_credit"])
+            chat = m.ChatSession(
+                workspace_id=tiny_workspace,
+                channel="email",
+                mode="autonomous",
+                auto_approve_limit=Decimal("100"),
+                state={},
+            )
+            s.add(chat)
+            s.commit()
+            ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+            assert ops["plan"]["comparison"]["kind"] == "agree" and ops["plan"]["chosen"] == "historical"
+            assert ops["status"] == "resolved" and ops["ruling"]["escalation"] is None
+        _clear_history(session_factory, tiny_workspace)
+        _seed_history(
+            session_factory,
+            tiny_workspace,
+            ["H-4", "H-5", "H-6", "H-7"],
+            ["verify_order", "request_photos", "issue_replacement"],
+        )
+        with session_factory() as s:  # live planner diverges but the ruling matches confident history -> flag only
+            llm = PlanningFakeLLM(["verify_order", "issue_refund"])
+            chat = m.ChatSession(
+                workspace_id=tiny_workspace,
+                channel="email",
+                mode="autonomous",
+                auto_approve_limit=Decimal("100"),
+                state={},
+            )
+            s.add(chat)
+            s.commit()
+            ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+            assert ops["plan"]["comparison"]["kind"] == "diverge" and ops["plan"]["historical"]["confident"]
+            assert ops["plan"]["history_backs_ruling"] is True
+            assert ops["status"] == "resolved" and ops["ruling"]["escalation"] is None
+        with session_factory() as s:  # no live plan (planner unavailable) never gates
+            llm = PlanningFakeLLM([])
+            chat = m.ChatSession(
+                workspace_id=tiny_workspace,
+                channel="email",
+                mode="autonomous",
+                auto_approve_limit=Decimal("100"),
+                state={},
+            )
+            s.add(chat)
+            s.commit()
+            ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+            assert ops["plan"]["comparison"]["kind"] == "no_live" and ops["status"] == "resolved"
+    finally:
+        _clear_history(session_factory, tiny_workspace)

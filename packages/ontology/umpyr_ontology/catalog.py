@@ -28,6 +28,7 @@ ROOTS: dict[str, type[BaseModel]] = {
     "bag": models.Bag,
     "claim": models.Claim,
     "case": models.Case,
+    "party": models.Party,
 }
 
 

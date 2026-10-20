@@ -124,6 +124,7 @@ class Case(Base, TimestampMixin):
     facts: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # ontology Facts dict
     summary: Mapped[str | None] = mapped_column(Text)
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
+    plan_embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))  # structured case (v2 §4)
     hours_to_resolve: Mapped[float | None] = mapped_column(Numeric(10, 2))
     is_drift: Mapped[bool] = mapped_column(Boolean, default=False)
     drift_reason: Mapped[str | None] = mapped_column(Text)

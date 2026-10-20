@@ -193,6 +193,20 @@ class Claim(OntologyModel):
     item_used: bool | None = Field(None, description="Item has been used")
     wants_credit_instead_of_refund: bool | None = Field(None, description="Customer prefers credit")
     description: str | None = Field(None, description="Short masked description of the issue")
+    intents: list[str] | None = Field(
+        None,
+        description="Ordered customer intents: refund, cancel, rebook, replacement, return, status, timeline, "
+        "compensation, complaint, bag, other",
+    )
+    timeline_ask: bool | None = Field(None, description="Customer asked when the money or item will arrive")
+    reference_kind: str | None = Field(None, description="confirmation_code | order_number | none")
+
+
+class Party(OntologyModel):
+    """Who is travelling or ordering, when the customer states it (design v2 §2)."""
+
+    pax_count: int | None = Field(None, description="Number of passengers or people on the booking")
+    pax_types: list[str] | None = Field(None, description="adult | child | infant, one per passenger")
 
 
 class StaffAction(OntologyModel):
@@ -240,6 +254,7 @@ class Facts(OntologyModel):
     bag: Bag = Field(default_factory=Bag, description="The bag the claim is about")
     claim: Claim = Field(default_factory=Claim)
     case: Case = Field(default_factory=Case)
+    party: Party = Field(default_factory=Party)
 
     def to_facts_dict(self) -> dict[str, Any]:
         """Nested dict suitable for JSON Logic `var` lookups. None values are omitted so that

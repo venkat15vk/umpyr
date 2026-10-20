@@ -29,6 +29,7 @@ from ..sandbox.synth.core import NOW as SANDBOX_NOW
 from . import tools
 from .facts import build_facts, find_reference
 from .ledger import CaseLedger
+from .planner import history_backs_ruling, plan_case
 from .status import status_event
 
 MAX_LOOKUP_MISSES = 3  # after this many unmatched references, hand the case to a person
@@ -166,8 +167,22 @@ def _step_table(
     return rows
 
 
-def _escalation(status, ruling, record, pack, authorization, missed) -> dict[str, Any] | None:
+def _escalation(
+    status, ruling, record, pack, authorization, missed, plan=None, planner_gate_hit=False
+) -> dict[str, Any] | None:
     """Typed escalation (design v2 §7). Only escalated and queued turns carry one."""
+    novel = bool(plan and plan.get("novel"))
+    if status == "pending_approval" and planner_gate_hit:
+        return {
+            "type": "planner_disagreement",
+            "reason": (
+                f"confident precedent plans {plan['historical']['steps']} but this ruling is "
+                f"{ruling.decision}/{ruling.remedy}; live planner proposed {plan['live']['steps']}"
+            ),
+            "novel_case": novel,
+        }
+    if status == "escalated" and novel and not record:
+        return {"type": "data_gap", "reason": "no close precedent and no merchant record", "novel_case": True}
     if status == "pending_approval":
         return {
             "type": "governance_gate",
@@ -326,7 +341,18 @@ def _run_turn(
 
     # 5. extract facts
     required = list(procedure.required_facts) if procedure else []
-    extracted = tools.extract_facts(llm, ws.id, history, _record_summary(record, kind), required)
+    known = (
+        {
+            "claim": (state.get("facts") or {}).get("claim") or {},
+            "airline": state.get("airline") or {},
+            "intents": state.get("intents") or [],
+            "party": state.get("party") or {},
+            "reference": state.get("reference"),
+        }
+        if turn > 1
+        else None
+    )
+    extracted = tools.extract_facts(llm, ws.id, history, _record_summary(record, kind), required, known=known)
     if not record and extracted.get("reference"):
         reference = extracted["reference"].upper()
         record = tools.lookup_record(session, ws.id, reference)
@@ -379,6 +405,19 @@ def _run_turn(
         or extracted.get("item_hint")
         or state.get("item_hint"),
     )
+    intents = list(dict.fromkeys([*(state.get("intents") or []), *(extracted.get("intents") or [])]))
+    party = {
+        **(state.get("party") or {}),
+        **{k: v for k, v in (extracted.get("party") or {}).items() if v not in (None, [])},
+    }
+    facts.setdefault("claim", {})
+    facts["claim"]["intents"] = intents
+    if extracted.get("timeline_ask") is not None:
+        facts["claim"]["timeline_ask"] = extracted["timeline_ask"]
+    if extracted.get("reference_kind") not in (None, "none"):
+        facts["claim"]["reference_kind"] = extracted["reference_kind"]
+    if party:
+        facts["party"] = party
     facts = _merge_facts(state.get("facts") or {}, facts)
     steps_log.append(
         {
@@ -390,12 +429,74 @@ def _run_turn(
     stage(
         "umpyr",
         "extraction",
-        basis={"schema": "v1", "required_facts": required},
+        basis={"schema": "v2", "mode": "delta" if known else "full", "required_facts": required},
         result={
             "claim_keys": sorted(k for k, v in claim.items() if v is not None),
             "reference": extracted.get("reference"),
+            "intents": intents,
+            "party": party or None,
+            "timeline_ask": facts["claim"].get("timeline_ask"),
             "fact_sections": sorted(facts.keys()),
         },
+    )
+
+    # 5b. plan: historical (neighbours' consensus) vs live (model), compared by step type and order
+    settings = get_settings()
+    plan = plan_case(
+        session,
+        llm,
+        embedder,
+        ws.id,
+        category=key,
+        intents=intents,
+        claim=facts["claim"],
+        facts=facts,
+        party=party or None,
+        procedure_steps=[s.get("name") for s in (procedure.steps or [])] if procedure else [],
+        record_summary=_record_summary(record, kind),
+        k=settings.plan_neighbours_k,
+        novelty_min_similarity=settings.novelty_min_similarity,
+        agreement_min=settings.plan_agreement_min,
+    )
+    ledger.append(
+        "umpyr",
+        "plan.historical",
+        basis={"k": plan["historical"]["k"], "case_text": plan["case_text"]},
+        result={
+            "steps": plan["historical"]["steps"],
+            "support": plan["historical"]["support"],
+            "agreement": plan["historical"]["agreement"],
+            "mean_similarity": plan["historical"]["mean_similarity"],
+            "neighbours": [
+                {"ticket_id": n["ticket_id"], "similarity": n["similarity"]} for n in plan["historical"]["neighbours"]
+            ],
+            "novel": plan["novel"],
+        },
+    )
+    stage(
+        "umpyr",
+        "plan.live",
+        basis={"vocabulary": "staff_actions"},
+        result={"raw": plan["live"]["raw"], "steps": plan["live"]["steps"], "rationale": plan["live"]["rationale"]},
+    )
+    ledger.append(
+        "umpyr",
+        "plan.compared",
+        basis={"rule": "step type and order, not count; history wins unless it diverges"},
+        result={
+            **plan["comparison"],
+            "chosen": plan["chosen"],
+            "steps": plan["steps"],
+            "disagreement": plan["disagreement"],
+        },
+    )
+    steps_log.append(
+        {
+            "tool": "plan",
+            "ok": not plan["disagreement"],
+            "detail": f"{plan['comparison']['kind']}: history {plan['historical']['steps']} vs live {plan['live']['steps']}"
+            + (" (novel case)" if plan["novel"] else ""),
+        }
     )
 
     # 6. rule
@@ -519,6 +620,19 @@ def _run_turn(
             status = "pending_approval"
         elif authorization.decision == "deny":
             status = "escalated"
+    planner_gate_hit = False
+    backed = history_backs_ruling(plan, str(ruling.decision) if ruling else None, ruling.remedy if ruling else None)
+    plan["history_backs_ruling"] = backed
+    if (
+        plan["disagreement"]
+        and backed is False  # confident precedent contradicts the ruling's remedy; the live planner alone never gates
+        and settings.planner_gate
+        and authorization is not None
+        and authorization.decision == "allow"
+        and status == "resolved"
+    ):
+        status = "pending_approval"  # history and the live planner disagree on the remedy: a person confirms
+        planner_gate_hit = True
     steps_log.append(
         {
             "tool": "authorize",
@@ -543,6 +657,7 @@ def _run_turn(
             "mode": chat.mode,
             "auto_approve_limit": str(chat.auto_approve_limit),
             "action": str(action) if action else None,
+            "planner_gate": planner_gate_hit,
         },
         result={
             "decision": authorization.decision if authorization else "no_action",
@@ -550,7 +665,7 @@ def _run_turn(
             "status": status,
         },
     )
-    escalation = _escalation(status, ruling, record, pack, authorization, missed)
+    escalation = _escalation(status, ruling, record, pack, authorization, missed, plan, planner_gate_hit)
     gap = (
         {
             "type": "data_gap",
@@ -728,6 +843,17 @@ def _run_turn(
         "status": status,
         "classification": classification,
         "neighbours": neighbours,
+        "plan": {
+            "case_text": plan["case_text"],
+            "historical": {k: v for k, v in plan["historical"].items()},
+            "live": plan["live"],
+            "comparison": plan["comparison"],
+            "novel": plan["novel"],
+            "chosen": plan["chosen"],
+            "steps": plan["steps"],
+            "disagreement": plan["disagreement"],
+            "history_backs_ruling": plan.get("history_backs_ruling"),
+        },
         "procedure": {
             "ref": proc_ref,
             "name": procedure.name if procedure else None,
@@ -794,6 +920,8 @@ def _run_turn(
         "reference": reference if record else None,
         "missed_references": missed,
         "item_hint": extracted.get("item_hint") or state.get("item_hint"),
+        "intents": intents,
+        "party": party,
         "category_key": key,
         "last_status": status,
     }

@@ -119,6 +119,11 @@ def _refresh_provenance_if_needed(client: str, report: dict) -> None:
         if needs_provenance(s, client):
             r = refresh_provenance(s, client, write_samples=False)
             report[client] = {**report.get(client, {}), "provenance": {k: v for k, v in r.items() if k != "unlocated"}}
+    from .sandbox.plan_job import needs_plan_embeddings, refresh_plan_embeddings
+
+    with get_session_factory()() as s:
+        if needs_plan_embeddings(s, client):
+            report[client] = {**report.get(client, {}), "plans": refresh_plan_embeddings(s, client)}
 
 
 def cmd_seed(args: argparse.Namespace) -> int:
@@ -208,6 +213,16 @@ def cmd_sandbox(args: argparse.Namespace) -> int:
 
         print(json.dumps(run_synth(args.client, n=args.n, rebuild=args.rebuild, limit=args.limit), indent=2))
         return 0
+    if args.sb_cmd == "plans":
+        from .db.base import get_session_factory
+        from .sandbox.plan_job import refresh_plan_embeddings
+
+        out = {}
+        for client in args.clients:
+            with get_session_factory()() as s:
+                out[client] = refresh_plan_embeddings(s, client, rebuild=args.rebuild)
+        print(json.dumps(out, indent=2, default=str))
+        return 0
     if args.sb_cmd == "provenance":
         from .db.base import get_session_factory
         from .sandbox.provenance_job import refresh_provenance
@@ -288,6 +303,9 @@ def main(argv: list[str] | None = None) -> int:
     sy.add_argument("--n", type=int, default=300)
     sy.add_argument("--limit", type=int, default=None, help="only write threads for the first N scenarios (dev)")
     sy.add_argument("--rebuild", action="store_true")
+    pl = sbs.add_parser("plans", help="embed historical cases for the historical planner (local embedder; no LLM)")
+    pl.add_argument("clients", nargs="*", default=["rockler", "alaska"])
+    pl.add_argument("--rebuild", action="store_true")
     pv = sbs.add_parser(
         "provenance", help="locate clauses in their source documents and store provenance (no LLM calls)"
     )

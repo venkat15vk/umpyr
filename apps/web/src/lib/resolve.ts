@@ -5,12 +5,14 @@ export type Step = { step_id: string; name: string; kind: string; tool: string; 
 export type Citation = { clause_id: string; title: string | null; document: string | null; document_id?: string | null; document_version: string | null; section: string | null; page: number | null; span: number[] | null; text_hash: string; url: string | null; tier?: string | null; public: boolean; quote: string };
 export type Escalation = { type: "data_gap" | "policy_gap" | "planner_disagreement" | "governance_gate"; reason: string };
 export type CaseSummary = { id: string; status: string; turns: number; event_count: number; head_hash: string | null; decision_hash: string | null; cost_usd: string; turn_cost_usd: string; llm_calls: number; escalation: Escalation | null };
+export type Plan = { case_text: string; historical: { k: number; steps: string[]; support: Record<string, number>; agreement: number; mean_similarity: number | null; confident?: boolean; neighbours: { ticket_id: string; similarity: number; steps: string[] }[] }; live: { raw: string[]; steps: string[]; rationale: string }; comparison: { kind: string; missing_in_live: string[]; extra_in_live: string[] }; novel: boolean; chosen: string; steps: string[]; disagreement: boolean };
 export type Neighbour = { ticket_id: string; similarity: number; category_key: string; summary: string; staff_outcome: Record<string, unknown> | null; is_drift: boolean; drift_reason: string | null; hours_to_resolve: number | null };
 export type Ops = {
   turn: number;
   status: string;
   classification: { category_key: string; category_name?: string; confidence: number; source: string; probabilities?: Record<string, number>; multi_issue?: boolean; secondary_category_key?: string | null };
   neighbours: Neighbour[];
+  plan?: Plan;
   procedure: { ref: string | null; name: string | null; steps: Step[] };
   record: { reference: string | null; found: boolean; summary: string | null };
   facts: Record<string, Record<string, unknown>>;

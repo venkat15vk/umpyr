@@ -707,6 +707,24 @@
     "enum": []
   },
   {
+    "path": "claim.intents",
+    "type": "list[string]",
+    "description": "Ordered customer intents: refund, cancel, rebook, replacement, return, status, timeline, compensation, complaint, bag, other",
+    "enum": []
+  },
+  {
+    "path": "claim.timeline_ask",
+    "type": "bool",
+    "description": "Customer asked when the money or item will arrive",
+    "enum": []
+  },
+  {
+    "path": "claim.reference_kind",
+    "type": "string",
+    "description": "confirmation_code | order_number | none",
+    "enum": []
+  },
+  {
     "path": "case.case_id",
     "type": "string",
     "description": "Umpyr case identifier",
@@ -837,6 +855,18 @@
     "path": "case.is_synthetic",
     "type": "bool",
     "description": "Synthetic data flag (POC data is synthetic)",
+    "enum": []
+  },
+  {
+    "path": "party.pax_count",
+    "type": "int",
+    "description": "Number of passengers or people on the booking",
+    "enum": []
+  },
+  {
+    "path": "party.pax_types",
+    "type": "list[string]",
+    "description": "adult | child | infant, one per passenger",
     "enum": []
   }
 ]

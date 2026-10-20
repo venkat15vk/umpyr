@@ -62,6 +62,13 @@ class Settings(BaseSettings):
     worker_poll_seconds: float = 1.0
     max_upload_tickets: int = 2000
     max_upload_mb: int = 20
+    # planner (design v2 §4)
+    plan_neighbours_k: int = Field(5, description="Nearest historical cases aggregated into the consensus plan")
+    novelty_min_similarity: float = Field(0.25, description="Below this mean neighbour similarity the case is novel")
+    plan_agreement_min: float = Field(0.34, description="Below this neighbour agreement the case is novel")
+    planner_gate: bool = Field(
+        True, description="Queue an auto-approved money action when the live plan diverges from history"
+    )
     check_provider: str = Field("none", description="Umpyr Check hooks provider; only 'none' exists (deferred)")
     assume_reference_exists: bool = (
         True  # POC: an unknown reference gets a stand-in record cloned from the nearest case

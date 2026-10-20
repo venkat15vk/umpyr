@@ -26,14 +26,16 @@ a stop for go-ahead, no change to an existing demo flow without asking first.
 Tests: ledger chain/verify/tamper/idempotency, provenance locate (exact, whitespace, section, page), runtime
 events and citations, API routes. Spend: $0 (no model calls in tests or backfill).
 
-## Phase 2 — Ingestion v2 and planning (alters extraction and the Ops view; **ask first**)
+## Phase 2 — Ingestion v2 and planning — **implemented 2026-10-20** (approved by the user the same day)
 
 1. Extraction schema v2 (intents, party, timeline ask, reference kind, requested outcome) and delta extraction.
 2. Structured-case embedding; historical planner (consensus sequence, similarity, agreement).
 3. Live planner over the fixed action vocabulary; comparison by type and order; `planner_disagreement`.
 4. Novelty thresholds → `data_gap`.
-5. Ops view: plan panel (historical vs live, agreement).
-Spend estimate: re-embedding 600 historical cases locally (no cost); ~1 extra Haiku call per turn (~$0.0005).
+5. Ops view: plan panel (historical vs live, agreement, novelty, embedded case text).
+6. Planner gate: a remedy divergence queues an otherwise auto-approved money action (`planner_disagreement`).
+Measured: 600 historical cases embedded locally at no cost; one extra Haiku call per turn (`resolve.plan`, ~$0.0003).
+Decisions D43–D45.
 
 ## Phase 3 — Customer experience (changes what customers see; **ask first**)
 

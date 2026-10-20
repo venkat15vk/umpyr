@@ -67,6 +67,31 @@ export function OpsView({ ops }: { ops?: Ops }) {
         </ul>
       </section>
 
+      {ops.plan && (
+        <section className="panel p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-semibold">Plan</h2>
+            <Pill text={ops.plan.comparison.kind.replace("_", " ")} tone={ops.plan.disagreement ? "amber" : ops.plan.comparison.kind === "agree" ? "accent" : "muted"} />
+            <Pill text={`chosen: ${ops.plan.chosen}`} tone="muted" />
+            {ops.plan.novel && <Pill text="novel case" tone="amber" />}
+            {ops.plan.comparison.kind === "diverge" && !ops.plan.disagreement && <Pill text="history not confident: live plan used" tone="muted" />}
+          </div>
+          <div className="mt-1 grid gap-2 text-xs sm:grid-cols-2">
+            <div>
+              <div className="muted">History · {ops.plan.historical.k} neighbours · sim {ops.plan.historical.mean_similarity === null ? "—" : `${(ops.plan.historical.mean_similarity * 100).toFixed(0)}%`} · agreement {(ops.plan.historical.agreement * 100).toFixed(0)}%</div>
+              <div className="font-mono">{ops.plan.historical.steps.join(" → ") || "—"}</div>
+            </div>
+            <div>
+              <div className="muted">Live planner (Haiku, fixed vocabulary)</div>
+              <div className="font-mono">{ops.plan.live.steps.join(" → ") || "—"}</div>
+              {ops.plan.live.rationale && <div className="muted">{ops.plan.live.rationale}</div>}
+            </div>
+          </div>
+          {ops.plan.disagreement && <p className="mt-1 text-xs text-amber-600">Diverges: history has {ops.plan.comparison.missing_in_live.join(", ") || "nothing extra"}; live adds {ops.plan.comparison.extra_in_live.join(", ") || "nothing"}.</p>}
+          <div className="muted mt-1 text-xs break-all">embedded as: {ops.plan.case_text}</div>
+        </section>
+      )}
+
       <section className="panel p-3">
         <div className="flex items-center gap-2">
           <h2 className="font-semibold">Procedure</h2>

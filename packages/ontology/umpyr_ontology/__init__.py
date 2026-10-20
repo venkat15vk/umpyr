@@ -30,6 +30,7 @@ from .models import (
     Flight,
     Item,
     Order,
+    Party,
     Shipment,
     StaffAction,
     Ticket,
@@ -37,6 +38,7 @@ from .models import (
 )
 
 __all__ = [
+    "Party",
     "FIELD_CATALOG",
     "FieldSpec",
     "field_paths",
