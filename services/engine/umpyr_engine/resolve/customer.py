@@ -253,13 +253,15 @@ def apply_choice(ruling: Ruling, options: list[dict[str, Any]], chosen_remedy: s
             amount = Decimal(str(v)) if v is not None else None
         except Exception:
             amount = None
+    from umpyr_ontology import Remedy, Tier
+
     return ruling.model_copy(
         update={
-            "remedy": chosen_remedy,
+            "remedy": Remedy(chosen_remedy),
             "amount": amount if amount is not None else ruling.amount,
             "winning_rule_id": opt["rule_id"],
             "winning_clause_id": opt["clause_id"],
-            "tier": opt["tier"],
+            "tier": Tier(opt["tier"]),
             "explanation": f"{ruling.explanation} The customer chose {REMEDY_LABEL[chosen_remedy]} from the offered options.".strip(),
         }
     )

@@ -679,3 +679,26 @@ def test_planner_disagreement_queues_the_money_action(session_factory, tiny_work
             assert ops["plan"]["comparison"]["kind"] == "no_live" and ops["status"] == "resolved"
     finally:
         _clear_history(session_factory, tiny_workspace)
+
+
+def test_never_asks_the_same_fact_a_third_time(session_factory, tiny_workspace):
+    """D50: a fact asked twice that the customer answered but the extractor could not capture is a data gap."""
+    llm, emb = FakeLLM(), FakeEmbedder()  # FakeLLM never reports photos unless the text says "photos attached"
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        o1 = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken.")["ops"]
+        assert o1["status"] == "needs_fact" and o1["ruling"]["gap"]["type"] == "data_gap"
+        o2 = run_turn(s, llm, emb, chat, "Yes I have pictures of the broken clamp.")["ops"]
+        assert o2["status"] == "needs_fact"
+        o3 = run_turn(s, llm, emb, chat, "I already sent them, what else do you want.")["ops"]
+        assert o3["status"] == "escalated"
+        assert (
+            o3["ruling"]["escalation"]["type"] == "data_gap"
+            and "claim.has_photos" in o3["ruling"]["escalation"]["facts"]
+        )
+        assert "asked twice" in o3["ruling"]["explanation"]
+        assert chat.state["asked_facts"]["claim.has_photos"] == 2

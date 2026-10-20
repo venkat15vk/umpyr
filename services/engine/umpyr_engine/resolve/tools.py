@@ -145,6 +145,7 @@ def stand_in_record(
     kind: str,
     neighbour_ticket_ids: list[str],
     airline: dict[str, Any] | None = None,
+    claim: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """POC behaviour: treat any reference the customer gives as real by cloning the record behind the nearest
     historical case (falling back to any record of the right kind) under that reference. Customer PII is dropped."""
@@ -204,6 +205,25 @@ def stand_in_record(
             f["arrival_delay_minutes"] = air["delay_minutes"]
         if "cause" in air:
             f["cause"] = air["cause"]
+    if kind == "booking":
+        from .facts import derive_bag_facts
+
+        air = {k: v for k, v in (airline or {}).items() if v is not None}
+        derived = derive_bag_facts(claim, air)
+        if derived:  # a bag claim needs a bag on the record that matches what the customer described
+            bag = (
+                dict((data.get("bags") or [{}])[0])
+                if data.get("bags")
+                else {"bag_tag": f"{reference}-1", "fee_paid": "35.00"}
+            )
+            bag.update(derived)
+            if air.get("bag_damage_type"):
+                bag["damage_type"] = air["bag_damage_type"]
+            if air.get("bag_delay_days") is not None:
+                bag["delay_days"] = air["bag_delay_days"]
+            if air.get("bag_report_filed") is not None:
+                bag["report_filed"] = air["bag_report_filed"]
+            data["bags"] = [bag]
     data["stand_in"] = True
     data["stand_in_template"] = template.order_id
     session.add(m.OrderRecord(workspace_id=workspace_id, order_id=reference, kind=kind, data=data, is_synthetic=True))
@@ -276,9 +296,14 @@ EXTRACT_SCHEMA = {
                 "bag_report_filed": YNU,
                 "bag_report_filed_within_hours": INT_U,
                 "bag_delay_days": INT_U,
-                "bag_damage_type": {"type": "string"},
+                "bag_damage_type": {
+                    "type": "string",
+                    "enum": ["structural", "wheel", "handle", "zipper", "cosmetic", "contents", "none", "unknown"],
+                },
                 "interim_expenses": NUM_U,
                 "overnight_required": YNU,
+                "bag_checked": YNU,
+                "bag_status": {"type": "string", "enum": ["delivered", "delayed", "damaged", "lost", "unknown"]},
             },
             "required": [
                 "delay_minutes",
@@ -293,6 +318,8 @@ EXTRACT_SCHEMA = {
                 "bag_damage_type",
                 "interim_expenses",
                 "overnight_required",
+                "bag_checked",
+                "bag_status",
             ],
             "additionalProperties": False,
         },
@@ -315,6 +342,10 @@ actually said or clearly implied; use "unknown"/-1/"" otherwise. Never guess. Te
   flight_delayed / flight_cancelled (never refund_request), with customer_accepted_alternative = no and
   customer_cancelled = unknown. refund_request and customer_cancelled = yes are only for a voluntary cancellation
   with no disruption behind it.
+- Checked-bag problems: bag_checked = yes when the bag was checked or gate-checked; bag_status = damaged (any broken
+  or missing part such as a wheel or handle), delayed, lost, or delivered; bag_damage_type names the part.
+  bag_report_filed = yes when the customer reported the problem to an airport, gate or baggage agent (even if that
+  agent refused), filed a report, or has a File ID; bag_report_filed_within_hours = 0 when it was reported on arrival.
 - intents: every distinct thing the customer wants, in the order asked (refund, cancel, rebook, replacement, return,
   status, timeline, compensation, complaint, bag, other). "When will I get the money" is timeline (and sets
   timeline_ask = yes). party: how many people travel or ordered and their types, only when stated.

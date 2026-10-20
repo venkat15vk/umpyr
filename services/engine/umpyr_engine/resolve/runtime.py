@@ -370,6 +370,10 @@ def _run_turn(
             kind,
             [n["ticket_id"] for n in neighbours],
             airline if kind == "booking" else None,
+            claim={
+                **((state.get("facts") or {}).get("claim") or {}),
+                **{k: v for k, v in (extracted.get("claim") or {}).items() if v is not None},
+            },
         )
         stand_in = record is not None
     repeated_miss = bool(reference and not record and reference in missed)  # customer re-confirmed a bad code
@@ -560,6 +564,28 @@ def _run_turn(
                 explanation="The merchant record is needed before a ruling can be made.",
             )
             status = "needs_fact"
+    # never ask the same question a third time: a fact asked twice already is a data gap for a person (D50)
+    asked: dict[str, int] = dict(state.get("asked_facts") or {})
+    forced_escalation = None
+    if status == "needs_fact" and ruling is not None and ruling.missing_facts:
+        repeated = [f for f in ruling.missing_facts if asked.get(f, 0) >= 2]
+        if repeated:
+            from umpyr_rules import Ruling as _R
+
+            ruling = _R(
+                decision="escalate",
+                checks=ruling.checks,
+                rule_pack_version=ruling.rule_pack_version,
+                explanation=(
+                    f"The customer was asked twice for {', '.join(_friendly_missing(repeated))} and answered, but the "
+                    "answers could not be captured; a person will take over rather than ask again."
+                ),
+            )
+            status = "escalated"
+            forced_escalation = {"type": "data_gap", "reason": "asked twice, answer not captured", "facts": repeated}
+        else:
+            for f in ruling.missing_facts:
+                asked[f] = asked.get(f, 0) + 1
     options = cx.refund_options(ruling, pack) if status in ("resolved", "pending_approval") else []
     if ruling is not None and chosen and options:
         ruling = cx.apply_choice(ruling, options, chosen, facts)
@@ -695,7 +721,9 @@ def _run_turn(
             "status": status,
         },
     )
-    escalation = _escalation(status, ruling, record, pack, authorization, missed, plan, planner_gate_hit)
+    escalation = forced_escalation or _escalation(
+        status, ruling, record, pack, authorization, missed, plan, planner_gate_hit
+    )
     gap = (
         {
             "type": "data_gap",
@@ -1031,6 +1059,7 @@ def _run_turn(
         "item_hint": extracted.get("item_hint") or state.get("item_hint"),
         "intents": intents,
         "party": party,
+        "asked_facts": asked,
         "options": options,
         "chosen_remedy": chosen if options else None,
         "queue": queue,
@@ -1054,6 +1083,9 @@ FRIENDLY = {
     "claim.item_used": "whether the item has been used",
     "claim.requested_amount": "the amount you are claiming (with receipts)",
     "claim.reported_within_days": "when you first noticed the problem",
+    "bag.checked": "whether the bag was checked in (including at the gate)",
+    "bag.status": "what happened to the bag: damaged, delayed, lost or delivered",
+    "bag.fee_paid": "the checked-bag fee you paid, if any",
     "bag.report_filed": "whether a baggage report (File ID) was filed at the airport",
     "bag.report_filed_within_hours": "when the baggage report was filed",
     "bag.minutes_to_carousel": "how long after arrival the bag reached the carousel",

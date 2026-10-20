@@ -304,3 +304,103 @@ def test_pending_message_without_sla_and_fallback_text(session_factory, airline_
     assert text.endswith("within 7 business days.")
     overdue = _fallback_reply({**rp, "status": "escalated", "queue": {"sla": "within 4 hours", "overdue": True}})
     assert "longer than it should have" in overdue
+
+
+class BagFakeLLM(AirlineFakeLLM):
+    """Damaged checked stroller, unknown confirmation code, no explicit bag_checked/bag_status (derivation path)."""
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        if req.step != "resolve.extract":
+            return super().complete(req)
+        out = {
+            "reference": "ZZZ999",
+            "reference_kind": "confirmation_code",
+            "item_hint": "stroller",
+            "intents": ["compensation", "bag"],
+            "party": {"pax_count": -1, "pax_types": []},
+            "timeline_ask": "no",
+            "claim": {
+                "reason": "bag_damaged",
+                "requested_remedy": "unknown",
+                "requested_amount": -1,
+                "has_photos": "unknown",
+                "has_receipt": "yes",
+                "reported_within_days": -1,
+                "item_unopened": "unknown",
+                "item_used": "unknown",
+                "wants_credit_instead_of_refund": "unknown",
+                "description": "stroller lost a wheel",
+            },
+            "airline": {
+                "delay_minutes": -1,
+                "cause": "unknown",
+                "is_cancelled_by_airline": "unknown",
+                "customer_accepted_alternative": "unknown",
+                "customer_cancelled": "unknown",
+                "bag_minutes_to_carousel": -1,
+                "bag_report_filed": "unknown",
+                "bag_report_filed_within_hours": -1,
+                "bag_delay_days": -1,
+                "bag_damage_type": "wheel",
+                "interim_expenses": -1,
+                "overnight_required": "unknown",
+            },
+        }
+        self.calls.append(req.step)
+        return LLMResponse(
+            text=json.dumps(out),
+            content=[],
+            tool_uses=[],
+            stop_reason="end_turn",
+            usage=Usage(10, 10),
+            model="fake",
+            parsed=out,
+        )
+
+
+def test_damaged_bag_with_unknown_code_resolves_without_re_asking(session_factory, airline_ws):
+    """The bug of 2026-10-20: bag.checked and bag.status only lived on the merchant record, so a stand-in record
+    without a bag made the engine ask the same two questions forever. Now they derive from the claim."""
+    from umpyr_rules import Clause, Effect, Rule, RulePack
+
+    with session_factory() as s:
+        rp = s.query(m.RulePack).filter_by(workspace_id=airline_ws, status="active").one()
+        pack = RulePack.model_validate(rp.pack)
+        if not any(r.rule_id == "A-BAG-1.r1" for r in pack.rules):
+            pack.clauses.append(
+                Clause(
+                    clause_id="A-BAG-1",
+                    title="Damaged bags",
+                    text="Damaged checked bags are repaired or compensated.",
+                    source_url="https://coc",
+                    tier="contract",
+                )
+            )
+            pack.rules.append(
+                Rule(
+                    rule_id="A-BAG-1.r1",
+                    clause_id="A-BAG-1",
+                    tier="contract",
+                    claim_reasons=["bag_damaged"],
+                    requires=["bag.checked", "bag.status", "bag.damage_type"],
+                    when={"and": [{"==": [{"var": "bag.checked"}, True]}, {"==": [{"var": "bag.status"}, "damaged"]}]},
+                    effect=Effect(decision="approve", remedy="voucher", amount=50),
+                )
+            )
+            rp.pack = json.loads(pack.model_dump_json())
+            s.add(rp)
+            s.commit()
+        chat = _chat(s, airline_ws)
+        out = run_turn(
+            s, BagFakeLLM(), FakeEmbedder(), chat, "My stroller lost a wheel on the flight, confirmation ZZZ999."
+        )
+        ops = out["ops"]
+        assert ops["record"]["found"] and ops["record"]["stand_in"]
+        assert (
+            ops["facts"]["bag"]["checked"] is True
+            and ops["facts"]["bag"]["status"] == "damaged"
+            and ops["facts"]["bag"]["damage_type"] == "wheel"
+        )
+        assert ops["status"] == "resolved" and ops["ruling"]["remedy"] == "voucher", ops["ruling"]
+        rec = s.query(m.OrderRecord).filter_by(workspace_id=airline_ws, order_id="ZZZ999").one()
+        assert rec.data["bags"][0]["status"] == "damaged" and rec.data["bags"][0]["checked"] is True

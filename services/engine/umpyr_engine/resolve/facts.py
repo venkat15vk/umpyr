@@ -95,6 +95,63 @@ def _item_for(items: list[dict], hint: str | None) -> dict | None:
     return items[0]
 
 
+BAG_STATUS_BY_REASON = {"bag_damaged": "damaged", "bag_delayed": "delayed", "bag_lost": "lost"}
+
+
+DAMAGE_TYPES = ("structural", "wheel", "handle", "zipper", "cosmetic", "contents", "none")
+_DAMAGE_WORDS = {
+    "wheel": ("wheel", "caster"),
+    "handle": ("handle", "strap", "grip"),
+    "zipper": ("zip",),
+    "contents": ("content", "item inside", "missing item", "stolen"),
+    "cosmetic": ("scratch", "scuff", "dent", "cosmetic", "stain"),
+    "structural": ("crack", "broken", "shell", "frame", "torn", "rip", "hole", "crush", "split", "structural"),
+}
+
+
+def normalise_damage_type(value: Any) -> str | None:
+    """Map free text ("missing wheel", "cracked shell") onto the ontology's damage vocabulary."""
+    if value is None:
+        return None
+    v = str(value).strip().lower()
+    if v in DAMAGE_TYPES:
+        return v
+    if v in ("", "unknown"):
+        return None
+    for kind, words in _DAMAGE_WORDS.items():
+        if any(w in v for w in words):
+            return kind
+    return "structural"
+
+
+def derive_bag_facts(claim: dict[str, Any] | None, airline: dict[str, Any] | None) -> dict[str, Any]:
+    """Bag facts implied by what the customer said, so a bag claim never re-asks "was it checked / what happened".
+    A bag complaint is about a checked bag; a missing wheel is damage; days late is a delay."""
+    claim = claim or {}
+    air = {k: v for k, v in (airline or {}).items() if v is not None}
+    out: dict[str, Any] = {}
+    reason = claim.get("reason") or ""
+    if reason in BAG_STATUS_BY_REASON:
+        out["status"] = BAG_STATUS_BY_REASON[reason]
+        out["checked"] = True
+    elif reason == "bag_guarantee":
+        out["checked"] = True
+    dmg = normalise_damage_type(air.get("bag_damage_type"))
+    if dmg and dmg != "none":
+        out["status"] = "damaged"
+        out["checked"] = True
+        out["damage_type"] = dmg
+    if (air.get("bag_delay_days") or 0) > 0 and "status" not in out:
+        out["status"] = "delayed"
+        out["checked"] = True
+    if air.get("bag_status") in ("delivered", "delayed", "damaged", "lost"):
+        out["status"] = air["bag_status"]
+        out.setdefault("checked", True)
+    if air.get("bag_checked") is not None:
+        out["checked"] = bool(air["bag_checked"])
+    return out
+
+
 def build_facts(
     claim: dict[str, Any],
     airline: dict[str, Any] | None,
@@ -106,6 +163,9 @@ def build_facts(
     claim = {k: v for k, v in (claim or {}).items() if v is not None}
     facts: dict[str, Any] = {"claim": claim}
     if not record:
+        derived = derive_bag_facts(claim, airline)
+        if derived:
+            facts["bag"] = derived
         return facts
     if kind == "booking":
         booking = {
@@ -142,6 +202,8 @@ def build_facts(
         ):
             if src in air:
                 b[dst] = air[src]
+        for k, v in derive_bag_facts(claim, air).items():  # what the customer said about the bag wins over a template
+            b[k] = v
         if "customer_cancelled" in air:
             booking["customer_cancelled"] = air["customer_cancelled"]
         purchased = parse_dt(record.get("purchased_at"))
