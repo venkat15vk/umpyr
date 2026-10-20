@@ -201,3 +201,14 @@ def test_check_shape_used_by_options():
         amount=Decimal("1"),
     )
     assert c.effect.remedy == "refund"
+
+
+def test_small_talk_is_only_pleasantries():
+    from umpyr_engine.resolve.customer import is_small_talk
+
+    assert is_small_talk("Good, i like you")
+    assert is_small_talk("thanks so much!")
+    assert is_small_talk("ok cool")
+    assert not is_small_talk("ok, i actually found the bill now")
+    assert not is_small_talk("thanks, when will I get it?")
+    assert not is_small_talk("good, and the refund?")

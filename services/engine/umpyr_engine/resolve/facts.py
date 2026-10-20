@@ -124,6 +124,52 @@ def normalise_damage_type(value: Any) -> str | None:
     return "structural"
 
 
+CAUSE_WORDS = {
+    "controllable": (
+        "crew",
+        "mechanical",
+        "maintenance",
+        "staff",
+        "aircraft",
+        "plane problem",
+        "it outage",
+        "system outage",
+        "overbook",
+        "catering",
+        "cleaning",
+        "fueling",
+        "within their control",
+        "airline's fault",
+        "airline fault",
+    ),
+    "uncontrollable": (
+        "weather",
+        "storm",
+        "snow",
+        "fog",
+        "wind",
+        "hurricane",
+        "thunder",
+        "air traffic",
+        "atc",
+        "tower",
+        "security",
+        "runway closure",
+        "volcan",
+        "strike",
+        "outside their control",
+    ),
+}
+
+
+def grounded_cause(extracted_cause: Any, customer_text: str) -> str | None:
+    """Keep a delay cause only when the customer's own words name it; the model must not guess (D52)."""
+    if extracted_cause not in ("controllable", "uncontrollable"):
+        return None
+    t = (customer_text or "").lower()
+    return extracted_cause if any(w in t for w in CAUSE_WORDS[extracted_cause]) else None
+
+
 def derive_bag_facts(claim: dict[str, Any] | None, airline: dict[str, Any] | None) -> dict[str, Any]:
     """Bag facts implied by what the customer said, so a bag claim never re-asks "was it checked / what happened".
     A bag complaint is about a checked bag; a missing wheel is damage; days late is a delay."""
@@ -161,12 +207,15 @@ def build_facts(
     item_hint: str | None = None,
 ) -> dict[str, Any]:
     claim = {k: v for k, v in (claim or {}).items() if v is not None}
+    if claim.get("item_unopened") is True and claim.get("item_used") is None:
+        claim["item_used"] = False  # still sealed in the box means never used; do not ask
     facts: dict[str, Any] = {"claim": claim}
     if not record:
         derived = derive_bag_facts(claim, airline)
         if derived:
             facts["bag"] = derived
         return facts
+    claim["has_receipt"] = True  # the merchant's own record is proof of purchase; a lost receipt changes nothing
     if kind == "booking":
         booking = {
             k: v

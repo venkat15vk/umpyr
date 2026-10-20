@@ -31,7 +31,8 @@ export type Ops = {
 };
 export type CustomerCitation = { document: string | null; section: string | null; page: number | null; url: string | null; document_version: string | null; quote: string };
 export type RefundOption = { remedy: string; label: string; amount: string | null; guaranteed_by_regulation: boolean; is_cash: boolean };
-export type CustomerBlock = { status_lines: string[]; citations: CustomerCitation[]; options: RefundOption[]; chosen_remedy: string | null; proactive: { question: string; answer: string }[]; queue: { sla: string | null; due_at: string | null; overdue: boolean } | null };
+export type Choice = { key: string; label: string; decision: string; remedy: string | null; amount: string | null; guaranteed_by_regulation: boolean; needs: string[] };
+export type CustomerBlock = { status_lines: string[]; citations: CustomerCitation[]; options: RefundOption[]; chosen_remedy: string | null; choices?: Choice[]; proactive: { question: string; answer: string }[]; queue: { sla: string | null; due_at: string | null; overdue: boolean } | null };
 export type Message = { role: "customer" | "assistant"; text: string; ops?: Ops | null; customer?: CustomerBlock | null };
 export type Example = { category_key: string; text: string; expected: { decision: string; remedy: string | null; amount: string | null } };
 

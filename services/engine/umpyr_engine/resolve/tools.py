@@ -63,7 +63,7 @@ def classify_llm(llm: LLMProvider, workspace_id: str, text: str, categories: lis
                 system=CLASSIFY_SYSTEM,
                 user=user,
                 schema=CLASSIFY_SCHEMA,
-                max_tokens=300,
+                max_tokens=500,
                 workspace_id=workspace_id,
             ),
         )
@@ -146,6 +146,7 @@ def stand_in_record(
     neighbour_ticket_ids: list[str],
     airline: dict[str, Any] | None = None,
     claim: dict[str, Any] | None = None,
+    item_hint: str | None = None,
 ) -> dict[str, Any] | None:
     """POC behaviour: treat any reference the customer gives as real by cloning the record behind the nearest
     historical case (falling back to any record of the right kind) under that reference. Customer PII is dropped."""
@@ -196,15 +197,23 @@ def stand_in_record(
                 is_cancelled_by_airline=False,
                 schedule_change_minutes=0,
                 is_significant_change=False,
-                customer_accepted_alternative=bool(air.get("customer_accepted_alternative")),
             )
-            data["customer_cancelled"] = bool(air.get("customer_cancelled"))
+            # choices the customer has not stated are unknown, never defaulted (D52): the template's own values go
+            f.pop("customer_accepted_alternative", None)
+            data.pop("customer_cancelled", None)
+            if air.get("customer_accepted_alternative") is not None:
+                f["customer_accepted_alternative"] = bool(air["customer_accepted_alternative"])
+            if air.get("customer_cancelled") is not None:
+                data["customer_cancelled"] = bool(air["customer_cancelled"])
             data["status"] = "active"
         if "delay_minutes" in air:
             f["delay_minutes"] = air["delay_minutes"]
             f["arrival_delay_minutes"] = air["delay_minutes"]
-        if "cause" in air:
-            f["cause"] = air["cause"]
+        # the template scenario's cause and overnight stay are not this customer's: unknown unless stated (D52)
+        for k in ("cause", "overnight_required"):
+            f.pop(k, None)
+            if k in air:
+                f[k] = air[k]
     if kind == "booking":
         from .facts import derive_bag_facts
 
@@ -224,6 +233,11 @@ def stand_in_record(
             if air.get("bag_report_filed") is not None:
                 bag["report_filed"] = air["bag_report_filed"]
             data["bags"] = [bag]
+    if kind == "order" and item_hint and data.get("items"):
+        # the template's product is not the customer's; keep its price band but call it what the customer called it
+        data["items"] = [dict(data["items"][0])]
+        data["items"][0]["name"] = item_hint
+        data["item_described_by_customer"] = True
     data["stand_in"] = True
     data["stand_in_template"] = template.order_id
     session.add(m.OrderRecord(workspace_id=workspace_id, order_id=reference, kind=kind, data=data, is_synthetic=True))
@@ -334,14 +348,16 @@ actually said or clearly implied; use "unknown"/-1/"" otherwise. Never guess. Te
   hours/days later; flight_delayed covers any request arising from a late flight; refund_request = the customer chose
   to cancel.
 - has_photos = yes only if the customer says photos are attached/sent. has_receipt = yes if they have an order
-  confirmation, receipt or order number.
+  confirmation, receipt, order number, or a card or bank statement showing the purchase (a lost paper receipt with
+  any of those is still yes).
 - If the customer answered a question from the assistant (e.g. "yes, the box is unopened"), record that fact.
 - airline fields only when the conversation is about a flight or bag; cause = controllable (crew, maintenance, IT)
   or uncontrollable (weather, air traffic control) ONLY if the customer names the reason; otherwise "unknown".
-- A customer who wants to cancel or be refunded BECAUSE the airline delayed or cancelled the flight is
-  flight_delayed / flight_cancelled (never refund_request), with customer_accepted_alternative = no and
-  customer_cancelled = unknown. refund_request and customer_cancelled = yes are only for a voluntary cancellation
-  with no disruption behind it.
+- A customer whose flight the airline delayed or cancelled is flight_delayed / flight_cancelled (never
+  refund_request). customer_accepted_alternative = yes ONLY when they say they want or took a rebooking or another
+  flight; = no ONLY when they say they will not travel or want their money back instead; = unknown when they ask
+  what their options are or have not chosen. Never infer a choice. customer_cancelled = yes only for a voluntary
+  cancellation with no disruption behind it; refund_request likewise.
 - Checked-bag problems: bag_checked = yes when the bag was checked or gate-checked; bag_status = damaged (any broken
   or missing part such as a wheel or handle), delayed, lost, or delivered; bag_damage_type names the part.
   bag_report_filed = yes when the customer reported the problem to an airport, gate or baggage agent (even if that
@@ -420,7 +436,10 @@ REPLY_SYSTEM = """You write the customer-facing reply for Umpyr, a dispute-resol
 by a deterministic rule engine; you only communicate it. Hard rules:
 - Promise exactly what `ruling` says: same remedy, same amount, nothing more. Never offer alternatives, goodwill,
   exceptions, discounts or timelines that are not in `ruling` or `authorization`.
-- If status is needs_fact: ask ONLY for the listed missing facts, in plain words, one short question each.
+- If status is needs_fact: ask ONLY for the listed missing facts, in plain words, one short question each. If
+  `ruling.missing_context` says what each fact decides (e.g. "expense reimbursement"), say so in a few words
+  ("so we can confirm whether hotel and meals are covered"); you may say what the outcome depends on, but promise
+  nothing. If the customer asked "what are my options", say the options depend on those details and ask them.
 - If `ruling.record_lookup.reference_given` is set and `found` is false: the customer DID give a reference and it did
   not match any record. Say so, quote it back, and ask them to double-check it. Never say they have not provided one.
 - Speak to the customer as "you". Never write "the customer", "the message we received" or other third-person framing.
@@ -442,12 +461,20 @@ by a deterministic rule engine; you only communicate it. Hard rules:
 - You may name a public document from `ruling.public_citations` (e.g. "under the US DOT refund rule" or "per the
   Contract of Carriage") when stating what the policy provides. Never quote rule ids, clause ids or page numbers;
   the exact citations are attached to the reply automatically.
+- Never name a product, flight number, route, date or price the customer did not mention; say "your order",
+  "the item", "your flight". Never state a choice the customer has not made (never "you chose not to accept a
+  rebooking" unless they said so). If `ruling.choices` is present (status needs_choice): nothing has been decided;
+  present each choice in one sentence (what it gives and, if `needs` is listed, what it depends on), mark the
+  regulation-guaranteed one as their right, and ask which they prefer. Do not say anything was sent for review.
 - Follow-up turns (`follow_up` present): answer the NEW ask first, in one sentence (`follow_up.intents_added`). If
   `follow_up.already_explained` is true, do not restate the policy text already given; one short clause ("as
   explained, the Contract of Carriage excludes wheel damage") is enough. If `follow_up.uncovered_ask` is set, say
   plainly that the policy does not provide what was asked, then offer the path that exists: a specialist can review
   the case for goodwill if the customer wishes. If `follow_up.goodwill_review` is true (status escalated), say a
   specialist is reviewing whether anything can be offered as goodwill and will follow up; promise nothing specific.
+  If `follow_up.unaddressed` lists intents (e.g. compensation for a hotel or meals) that no ruling, option or choice
+  covers, say in one sentence that this decision does not include them and that a specialist can review that part
+  separately; never grant or refuse them yourself.
   Keep follow-up replies to 2-4 sentences.
 - Warm, concise, professional; 2-7 sentences; plain text; no markdown; sign as the merchant's support team.
 - Never mention internal rule ids, Umpyr, or that a system decided."""
@@ -481,12 +508,16 @@ SUPERVISE_SCHEMA = {
 SUPERVISE_SYSTEM = """You are the supervisor check for Umpyr. Compare a drafted customer reply against the ruling it must
 communicate. Reject (approved=false) if the reply: promises a remedy, amount, timeline or exception not in the ruling;
 contradicts the decision; asks for facts other than the listed missing facts; or reveals internal ids. Minor wording
-differences are fine. Allowed and NOT issues: naming a public document from `public_citations`; presenting the
+differences are fine. Reject a reply that asserts a customer choice, product, flight or price that is not in the ruling or the customer's
+own message. For status needs_choice, presenting the listed `choices` and asking is REQUIRED and nothing may be
+"sent for review". Allowed and NOT issues: naming a public document from `public_citations`; presenting the
 remedies listed in `options` (first one as default); the sentences in `proactive[].answer`; the `queue.sla` window;
 offering a specialist review for goodwill when status is denied or escalated (without promising any remedy); a
-short reply that does not repeat policy text already explained on an earlier turn. For status escalated, saying a specialist or colleague will review and follow up is REQUIRED,
+short reply that does not repeat policy text already explained on an earlier turn; saying that an extra ask listed in
+`follow_up.unaddressed` is not part of this decision and that a specialist can review it. For status escalated, saying a specialist or colleague will review and follow up is REQUIRED,
 not an issue. For needs_fact with an unmatched reference, saying the reference did not match and asking the customer
-to re-check it is required. List at most three concrete issues, each under 20 words."""
+to re-check it is required. An omission is never an issue: a reply that leaves something out (the receipt, a reference, a pleasantry) is fine. Only
+reject for a wrong or unsupported statement. List at most three concrete issues, each under 20 words."""
 
 
 def supervise(llm: LLMProvider, workspace_id: str, reply: str, ruling_payload: dict[str, Any]) -> dict[str, Any]:

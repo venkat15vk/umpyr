@@ -14,9 +14,13 @@ from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from umpyr_rules import Actor, PDPPolicy, Resource, RulePack, audit_hash, authorize, evaluate
-from umpyr_rules.pdp import Action, Mode
+from umpyr_rules.pdp import MONEY_ACTIONS, Action, Mode
+
+# actions the planner gate may hold for a person: money, plus shipments and cancellations (irreversible); a rebooking is not one
+GATED_ACTIONS = set(MONEY_ACTIONS) | {Action.replacement, Action.reship, Action.cancel_order}
 
 from ..check import get_check
 from ..compile.provenance import citation as _citation
@@ -28,7 +32,7 @@ from ..llm.meter import CostMeter, metered
 from ..sandbox.synth.core import NOW as SANDBOX_NOW
 from . import customer as cx
 from . import tools
-from .facts import build_facts, find_reference
+from .facts import build_facts, find_reference, grounded_cause
 from .ledger import CaseLedger
 from .planner import history_backs_ruling, plan_case
 from .status import status_event
@@ -257,6 +261,8 @@ def _run_turn(
     emit("message.received")
     check_signal = get_check().on_ingest(ws.id, str(case.id), text, state.get("facts"))
     ledger.append("check", "check.ingest", basis={"provider": check_signal.provider}, result=check_signal.as_dict())
+    if turn > 1 and cx.is_small_talk(text):  # no ask, no new fact: acknowledge, do not re-evaluate (D52)
+        return _acknowledge_turn(session, chat, ws, kind, text, state, history, turn, ledger)
 
     # 1. classify (router, LLM fallback)
     full_text = " ".join(h["text"] for h in history if h["role"] == "customer")
@@ -371,6 +377,38 @@ def _run_turn(
         **(state.get("airline") or {}),
         **{k: v for k, v in (extracted.get("airline") or {}).items() if v is not None},
     }
+    if kind == "booking":
+        # a delay cause the customer did not name is unknown; so is an overnight stay they did not mention
+        all_customer_text = " ".join(h["text"] for h in history if h["role"] == "customer")
+        if (extracted.get("airline") or {}).get("cause") is not None:
+            if grounded_cause(extracted["airline"]["cause"], all_customer_text) is None:
+                airline["cause"] = (state.get("airline") or {}).get("cause")
+                if airline["cause"] is None:
+                    airline.pop("cause", None)
+        if (extracted.get("airline") or {}).get("overnight_required") is not None and not any(
+            w in all_customer_text.lower()
+            for w in ("overnight", "tonight", "hotel", "stay the night", "next morning", "tomorrow")
+        ):
+            airline["overnight_required"] = (state.get("airline") or {}).get("overnight_required")
+            if airline["overnight_required"] is None:
+                airline.pop("overnight_required", None)
+        # the customer's choice to travel or not is derived from what they asked for, never from the model's guess
+        ints = extracted.get("intents") or []
+        rem = (extracted.get("claim") or {}).get("requested_remedy")
+        if "rebook" in ints or rem == "rebook":
+            airline["customer_accepted_alternative"] = True
+        elif "refund" in ints or rem in ("refund", "partial_refund") or "cancel" in ints:
+            airline["customer_accepted_alternative"] = False
+        elif (extracted.get("airline") or {}).get("customer_accepted_alternative") is not None:
+            airline["customer_accepted_alternative"] = (state.get("airline") or {}).get("customer_accepted_alternative")
+            if airline["customer_accepted_alternative"] is None:
+                airline.pop("customer_accepted_alternative", None)
+    prior_choices = list(state.get("choices") or [])
+    picked = cx.detect_choice_value(prior_choices, extracted, text)
+    if picked:
+        sect, name = picked[0].split(".", 1)
+        if sect == "flight":
+            airline["customer_accepted_alternative"] = picked[1]
     if reference and not record and get_settings().assume_reference_exists:
         record = tools.stand_in_record(
             session,
@@ -379,6 +417,7 @@ def _run_turn(
             kind,
             [n["ticket_id"] for n in neighbours],
             airline if kind == "booking" else None,
+            item_hint=extracted.get("item_hint") or state.get("item_hint"),
             claim={
                 **((state.get("facts") or {}).get("claim") or {}),
                 **{k: v for k, v in (extracted.get("claim") or {}).items() if v is not None},
@@ -575,6 +614,33 @@ def _run_turn(
                 explanation="The merchant record is needed before a ruling can be made.",
             )
             status = "needs_fact"
+    # a choice only the customer can make -> present the branches, decide nothing, queue nothing (design v2 §12)
+    choices: list[dict[str, Any]] = []
+    if status == "needs_fact" and ruling is not None and record and pack:
+        choices = cx.choice_options(pack, facts, key, ruling.missing_facts)
+        if len(choices) >= 2:
+            status = "needs_choice"
+            ledger.append(
+                "umpyr",
+                "choices_offered",
+                basis={"choice_facts": sorted({c["choice_fact"] for c in choices})},
+                result={
+                    "choices": [
+                        {k: c[k] for k in ("key", "decision", "remedy", "amount", "guaranteed_by_regulation", "needs")}
+                        for c in choices
+                    ]
+                },
+            )
+            emit("needs_choice")
+        else:
+            choices = []
+    if picked:
+        ledger.append(
+            "customer",
+            "choice",
+            basis={"offered": [c["key"] for c in prior_choices]},
+            result={"fact": picked[0], "value": picked[1]},
+        )
     # never ask the same question a third time: a fact asked twice already is a data gap for a person (D50)
     asked: dict[str, int] = dict(state.get("asked_facts") or {})
     forced_escalation = None
@@ -697,6 +763,7 @@ def _run_turn(
         and authorization is not None
         and authorization.decision == "allow"
         and status == "resolved"
+        and action in GATED_ACTIONS
     ):
         status = "pending_approval"  # history and the live planner disagree on the remedy: a person confirms
         planner_gate_hit = True
@@ -798,6 +865,14 @@ def _run_turn(
             ledger.append("umpyr", "queue.overdue", basis={"due_at": queue["due_at"]}, result={"sla_hours": sla_hours})
             emit("queue.overdue")
 
+    if (state.get("queue") or {}).get("queued_at") and status != "pending_approval":
+        ledger.append(
+            "umpyr",
+            "queue.withdrawn",
+            basis={"was_due_at": state["queue"].get("due_at")},
+            result={"status": status, "reason": "the case changed before authorisation"},
+        )
+
     # 7c. next-question prediction -> prefetch the refund timeline and answer it proactively (v2 §5, §13)
     predicted = cx.predict_next_questions(session, ws.id, key)
     proactive: list[dict[str, Any]] = []
@@ -843,8 +918,14 @@ def _run_turn(
         "remedy": ruling.remedy if ruling else None,
         "amount": str(ruling.amount) if ruling and ruling.amount is not None else None,
         "policy_reason": (ruling.explanation if ruling else "no rule pack"),
-        "missing_facts": _friendly_missing(ruling.missing_facts) if ruling else [],
-        "authorization": authorization.decision if authorization else None,
+        "missing_facts": []
+        if status == "needs_choice"
+        else (_friendly_missing(ruling.missing_facts) if ruling else []),
+        "missing_context": _missing_context(ruling) if status == "needs_fact" else [],
+        "authorization": ("needs_approval" if status == "pending_approval" else authorization.decision)
+        if authorization
+        else None,
+        "queued_because": (escalation or {}).get("reason") if status == "pending_approval" else None,
         "clauses": clause_notes,
         "citations": ruling_citations,
         "public_citations": cx.public_citations(ruling_citations),
@@ -853,6 +934,11 @@ def _run_turn(
             {k: o[k] for k in ("remedy", "label", "amount", "guaranteed_by_regulation", "is_cash")} for o in options
         ],
         "chosen_remedy": chosen if options else None,
+        "choices": [
+            {k: c[k] for k in ("key", "label", "decision", "remedy", "amount", "guaranteed_by_regulation")}
+            | {"needs": _friendly_missing(c["needs"])}
+            for c in choices
+        ],
         "proactive": [{"question": p["question"], "answer": p["answer"]} for p in proactive],
         "queue": {"sla": cx.sla_sentence(sla_hours), "overdue": bool(queue and queue.get("overdue"))}
         if queue
@@ -879,20 +965,30 @@ def _run_turn(
                     set(ruling.clause_ids if ruling else []) & set(state.get("explained_clause_ids") or [])
                 ),
                 "uncovered_ask": uncovered_ask,
+                "unaddressed": _unaddressed(intents_added, ruling, options, choices, status),
                 "goodwill_review": status == "escalated"
                 and bool(forced_escalation and forced_escalation.get("precedent") is not None),
             }
             if turn > 1
             else None
         ),
-        "fallback_reply": _fallback_reply(ruling_payload),
+        "fallback_reply": _fallback_reply(
+            {
+                **ruling_payload,
+                "follow_up": {"unaddressed": _unaddressed(intents_added, ruling, options, choices, status)}
+                if turn > 1
+                else None,
+            }
+        ),
     }
     reply = tools.draft_reply(llm, ws.id, draft_payload)
-    supervisor = tools.supervise(llm, ws.id, reply, ruling_payload)
+    # the supervisor sees the customer's own message and the follow-up context, so an ask the customer made is not "unsupported"
+    sup_payload = {**ruling_payload, "customer_message": text, "follow_up": draft_payload.get("follow_up")}
+    supervisor = tools.supervise(llm, ws.id, reply, sup_payload)
     if not supervisor.get("approved"):
         draft_payload["supervisor_feedback"] = supervisor.get("issues")
         reply2 = tools.draft_reply(llm, ws.id, draft_payload)
-        supervisor2 = tools.supervise(llm, ws.id, reply2, ruling_payload)
+        supervisor2 = tools.supervise(llm, ws.id, reply2, sup_payload)
         if supervisor2.get("approved"):
             reply, supervisor = reply2, {**supervisor2, "retried": True}
         else:
@@ -1024,6 +1120,7 @@ def _run_turn(
         "citations": ruling_payload["public_citations"],
         "options": ruling_payload["options"],
         "chosen_remedy": ruling_payload["chosen_remedy"],
+        "choices": ruling_payload["choices"],
         "proactive": ruling_payload["proactive"],
         "queue": (
             {"sla": cx.sla_sentence(sla_hours), "due_at": queue.get("due_at"), "overdue": bool(queue.get("overdue"))}
@@ -1138,6 +1235,7 @@ def _run_turn(
         "intents": intents,
         "party": party,
         "asked_facts": asked,
+        "choices": choices,
         "pushbacks": pushbacks,
         "last_ruling": {
             "decision": ruling_payload["decision"],
@@ -1154,13 +1252,156 @@ def _run_turn(
         "last_status": status,
     }
     chat.status = (
-        "open" if status in ("needs_fact",) else ("resolved" if status in ("resolved", "denied") else "pending")
+        "open"
+        if status in ("needs_fact", "needs_choice")
+        else ("resolved" if status in ("resolved", "denied") else "pending")
     )
     session.add(chat)
     session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="customer", content=text, payload={}))
     session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="assistant", content=reply, payload=ops))
     session.commit()
     return {"reply": reply, "ops": ops, "customer": customer_block}
+
+
+_INTENT_REMEDIES = {
+    "refund": {"refund", "partial_refund", "store_credit", "travel_credit"},
+    "rebook": {"rebook"},
+    "replacement": {"replacement", "reship", "repair"},
+    "return": {"return_label", "refund", "store_credit"},
+    "compensation": {"points", "voucher", "expense_reimbursement", "travel_credit"},
+    "cancel": {"cancel_order", "refund", "travel_credit"},
+    "bag": {"bag_delivery", "expense_reimbursement", "voucher"},
+}
+
+
+def _addressed_intents(ruling, options, choices) -> set[str]:
+    """Intents the ruling, the offered options or the open choices already answer."""
+    remedies = set()
+    if ruling is not None and ruling.remedy:
+        remedies.add(str(ruling.remedy))
+    remedies |= {o["remedy"] for o in options}
+    remedies |= {c["remedy"] for c in choices if c.get("remedy")}
+    return {i for i, rs in _INTENT_REMEDIES.items() if rs & remedies}
+
+
+def _acknowledge_turn(session, chat, ws, kind, text, state, history, turn, ledger) -> dict[str, Any]:
+    """A turn with no ask and no new fact (thanks, small talk): one line back, nothing re-evaluated, no model call."""
+    sla = (
+        cx.sla_sentence((ws.settings or {}).get("approval_sla_hours"))
+        if (state.get("queue") or {}).get("queued_at")
+        else None
+    )
+    reply = cx.acknowledgement(state.get("last_status"), sla)
+    ledger.append(
+        "umpyr",
+        "acknowledgement",
+        basis={"rule": "no new ask and no fact change: no re-evaluation"},
+        result={"chars": len(reply)},
+    )
+    prev = (
+        session.execute(
+            select(m.ChatMessage)
+            .where(m.ChatMessage.session_id == chat.id, m.ChatMessage.role == "assistant")
+            .order_by(m.ChatMessage.created_at.desc())
+        )
+        .scalars()
+        .first()
+    )
+    prev_ops = dict((prev.payload if prev else {}) or {})
+    customer_block = {
+        "status_lines": ["Received your message"],
+        "citations": [],
+        "options": [],
+        "chosen_remedy": None,
+        "choices": [],
+        "proactive": [],
+        "queue": None,
+    }
+    ops = {
+        **prev_ops,
+        "turn": turn,
+        "status": state.get("last_status") or prev_ops.get("status") or "open",
+        "turn_delta": {
+            "turn": turn,
+            "no_ask": True,
+            "message_category": None,
+            "intents_added": [],
+            "facts_changed": [],
+            "status_before": state.get("last_status"),
+            "status": state.get("last_status"),
+            "ruling_changed": False,
+            "plan_comparison": (prev_ops.get("plan") or {}).get("comparison", {}).get("kind", "none"),
+            "pushback": False,
+            "uncovered_ask": None,
+            "precedent": None,
+        },
+        "customer": customer_block,
+        "status_events": [{"action": "message.received", "message": "Thanks, we have your message."}],
+        "tools": [
+            {
+                "tool": "acknowledge",
+                "ok": True,
+                "detail": "no new ask and no fact change; nothing re-evaluated, no model calls",
+            }
+        ],
+        "case": {
+            **(prev_ops.get("case") or {}),
+            "turns": turn,
+            "event_count": ledger.case.event_count,
+            "head_hash": ledger.case.head_hash,
+        },
+    }
+    history.append({"role": "assistant", "text": reply})
+    chat.state = {**state, "history": history, "turn": turn}
+    session.add(chat)
+    session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="customer", content=text, payload={}))
+    session.add(m.ChatMessage(session_id=chat.id, workspace_id=ws.id, role="assistant", content=reply, payload=ops))
+    session.commit()
+    return {"reply": reply, "ops": ops, "customer": customer_block}
+
+
+def _unaddressed(intents_added, ruling, options, choices, status) -> list[str]:
+    """Asks added this turn that nothing decided covers; only meaningful once something is decided."""
+    if status not in ("resolved", "denied", "pending_approval", "escalated"):
+        return []
+    covered = _addressed_intents(ruling, options, choices)
+    return [i for i in intents_added if i not in ("status", "timeline", "other") and i not in covered]
+
+
+def _missing_context(ruling) -> list[dict[str, Any]]:
+    """For each fact still needed: the remedies the undecided rules would provide, so the ask can say why."""
+    if ruling is None:
+        return []
+    out: dict[str, set[str]] = {}
+    for c in ruling.checks:
+        for f in c.missing or []:
+            if f in ruling.missing_facts:
+                rem = (
+                    str(c.effect.remedy)
+                    if c.effect and c.effect.remedy
+                    else (str(c.effect.decision) if c.effect else None)
+                )
+                if rem and rem != "none":
+                    out.setdefault(f, set()).add(rem.replace("_", " "))
+    return [{"fact": _friendly_missing([f])[0], "decides": sorted(v)} for f, v in out.items()]
+
+
+REMEDY_SENTENCE = {
+    "refund": "refund you",
+    "partial_refund": "refund you in part",
+    "replacement": "send a replacement",
+    "reship": "ship the item again",
+    "repair": "arrange a repair",
+    "return_label": "send you a prepaid return label",
+    "store_credit": "issue store credit",
+    "travel_credit": "issue travel credit",
+    "rebook": "rebook you on the next available flight at no charge",
+    "points": "award loyalty points",
+    "voucher": "issue a voucher",
+    "expense_reimbursement": "reimburse your expenses",
+    "bag_delivery": "deliver your bag",
+    "cancel_order": "cancel the order",
+}
 
 
 FRIENDLY = {
@@ -1209,6 +1450,13 @@ def _fallback_reply(rp: dict[str, Any]) -> str:
         parts.append(f"{lead}; if you prefer, you may choose {alts} instead. Just reply with your choice.")
     for p in rp.get("proactive") or []:
         parts.append(p["answer"])
+    fu = rp.get("follow_up") or {}
+    if fu.get("unaddressed"):
+        parts.append(
+            "Your request for "
+            + ", ".join(fu["unaddressed"])
+            + " is not part of this decision; a specialist can review it separately."
+        )
     return " ".join(x for x in parts if x)
 
 
@@ -1245,10 +1493,23 @@ def _fallback_core(rp: dict[str, Any]) -> str:
         )
     if st == "escalated":
         return "Thanks for the details. This one needs a specialist to review; we have passed it on and will follow up with you directly."
+    if st == "needs_choice":
+        opts = "; or ".join(
+            c["label"]
+            + (f" ({c['remedy']}" + (f" of ${c['amount']}" if c.get("amount") else "") + ")" if c.get("remedy") else "")
+            + (f" (depends on: {', '.join(c['needs'])})" if c.get("needs") else "")
+            for c in rp.get("choices") or []
+        )
+        return f"Nothing has been decided yet; the choice is yours. Based on the policy you can {opts}. Which would you prefer?"
     if st == "denied":
-        return f"Thanks for the details. Unfortunately we are not able to approve this request: {rp['policy_reason']}"
+        return (
+            "Thank you for the details. We have reviewed this against the policy and cannot approve it: "
+            f"{str(rp['policy_reason']).rstrip('.')}. If anything about your situation is different from what we understood, "
+            "tell us and we will look again."
+        )
+    label = REMEDY_SENTENCE.get(str(rp.get("remedy")), f"offer a {rp.get('remedy')}")
     return (
-        f"Good news: we can offer a {rp['remedy']}"
+        f"Good news: under the policy we can {label}"
         + (f" of ${rp['amount']}" if rp["amount"] else "")
-        + f". {rp['policy_reason']}"
+        + ". We will confirm the details with you shortly."
     )

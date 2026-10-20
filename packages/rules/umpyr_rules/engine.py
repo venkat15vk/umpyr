@@ -127,6 +127,17 @@ def evaluate(pack: RulePack, facts: dict[str, Any], category: str | None = None)
 
     # fired is already in precedence order because we iterated rules sorted.
     win_check, win_rule = fired[0]
+    win_level = (TIER_RANK[win_rule.tier], -win_rule.priority)
+    if missing_top is not None and missing_top < win_level:
+        # a rule that outranks every fired rule could not be decided: its facts come first (never let a
+        # commitment-tier remedy pre-empt an undecided regulation)
+        return Ruling(
+            decision=Decision.needs_fact,
+            missing_facts=sorted(missing_all),
+            checks=checks,
+            rule_pack_version=version,
+            explanation="Required facts are missing for a higher-precedence rule: " + ", ".join(sorted(missing_all)),
+        )
     conflicts: list[str] = []
     for _, rule in fired[1:]:
         same_level = TIER_RANK[rule.tier] == TIER_RANK[win_rule.tier] and rule.priority == win_rule.priority

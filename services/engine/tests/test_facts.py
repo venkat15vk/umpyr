@@ -42,3 +42,29 @@ def test_build_facts_bag_section_with_and_without_record():
         and with_rec["bag"]["damage_type"] == "wheel"
         and with_rec["bag"]["checked"] is True
     )
+
+
+def test_matched_record_is_proof_of_purchase():
+    at = datetime(2026, 10, 1, 12, 0)
+    record = {
+        "order_id": "R-1",
+        "placed_at": "2026-09-20T10:00:00Z",
+        "total": "60.00",
+        "items": [{"item_id": "L1", "sku": "C1", "name": "desk", "line_total": "60.00"}],
+        "shipments": [],
+    }
+    f = build_facts({"reason": "change_of_mind", "has_receipt": False}, None, record, at, "order")
+    assert f["claim"]["has_receipt"] is True
+    assert (
+        build_facts({"reason": "change_of_mind", "has_receipt": False}, None, None, at, "order")["claim"]["has_receipt"]
+        is False
+    )
+
+
+def test_delay_cause_only_from_the_customers_words():
+    from umpyr_engine.resolve.facts import grounded_cause
+
+    assert grounded_cause("controllable", "they said it was a crew issue") == "controllable"
+    assert grounded_cause("uncontrollable", "there was a snow storm in NY") == "uncontrollable"
+    assert grounded_cause("uncontrollable", "kept delaying it, no eta, what are my options") is None
+    assert grounded_cause("unknown", "weather") is None

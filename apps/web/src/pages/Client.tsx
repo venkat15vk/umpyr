@@ -156,6 +156,15 @@ export function Client() {
                       ))}
                     </div>
                   )}
+                  {m.role === "assistant" && m.customer && (m.customer.choices?.length ?? 0) > 1 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {m.customer.choices!.map((c) => (
+                        <button key={c.key} className="btn text-xs" disabled={busy} onClick={() => send(`I'd like to ${c.label}.`)}>
+                          {c.label}{c.remedy ? ` · ${c.remedy}` : ""}{c.amount ? ` $${c.amount}` : ""}{c.guaranteed_by_regulation ? " · your right" : ""}{c.needs.length ? " · depends on details" : ""}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   {m.role === "assistant" && m.customer && m.customer.queue?.sla && (
                     <div className="muted mt-1 text-xs">{m.customer.queue.overdue ? "Authorisation overdue: a specialist now owns this." : `You will hear back ${m.customer.queue.sla}.`}</div>
                   )}

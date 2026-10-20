@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-19.3",
+  "version": "2026-10-20.2",
   "clauses": 530,
   "relevant_clauses": 461,
   "ambiguous_clauses": 146,
@@ -27,14 +27,14 @@
     "AK-RET-42",
     "AK-BAG-197"
   ],
-  "rules": 37,
+  "rules": 38,
   "rules_by_tier": {
     "law": 8,
     "contract": 16,
-    "commitment": 13
+    "commitment": 14
   },
   "rules_by_decision": {
-    "approve": 12,
+    "approve": 13,
     "needs_fact": 1,
     "needs_approval": 2,
     "deny": 20,
@@ -402,7 +402,8 @@
     "added AK-DLY-45.m1",
     "added AK-BAG-134.m1",
     "added AK-BAG-134.m2",
-    "added AK-FEE-3.m1"
+    "added AK-FEE-3.m1",
+    "added AK-DLY-52.m2"
   ],
-  "compiled_at": "2026-10-19T22:07:57+00:00"
+  "compiled_at": "2026-10-20T20:39:30+00:00"
 }

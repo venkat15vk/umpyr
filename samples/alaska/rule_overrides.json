@@ -1363,6 +1363,60 @@
         "note": "The paid seat was provided; ancillary fees are refundable only when the service was not provided."
       },
       "description": "Merchant-approved reading (sandbox): seat fee not refundable when the seat was used."
+    },
+    {
+      "rule_id": "AK-DLY-52.m2",
+      "clause_id": "AK-DLY-52",
+      "tier": "commitment",
+      "priority": 5,
+      "claim_reasons": [
+        "flight_delayed",
+        "flight_cancelled",
+        "schedule_change"
+      ],
+      "requires": [
+        "flight.delay_minutes",
+        "flight.customer_accepted_alternative"
+      ],
+      "when": {
+        "and": [
+          {
+            "or": [
+              {
+                "==": [
+                  {
+                    "var": "flight.is_cancelled_by_airline"
+                  },
+                  true
+                ]
+              },
+              {
+                ">=": [
+                  {
+                    "var": "flight.delay_minutes"
+                  },
+                  180
+                ]
+              }
+            ]
+          },
+          {
+            "==": [
+              {
+                "var": "flight.customer_accepted_alternative"
+              },
+              true
+            ]
+          }
+        ]
+      },
+      "effect": {
+        "decision": "approve",
+        "remedy": "rebook",
+        "fault": "airline",
+        "note": "Customer chooses to keep travelling: rebook on the next available Alaska flight at no charge."
+      },
+      "description": "Merchant-approved reading (sandbox) of the delay-choices commitment: a customer who keeps travelling after a cancellation or a delay of 3+ hours is rebooked at no charge (the refund branch is AK-DLY-52.r1 / AK-REF-1.r1)."
     }
   ]
 }

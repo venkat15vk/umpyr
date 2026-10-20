@@ -340,6 +340,7 @@ STATUS_PAST = {
     "gate.allowed": "Approved",
     "escalation": "Handed to a specialist",
     "needs_fact": "Need a couple more details",
+    "needs_choice": "Laid out your options",
     "queue.overdue": "Authorisation took longer than promised",
     "decision.resolved": "Done",
     "decision.denied": "Reviewed and explained below",
@@ -437,3 +438,190 @@ def facts_changed(before: dict[str, Any] | None, after: dict[str, Any] | None) -
             if prev.get(k) != v:
                 out.append(f"{sect}.{k}")
     return sorted(out)
+
+
+# ---------------------------------------------------------------- choices the customer must make (design v2 §12)
+CHOICE_FACTS: dict[str, list[tuple[Any, str, str]]] = {
+    "flight.customer_accepted_alternative": [
+        (True, "rebook", "take a rebooking on the next available flight"),
+        (False, "refund", "not travel and take a refund"),
+    ],
+}
+_REBOOK_RE = re.compile(
+    r"rebook|different flight|next flight|another flight|put me on|new flight|morning flight|later flight", re.I
+)
+_REFUND_RE_CHOICE = re.compile(r"\brefund\b|not travel|money back|cancel (the|my) (trip|flight)|my card back", re.I)
+
+
+def choice_options(
+    pack: RulePack | None, facts: dict[str, Any], category: str | None, missing: list[str]
+) -> list[dict[str, Any]]:
+    """When the only thing the rules still need is the customer's own choice, evaluate each branch and present
+    them as options instead of asking a question. Nothing is queued until the customer chooses."""
+    if pack is None:
+        return []
+    import json as _json
+
+    from umpyr_rules import evaluate
+
+    out: list[dict[str, Any]] = []
+    for fact, branches in CHOICE_FACTS.items():
+        if fact not in missing:
+            continue
+        sect, name = fact.split(".", 1)
+        for value, key, label in branches:
+            f2 = _json.loads(_json.dumps(facts, default=str))
+            f2.setdefault(sect, {})[name] = value
+            r2 = evaluate(pack, f2, category=category)
+            dec = str(r2.decision)
+            if dec not in ("approve", "partial", "needs_fact"):
+                continue
+            cl = pack.clause(r2.winning_clause_id) if r2.winning_clause_id else None
+            out.append(
+                {
+                    "choice_fact": fact,
+                    "value": value,
+                    "key": key,
+                    "label": label,
+                    "decision": dec,
+                    "remedy": r2.remedy if dec != "needs_fact" else None,
+                    "amount": str(r2.amount) if dec != "needs_fact" and r2.amount is not None else None,
+                    "rule_id": r2.winning_rule_id,
+                    "tier": str(r2.tier) if r2.tier else None,
+                    "guaranteed_by_regulation": dec != "needs_fact" and str(r2.tier) == "law",
+                    "needs": list(r2.missing_facts) if dec == "needs_fact" else [],
+                    "citation": _citation(cl) if cl else None,
+                }
+            )
+    # cash/regulated first, then the rest in declared order
+    out.sort(key=lambda o: (not o["guaranteed_by_regulation"],))
+    return out
+
+
+def detect_choice_value(choices: list[dict[str, Any]], extracted: dict[str, Any], text: str) -> tuple[str, Any] | None:
+    """Which offered branch the customer picked: from extracted intents/remedy/airline facts, then plain words."""
+    if not choices:
+        return None
+    intents = extracted.get("intents") or []
+    claim = extracted.get("claim") or {}
+    air = extracted.get("airline") or {}
+    keys = {c["key"]: c for c in choices}
+    if "rebook" in keys and (
+        "rebook" in intents
+        or claim.get("requested_remedy") == "rebook"
+        or air.get("customer_accepted_alternative") is True
+    ):
+        return keys["rebook"]["choice_fact"], True
+    if "refund" in keys and (
+        claim.get("requested_remedy") in ("refund", "partial_refund")
+        or air.get("customer_accepted_alternative") is False
+    ):
+        return keys["refund"]["choice_fact"], False
+    if "rebook" in keys and _REBOOK_RE.search(text or ""):
+        return keys["rebook"]["choice_fact"], True
+    if "refund" in keys and _REFUND_RE_CHOICE.search(text or ""):
+        return keys["refund"]["choice_fact"], False
+    return None
+
+
+# ---------------------------------------------------------------- turns with no ask
+PLEASANTRIES = {
+    "thanks",
+    "thank",
+    "thx",
+    "ty",
+    "you",
+    "u",
+    "great",
+    "good",
+    "fine",
+    "ok",
+    "okay",
+    "cool",
+    "awesome",
+    "perfect",
+    "nice",
+    "sounds",
+    "appreciate",
+    "appreciated",
+    "it",
+    "i",
+    "like",
+    "love",
+    "that",
+    "this",
+    "got",
+    "understood",
+    "cheers",
+    "no",
+    "problem",
+    "will",
+    "do",
+    "bye",
+    "night",
+    "take",
+    "care",
+    "so",
+    "much",
+    "a",
+    "lot",
+    "very",
+    "really",
+    "all",
+    "for",
+    "the",
+    "help",
+    "is",
+    "are",
+    "was",
+    "and",
+    "too",
+    "super",
+    "wonderful",
+    "excellent",
+    "brilliant",
+    "kind",
+    "words",
+    "your",
+    "yes",
+    "yep",
+    "yeah",
+    "alright",
+    "sure",
+    "fantastic",
+    "amazing",
+    "helpful",
+    "have",
+    "day",
+    "weekend",
+    "glad",
+    "happy",
+    "makes",
+    "sense",
+    "noted",
+    "received",
+    "roger",
+    "k",
+}
+
+
+def is_small_talk(text: str) -> bool:
+    """Every word is a pleasantry, no question mark, short: 'Good, I like you', 'thanks so much'. Anything carrying
+    information ('ok, I found the bill') is not small talk."""
+    t = (text or "").strip()
+    if not t or len(t) > 80 or "?" in t:
+        return False
+    tokens = re.findall(r"[a-z']+", t.lower())
+    return bool(tokens) and all(tok.strip("'") in PLEASANTRIES for tok in tokens)
+
+
+def acknowledgement(last_status: str | None, sla: str | None) -> str:
+    if last_status == "pending_approval":
+        return "You're welcome. Your request is with our team" + (f" and you will hear back {sla}" if sla else "") + "."
+    if last_status in ("resolved",):
+        return "You're welcome. Everything above stands, and we will be in touch if anything else is needed."
+    if last_status == "escalated":
+        return "Thank you. A specialist has your case and will follow up with you directly."
+    if last_status in ("needs_fact", "needs_choice"):
+        return "Thanks. Whenever you are ready, send the details above and we will carry on from there."
+    return "Thank you for your message."

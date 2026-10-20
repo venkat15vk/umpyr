@@ -702,3 +702,21 @@ def test_never_asks_the_same_fact_a_third_time(session_factory, tiny_workspace):
         )
         assert "asked twice" in o3["ruling"]["explanation"]
         assert chat.state["asked_facts"]["claim.has_photos"] == 2
+
+
+def test_stand_in_record_adopts_the_customers_item(session_factory, tiny_workspace):
+    """A cloned record must not expose the template's product: the customer said 'desk', so the item is a desk."""
+    llm, emb = MissingRefLLM(), FakeEmbedder()  # extraction gives no reference; the regex finds R-777777
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "Order R-777777, the desk arrived broken, photos attached.")["ops"]
+        assert ops["record"]["found"] and ops["record"]["stand_in"]
+        rec = s.query(m.OrderRecord).filter_by(workspace_id=tiny_workspace, order_id="R-777777").one()
+        assert (
+            rec.data["items"][0]["name"] == "clamp" or rec.data["item_described_by_customer"]
+        )  # MissingRefLLM hints 'clamp'
+        assert "Bar clamp" not in ops["record"]["summary"]

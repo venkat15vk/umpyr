@@ -521,9 +521,7 @@ def test_uncovered_ask_with_precedent_escalates_with_evidence(session_factory, a
             assert o1["status"] == "denied" and o1["turn_delta"]["turn"] == 1
             o2 = run_turn(s, llm, emb, chat, "What else can you do? Can you give me credits?")["ops"]
             d = o2["turn_delta"]
-            assert (
-                d["intents_added"] == ["refund"] and d["pushback"] is True and d["message_category"] is not None
-            )
+            assert d["intents_added"] == ["refund"] and d["pushback"] is True and d["message_category"] is not None
             assert d["precedent"]["count"] == 2 and d["precedent"]["denied"] == 5 and d["precedent"]["exists"] is True
             assert o2["status"] == "escalated"
             esc = o2["ruling"]["escalation"]
@@ -558,3 +556,141 @@ def test_uncovered_ask_without_precedent_offers_review_then_escalates_on_second_
         assert o3["status"] == "escalated" and o3["ruling"]["escalation"]["type"] == "policy_gap"
         assert "pushed back 2 times" in o3["ruling"]["escalation"]["reason"]
         assert chat.state["pushbacks"] == 2
+
+
+class OptionsFakeLLM(AirlineFakeLLM):
+    """'What are my options?' (no choice made), then a rebooking choice on the next turn."""
+
+    def __init__(self):
+        super().__init__(requested_remedy="unknown")
+        self.turns = 0
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        resp = super().complete(req)
+        if req.step == "resolve.extract":
+            self.turns += 1
+            out = json.loads(resp.text)
+            out["intents"] = ["status"] if self.turns == 1 else ["rebook"]
+            out["airline"]["customer_accepted_alternative"] = "unknown" if self.turns == 1 else "yes"
+            out["claim"]["requested_remedy"] = "unknown" if self.turns == 1 else "rebook"
+            resp = LLMResponse(
+                text=json.dumps(out),
+                content=[],
+                tool_uses=[],
+                stop_reason="end_turn",
+                usage=Usage(10, 10),
+                model="fake",
+                parsed=out,
+            )
+        return resp
+
+
+def _ensure_choice_rules(s, ws):
+    from umpyr_rules import Clause, Effect, Rule, RulePack
+
+    rp = s.query(m.RulePack).filter_by(workspace_id=ws, status="active").one()
+    pack = RulePack.model_validate(rp.pack)
+    changed = False
+    for r in pack.rules:
+        if r.rule_id == "A-LAW-1.r1" and "flight.customer_accepted_alternative" not in r.requires:
+            r.requires = [*r.requires, "flight.customer_accepted_alternative"]
+            r.when = {
+                "and": [
+                    {">=": [{"var": "flight.delay_minutes"}, 180]},
+                    {"==": [{"var": "flight.customer_accepted_alternative"}, False]},
+                ]
+            }
+            changed = True
+    if not any(r.rule_id == "A-REB-1.r1" for r in pack.rules):
+        pack.clauses.append(
+            Clause(
+                clause_id="A-REB-1",
+                title="Rebooking",
+                text="During a long delay you may be rebooked on the next available flight.",
+                source_url="https://coc",
+                tier="commitment",
+            )
+        )
+        pack.rules.append(
+            Rule(
+                rule_id="A-REB-1.r1",
+                clause_id="A-REB-1",
+                tier="commitment",
+                priority=5,
+                claim_reasons=["flight_delayed"],
+                requires=["flight.delay_minutes", "flight.customer_accepted_alternative"],
+                when={
+                    "and": [
+                        {">=": [{"var": "flight.delay_minutes"}, 180]},
+                        {"==": [{"var": "flight.customer_accepted_alternative"}, True]},
+                    ]
+                },
+                effect=Effect(decision="approve", remedy="rebook"),
+            )
+        )
+        changed = True
+    if changed:
+        rp.pack = json.loads(pack.model_dump_json())
+        s.add(rp)
+        s.commit()
+
+
+def test_what_are_my_options_presents_choices_then_rebooking_is_granted(session_factory, airline_ws):
+    """The NY→SEA delay of 2026-10-20: the engine assumed the customer declined travel and queued a refund.
+    Now a choice only the customer can make is presented as options and nothing is queued."""
+    emb = FakeEmbedder()
+    with session_factory() as s:
+        _ensure_choice_rules(s, airline_ws)
+        chat = _chat(s, airline_ws, limit="10")  # a refund would need authorisation; it must NOT be queued yet
+        llm = OptionsFakeLLM()
+        out = run_turn(s, llm, emb, chat, "Flight ABC123 keeps getting delayed, now 200 minutes. What are my options?")
+        ops, cust = out["ops"], out["customer"]
+        assert ops["status"] == "needs_choice" and cust["queue"] is None
+        keys = [c["key"] for c in cust["choices"]]
+        assert keys == ["refund", "rebook"]  # regulated cash first
+        refund = cust["choices"][0]
+        assert refund["guaranteed_by_regulation"] and refund["remedy"] == "refund" and refund["amount"] == "60.00"
+        assert cust["choices"][1]["remedy"] == "rebook" and cust["choices"][1]["decision"] == "approve"
+        case = s.get(m.ResolveCase, uuid.UUID(ops["case"]["id"]))
+        assert case.status == "needs_choice" and case.due_at is None
+        actions = [e.action for e in s.query(m.CaseEvent).filter_by(case_id=case.id).order_by(m.CaseEvent.seq)]
+        assert "choices_offered" in actions and "gate" in actions
+        assert "Laid out your options" in cust["status_lines"]
+        # the customer chooses rebooking: the commitment rule applies, no refund is queued
+        out2 = run_turn(s, llm, emb, chat, "Put me on the morning flight please.")
+        ops2 = out2["ops"]
+        assert (
+            ops2["status"] == "resolved"
+            and ops2["ruling"]["remedy"] == "rebook"
+            and ops2["ruling"]["winning_rule_id"] == "A-REB-1.r1"
+        )
+        assert ops2["facts"]["flight"]["customer_accepted_alternative"] is True
+        events = s.query(m.CaseEvent).filter_by(case_id=case.id).order_by(m.CaseEvent.seq).all()
+        choice = [e for e in events if e.action == "choice"]
+        assert (
+            choice
+            and choice[-1].actor == "customer"
+            and choice[-1].result == {"fact": "flight.customer_accepted_alternative", "value": True}
+        )
+        assert CaseLedger.verify(s, case.id)["ok"]
+
+
+def test_small_talk_turn_is_acknowledged_without_re_evaluation(session_factory, airline_ws):
+    emb = FakeEmbedder()
+    with session_factory() as s:
+        chat = _chat(s, airline_ws, limit="10")
+        llm = AirlineFakeLLM()
+        out = run_turn(s, llm, emb, chat, "Flight ABC123 was delayed 200 minutes, I want a refund.")
+        assert out["ops"]["status"] == "pending_approval"
+        n_calls = len(llm.calls)
+        out2 = run_turn(s, llm, emb, chat, "Good, I like you")
+        assert len(llm.calls) == n_calls  # no model call at all
+        assert out2["ops"]["status"] == "pending_approval" and out2["ops"]["turn_delta"]["no_ask"] is True
+        assert "You're welcome" in out2["reply"] and "within 4 hours" in out2["reply"]
+        assert out2["customer"]["queue"] is None and out2["customer"]["status_lines"] == ["Received your message"]
+        events = (
+            s.query(m.CaseEvent).filter_by(case_id=uuid.UUID(out["ops"]["case"]["id"])).order_by(m.CaseEvent.seq).all()
+        )
+        assert events[-1].action == "acknowledgement" and events[-1].turn == 2
+        assert CaseLedger.verify(s, events[-1].case_id)["ok"]
+        assert chat.state["turn"] == 2 and chat.state["last_status"] == "pending_approval"
