@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     # Engine
     engine_env: str = "dev"
     data_retention_days: int = 14
+    api_gateway_secret: SecretStr | None = None  # when set, every request except /health must carry x-umpyr-gateway
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     worker_poll_seconds: float = 1.0
     max_upload_tickets: int = 2000

@@ -37,3 +37,7 @@ services/engine/data/
 
 # embedded dev postgres
 .pgdata/
+
+# wrangler local secrets
+.dev.vars
+.wrangler/

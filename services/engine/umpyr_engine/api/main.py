@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 import logging
 
 from fastapi import FastAPI, Request
@@ -26,6 +27,19 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    if settings.api_gateway_secret:
+        expected = settings.api_gateway_secret.get_secret_value()
+
+        @app.middleware("http")
+        async def _gateway(request: Request, call_next):  # type: ignore[no-untyped-def]
+            # In production the only caller is the Cloudflare Pages proxy, which adds this header after the
+            # password check. Anything else (direct hits on the Railway hostname) is refused.
+            if request.url.path != "/health" and not hmac.compare_digest(
+                request.headers.get("x-umpyr-gateway", ""), expected
+            ):
+                return JSONResponse(status_code=401, content={"error": "gateway_required"})
+            return await call_next(request)
 
     @app.exception_handler(BudgetExceeded)
     async def _budget(_: Request, exc: BudgetExceeded) -> JSONResponse:

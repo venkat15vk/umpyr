@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { PUBLIC_DEMO } from "../lib/api";
 import { Logo } from "./Logo";
 import { useTheme } from "../lib/theme";
 
@@ -16,7 +17,7 @@ export function Shell() {
           <nav className="ml-4 flex items-center gap-3 text-sm">
             <NavLink to="/rockler" className="muted hover:underline">Rockler</NavLink>
             <NavLink to="/alaska" className="muted hover:underline">Alaska</NavLink>
-            <NavLink to="/try" className="muted hover:underline">Try your data</NavLink>
+            {!PUBLIC_DEMO && <NavLink to="/try" className="muted hover:underline">Try your data</NavLink>}
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <span className="muted text-xs hidden sm:inline">All demo data is synthetic</span>

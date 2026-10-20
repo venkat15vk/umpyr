@@ -110,6 +110,56 @@ def cmd_llm(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_seed(args: argparse.Namespace) -> int:
+    """Load both sandbox merchants into the database from the cached samples/ outputs. Never calls the LLM:
+    the daily cap is forced to 0 for this process, so any uncached step fails loudly instead of spending."""
+    import os
+
+    from sqlalchemy import func, select
+
+    os.environ["DAILY_COST_CAP_USD"] = "0"
+    from .config import get_settings
+
+    get_settings.cache_clear()
+    from .db import models as m
+    from .db.base import get_session_factory
+    from .sandbox.build import run_build
+
+    report = {}
+    for client in args.clients:
+        with get_session_factory()() as s:
+            n = s.execute(select(func.count()).select_from(m.Ticket).where(m.Ticket.workspace_id == client)).scalar()
+        if n and not args.force:
+            report[client] = {"skipped": f"{n} tickets already loaded (use --force to reload)"}
+            continue
+        r = run_build(client, rebuild=False, eval_n=args.eval_n)
+        report[client] = {
+            k: (
+                v
+                if not isinstance(v, dict)
+                else {
+                    kk: vv
+                    for kk, vv in v.items()
+                    if kk
+                    in (
+                        "tickets",
+                        "records",
+                        "cases",
+                        "version",
+                        "rules",
+                        "categories_n",
+                        "precision",
+                        "recall",
+                        "agreement",
+                    )
+                }
+            )
+            for k, v in r.items()
+        }
+    print(json.dumps(report, indent=2, default=str))
+    return 0
+
+
 def cmd_sandbox(args: argparse.Namespace) -> int:
     from .sandbox.fetch import run_fetch
 
@@ -118,6 +168,8 @@ def cmd_sandbox(args: argparse.Namespace) -> int:
         gaps = [r["source_id"] for r in results if not r.get("ok")]
         print(json.dumps({"sources": len(results), "ok": len(results) - len(gaps), "gaps": gaps}, indent=2))
         return 0
+    if args.sb_cmd == "seed":
+        return cmd_seed(args)
     if args.sb_cmd == "build":
         from .sandbox.build import run_build
 
@@ -205,6 +257,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     b.add_argument("--rebuild", action="store_true")
     b.add_argument("--eval-n", type=int, default=1000)
+    sd = sbs.add_parser("seed", help="load rockler + alaska from cached samples/ (no LLM calls; idempotent)")
+    sd.add_argument("clients", nargs="*", default=["rockler", "alaska"])
+    sd.add_argument("--force", action="store_true", help="reload even if the workspace already has tickets")
+    sd.add_argument("--eval-n", type=int, default=1000)
     sy = sbs.add_parser("synth")
     sy.add_argument("client")
     sy.add_argument("--n", type=int, default=300)

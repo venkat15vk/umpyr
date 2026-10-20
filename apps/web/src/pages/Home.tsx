@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, type Health, type Spend, type Workspace } from "../lib/api";
+import { api, PUBLIC_DEMO, type Health, type Spend, type Workspace } from "../lib/api";
 
 export function Home() {
   const [health, setHealth] = useState<Health | null>(null);
@@ -25,7 +25,7 @@ export function Home() {
         <div className="mt-4 flex flex-wrap gap-2">
           <Link className="btn btn-primary" to="/rockler">Rockler sandbox</Link>
           <Link className="btn btn-primary" to="/alaska">Alaska sandbox</Link>
-          <Link className="btn" to="/try">Try your data</Link>
+          {!PUBLIC_DEMO && <Link className="btn" to="/try">Try your data</Link>}
         </div>
         {workspaces.length > 0 && (
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">

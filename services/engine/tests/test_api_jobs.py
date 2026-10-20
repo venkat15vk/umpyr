@@ -73,3 +73,20 @@ def test_workspace_summary_and_results_endpoints(client, session_factory):
     assert client.get("/workspaces/testws/categories").json() == []
     assert client.get("/workspaces/testws/rules").json()["rules"] == []
     assert client.get("/workspaces/nope/summary").status_code == 404
+
+
+def test_gateway_secret_guards_everything_but_health(monkeypatch):
+    from umpyr_engine.api.main import create_app
+    from umpyr_engine.config import get_settings
+
+    monkeypatch.setenv("API_GATEWAY_SECRET", "s3cret")
+    get_settings.cache_clear()
+    try:
+        c = TestClient(create_app())
+        assert c.get("/health").status_code == 200
+        assert c.get("/workspaces").status_code == 401
+        assert c.get("/workspaces", headers={"x-umpyr-gateway": "wrong"}).status_code == 401
+        assert c.get("/workspaces", headers={"x-umpyr-gateway": "s3cret"}).status_code == 200
+    finally:
+        monkeypatch.delenv("API_GATEWAY_SECRET")
+        get_settings.cache_clear()

@@ -1,4 +1,6 @@
 export const API_BASE: string = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "http://localhost:8000";
+// Public demo build: only the two sandbox merchants are exposed; /try, onboarding and setup are compiled out.
+export const PUBLIC_DEMO: boolean = String(import.meta.env.VITE_PUBLIC_DEMO ?? "").toLowerCase() === "true";
 
 export class ApiError extends Error {
   status: number;
