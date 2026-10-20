@@ -720,3 +720,6 @@ def test_stand_in_record_adopts_the_customers_item(session_factory, tiny_workspa
             rec.data["items"][0]["name"] == "clamp" or rec.data["item_described_by_customer"]
         )  # MissingRefLLM hints 'clamp'
         assert "Bar clamp" not in ops["record"]["summary"]
+        item = rec.data["items"][0]
+        assert item["is_power_tool"] is False and item["brand"] == "unknown" and item["is_final_sale"] is False
+        assert item["line_total"] == "45.00"  # price band kept so amounts still work

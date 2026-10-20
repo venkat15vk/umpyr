@@ -138,6 +138,69 @@ def lookup_record(session: Session, workspace_id: str, reference: str | None) ->
     return row.data if row else None
 
 
+POWER_TOOL_WORDS = (
+    "saw",
+    "drill",
+    "router",
+    "sander",
+    "planer",
+    "jointer",
+    "lathe",
+    "grinder",
+    "nailer",
+    "compressor",
+    "dust collector",
+    "bandsaw",
+    "mitre",
+    "miter",
+)
+FURNITURE_WORDS = (
+    "desk",
+    "table",
+    "chair",
+    "cabinet",
+    "bench",
+    "stool",
+    "shelf",
+    "shelves",
+    "bookcase",
+    "dresser",
+    "bed",
+    "sofa",
+)
+KNOWN_BRANDS = (
+    "laguna",
+    "sawstop",
+    "festool",
+    "dewalt",
+    "makita",
+    "bosch",
+    "milwaukee",
+    "jet",
+    "powermatic",
+    "kreg",
+    "rockler",
+    "bessey",
+    "freud",
+)
+FINAL_SALE_WORDS = ("clearance", "final sale", "closeout", "as-is", "as is")
+
+
+def item_from_hint(hint: str, template: dict[str, Any]) -> dict[str, Any]:
+    """An order line described by the customer: attributes the rules read (brand, category, power tool, final
+    sale) come from the description, never from the template; price and ids stay so amounts still work."""
+    h = (hint or "").lower()
+    item = {k: template.get(k) for k in ("item_id", "sku", "price", "quantity", "line_total") if k in template}
+    item["name"] = hint
+    item["brand"] = next((b.title() for b in KNOWN_BRANDS if b in h), "unknown")
+    item["is_power_tool"] = any(w in h for w in POWER_TOOL_WORDS)
+    item["category"] = (
+        "power_tools" if item["is_power_tool"] else ("furniture" if any(w in h for w in FURNITURE_WORDS) else "other")
+    )
+    item["is_final_sale"] = any(w in h for w in FINAL_SALE_WORDS)
+    return item
+
+
 def stand_in_record(
     session: Session,
     workspace_id: str,
@@ -234,9 +297,9 @@ def stand_in_record(
                 bag["report_filed"] = air["bag_report_filed"]
             data["bags"] = [bag]
     if kind == "order" and item_hint and data.get("items"):
-        # the template's product is not the customer's; keep its price band but call it what the customer called it
-        data["items"] = [dict(data["items"][0])]
-        data["items"][0]["name"] = item_hint
+        # the template's product is not the customer's: keep its price band, take every rule-relevant attribute
+        # from the customer's own words (a desk is not a Laguna power tool because the template was)
+        data["items"] = [item_from_hint(item_hint, data["items"][0])]
         data["item_described_by_customer"] = True
     data["stand_in"] = True
     data["stand_in_template"] = template.order_id

@@ -212,3 +212,35 @@ def test_small_talk_is_only_pleasantries():
     assert not is_small_talk("ok, i actually found the bill now")
     assert not is_small_talk("thanks, when will I get it?")
     assert not is_small_talk("good, and the refund?")
+
+
+def test_item_from_hint_reads_only_the_customers_words():
+    from umpyr_engine.resolve.tools import item_from_hint
+
+    tpl = {
+        "item_id": "L1",
+        "sku": "S",
+        "name": "Laguna Fusion Table Saw",
+        "brand": "Laguna",
+        "category": "power_tools",
+        "is_power_tool": True,
+        "is_final_sale": True,
+        "price": "2999",
+        "line_total": "2999",
+    }
+    desk = item_from_hint("desk", tpl)
+    assert desk == {
+        "item_id": "L1",
+        "sku": "S",
+        "price": "2999",
+        "line_total": "2999",
+        "name": "desk",
+        "brand": "unknown",
+        "is_power_tool": False,
+        "category": "furniture",
+        "is_final_sale": False,
+    }
+    saw = item_from_hint("SawStop table saw, clearance", tpl)
+    assert (
+        saw["is_power_tool"] and saw["brand"] == "Sawstop" and saw["is_final_sale"] and saw["category"] == "power_tools"
+    )
