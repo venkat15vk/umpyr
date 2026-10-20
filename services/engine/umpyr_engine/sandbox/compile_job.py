@@ -18,6 +18,7 @@ from ..compile.compiler import (
     new_version,
     segment_documents,
 )
+from ..compile.provenance import clause_columns
 from ..compile.sources import load_archived
 from ..db import models as m
 from ..llm import get_llm
@@ -115,6 +116,7 @@ def persist(session: Session, client: str, docs: list[dict], clauses: list[dict]
                 source_url=c["source_url"],
                 ambiguous=c["ambiguous"],
                 ambiguity_note=c.get("ambiguity_note"),
+                **clause_columns(c),
             )
         )
     # rule pack (retire previous active)

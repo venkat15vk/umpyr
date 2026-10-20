@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from umpyr_rules import RulePack as RP
 
 from ..compile.compiler import apply_overrides, assemble_pack, compile_report, convert_clauses, segment_documents
+from ..compile.provenance import attach_provenance, clause_columns, text_hash
 from ..db import models as m
 from ..embeddings import get_embedder
 from ..ingest.loader import ingest_orders, ingest_tickets
@@ -113,6 +114,7 @@ def compile_uploaded_policies(session: Session, workspace_id: str, emit: Emit, p
         f"{len(clauses)} clauses ({sum(c['relevant_to_disputes'] for c in clauses)} dispute-relevant); converting to rules",
     )
     rules, conv_report = convert_clauses(llm, clauses, workspace_id, use_batch=False)
+    attach_provenance(clauses, docs, None)  # provenance from the stored document text (no model calls)
     rules, _ = apply_overrides(rules, None)
     version = datetime.now(UTC).strftime("%Y-%m-%d") + ".1"
     pack = assemble_pack(workspace_id, clauses, rules, version)
@@ -130,6 +132,7 @@ def compile_uploaded_policies(session: Session, workspace_id: str, emit: Emit, p
                 source_url=c["source_url"],
                 ambiguous=c["ambiguous"],
                 ambiguity_note=c.get("ambiguity_note"),
+                **clause_columns(c),
             )
         )
     for old in session.execute(
@@ -322,7 +325,7 @@ def adopt_unwritten_rule(session: Session, workspace_id: str, finding: m.DriftFi
     text is the observed pattern. Returns the new rule id."""
     import re
 
-    from umpyr_rules import Clause, Effect, Rule
+    from umpyr_rules import Clause, Effect, Provenance, Rule
 
     rp = (
         session.execute(
@@ -351,6 +354,14 @@ def adopt_unwritten_rule(session: Session, workspace_id: str, finding: m.DriftFi
             source_url=f"practice://{workspace_id}/{finding.id}",
             source_title="Merchant-adopted practice (from drift analysis)",
             tier="goodwill",
+            provenance=Provenance(
+                document_id=f"practice-{finding.id}",
+                document_title="Merchant-adopted practice (from drift analysis)",
+                document_version=text_hash(finding.pattern or ""),
+                text_hash=text_hash(finding.pattern or ""),
+                public=False,
+                located=False,
+            ),
         )
     )
     pack.rules.append(
@@ -382,6 +393,9 @@ def adopt_unwritten_rule(session: Session, workspace_id: str, finding: m.DriftFi
             text=finding.pattern or "",
             tier="goodwill",
             source_url=f"practice://{workspace_id}/{finding.id}",
+            text_hash=text_hash(finding.pattern or ""),
+            document_version=text_hash(finding.pattern or ""),
+            public=False,
         )
     )
     session.add(

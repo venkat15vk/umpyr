@@ -130,6 +130,7 @@ Engine tests start an ephemeral embedded Postgres; no services or API keys neede
 - [x] **M2 — Sandboxes**: policy fetch + compile, synthetic data, offline onboarding for Rockler and Alaska.
 - [x] **M3 — Resolve chat**: `/rockler`, `/alaska` with ops view, toggles, audit.
 - [x] **M4 — Upload flow**: `/try`, column mapping, live onboarding, setup/approve.
+- [x] **V2 phase 1 — foundations** (2026-10-20): clause provenance + citations, case object + hash-chained ledger, cost per case, typed escalations, Check hooks, status events, metrics. Design: `docs/resolve-design-v2.md`; gaps: `docs/resolve-v2-gap-list.md`; plan: `docs/resolve-v2-plan.md`.
 - [~] **M5 — Eval scoreboard + deploy**. Deployed 2026-10-20 at https://demo.umpyr.org/alaska and /rockler (password gate, Railway engine, $1/day public Haiku cap; see `infra/DEPLOY.md`, D39). Eval scoreboard still open.
 
 > **POC note:** any order number or confirmation code typed in the chat is treated as real. The engine clones the record behind the nearest historical case under that reference (PII stripped, flight state aligned with what the customer said) and marks it `stand_in` in the ops panel. Set `ASSUME_REFERENCE_EXISTS=false` to get the strict behaviour (unmatched reference quoted back, hand-off to a person on repeat).

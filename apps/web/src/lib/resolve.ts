@@ -2,6 +2,9 @@ import { api } from "./api";
 
 export type ChatSession = { id: string; workspace_id: string; channel: "email" | "agent"; mode: "autonomous" | "assist" | "shadow"; auto_approve_limit: number; status: string; turn: number; category_key: string | null };
 export type Step = { step_id: string; name: string; kind: string; tool: string; clause_ids: string[]; clauses: Record<string, string>; fields: Record<string, unknown>; status: string; detail: string };
+export type Citation = { clause_id: string; title: string | null; document: string | null; document_id?: string | null; document_version: string | null; section: string | null; page: number | null; span: number[] | null; text_hash: string; url: string | null; tier?: string | null; public: boolean; quote: string };
+export type Escalation = { type: "data_gap" | "policy_gap" | "planner_disagreement" | "governance_gate"; reason: string };
+export type CaseSummary = { id: string; status: string; turns: number; event_count: number; head_hash: string | null; decision_hash: string | null; cost_usd: string; turn_cost_usd: string; llm_calls: number; escalation: Escalation | null };
 export type Neighbour = { ticket_id: string; similarity: number; category_key: string; summary: string; staff_outcome: Record<string, unknown> | null; is_drift: boolean; drift_reason: string | null; hours_to_resolve: number | null };
 export type Ops = {
   turn: number;
@@ -11,11 +14,14 @@ export type Ops = {
   procedure: { ref: string | null; name: string | null; steps: Step[] };
   record: { reference: string | null; found: boolean; summary: string | null };
   facts: Record<string, Record<string, unknown>>;
-  ruling: { decision?: string; remedy?: string | null; amount?: string | null; fault?: string | null; winning_rule_id?: string | null; winning_clause_id?: string | null; clause_ids?: string[]; missing_facts?: string[]; explanation?: string; conflicts?: string[]; status: string; clause_notes: { clause_id: string; title: string; text: string }[] };
+  ruling: { decision?: string; remedy?: string | null; amount?: string | null; fault?: string | null; winning_rule_id?: string | null; winning_clause_id?: string | null; clause_ids?: string[]; missing_facts?: string[]; explanation?: string; conflicts?: string[]; status: string; clause_notes: { clause_id: string; title: string; text: string }[]; citations?: Citation[]; escalation?: Escalation | null; gap?: { type: string; reason: string; asks: string[] } | null };
+  citations?: Record<string, Citation>;
+  case?: CaseSummary;
+  status_events?: { action: string; message: string }[];
   checks: { rule_id: string; clause_id: string; tier: string; priority: number; fired: boolean; missing: string[]; fields: Record<string, unknown> }[];
   authorization: { decision: string; action: string; reasons: string[]; amount: string | null; limit: string | null } | null;
   supervisor: { approved: boolean; issues: string[]; retried?: boolean; fallback_used?: boolean };
-  governance: { pii_masked: boolean; rule_pack_version: string | null; procedure: string | null; authority: string; supervisor_check: string; audit_hash: string; is_synthetic: boolean };
+  governance: { pii_masked: boolean; rule_pack_version: string | null; procedure: string | null; authority: string; supervisor_check: string; audit_hash: string; is_synthetic: boolean; decision_hash?: string | null; check?: string; case_cost_usd?: string; turn_cost_usd?: string; llm_calls?: number };
   tools: { tool: string; ok: boolean; detail: string }[];
   agent_message: Record<string, unknown> | null;
 };

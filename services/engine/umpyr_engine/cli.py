@@ -110,6 +110,17 @@ def cmd_llm(args: argparse.Namespace) -> int:
     return 1
 
 
+def _refresh_provenance_if_needed(client: str, report: dict) -> None:
+    """Backfill clause provenance (design v2 §6) for a sandbox loaded before phase 1. No model calls."""
+    from .db.base import get_session_factory
+    from .sandbox.provenance_job import needs_provenance, refresh_provenance
+
+    with get_session_factory()() as s:
+        if needs_provenance(s, client):
+            r = refresh_provenance(s, client, write_samples=False)
+            report[client] = {**report.get(client, {}), "provenance": {k: v for k, v in r.items() if k != "unlocated"}}
+
+
 def cmd_seed(args: argparse.Namespace) -> int:
     """Load both sandbox merchants into the database from the cached samples/ outputs. Never calls the LLM:
     the daily cap is forced to 0 for this process, so any uncached step fails loudly instead of spending."""
@@ -131,6 +142,7 @@ def cmd_seed(args: argparse.Namespace) -> int:
             n = s.execute(select(func.count()).select_from(m.Ticket).where(m.Ticket.workspace_id == client)).scalar()
         if n and not args.force:
             report[client] = {"skipped": f"{n} tickets already loaded (use --force to reload)"}
+            _refresh_provenance_if_needed(client, report)
             continue
         r = run_build(client, rebuild=False, eval_n=args.eval_n)
         report[client] = {
@@ -195,6 +207,16 @@ def cmd_sandbox(args: argparse.Namespace) -> int:
         from .sandbox.synth_job import run_synth
 
         print(json.dumps(run_synth(args.client, n=args.n, rebuild=args.rebuild, limit=args.limit), indent=2))
+        return 0
+    if args.sb_cmd == "provenance":
+        from .db.base import get_session_factory
+        from .sandbox.provenance_job import refresh_provenance
+
+        out = {}
+        for client in args.clients:
+            with get_session_factory()() as s:
+                out[client] = refresh_provenance(s, client, write_samples=not args.no_write)
+        print(json.dumps(out, indent=2, default=str))
         return 0
     if args.sb_cmd == "compile":
         from .db.base import get_session_factory
@@ -266,6 +288,11 @@ def main(argv: list[str] | None = None) -> int:
     sy.add_argument("--n", type=int, default=300)
     sy.add_argument("--limit", type=int, default=None, help="only write threads for the first N scenarios (dev)")
     sy.add_argument("--rebuild", action="store_true")
+    pv = sbs.add_parser(
+        "provenance", help="locate clauses in their source documents and store provenance (no LLM calls)"
+    )
+    pv.add_argument("clients", nargs="*", default=["rockler", "alaska"])
+    pv.add_argument("--no-write", action="store_true", help="update the database only, leave samples/ untouched")
     c = sbs.add_parser("compile")
     c.add_argument("client")
     c.add_argument("--rebuild", action="store_true")

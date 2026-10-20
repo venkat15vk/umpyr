@@ -22,6 +22,7 @@ from anthropic.types.messages.batch_create_params import Request
 from ..config import Settings
 from .base import LLMRequest, LLMResponse, ToolUse, Usage
 from .budget import BudgetGuard
+from .meter import current as current_meter
 
 log = logging.getLogger(__name__)
 
@@ -123,6 +124,7 @@ class ClaudeProvider:
         msg = self.client.messages.create(**self._params(req))
         latency_ms = int((time.monotonic() - started) * 1000)
         resp = self._parse(msg, req, is_batch=False)
+        meter = current_meter()
         resp.cost_usd = float(
             self.budget.record(
                 model=self.model,
@@ -132,8 +134,12 @@ class ClaudeProvider:
                 is_batch=False,
                 request_id=resp.request_id,
                 latency_ms=latency_ms,
+                case_id=meter.case_id if meter else None,
+                session_id=meter.session_id if meter else None,
             )
         )
+        if meter:
+            meter.add(req.step, resp.cost_usd, resp.usage.input_tokens, resp.usage.output_tokens)
         return resp
 
     def batch(self, reqs: list[LLMRequest], poll_seconds: float = 15.0) -> list[LLMResponse | None]:

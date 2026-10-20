@@ -1,3 +1,5 @@
+> Superseded for new work by `resolve-design-v2.md` (2026-10-20). This file describes the V1 POC as built; phase 1 of v2 added clause provenance, the case ledger (`resolve_cases`, `case_events`), per-case cost, typed escalations and Check hooks on top of it.
+
 # Umpyr Resolve — architecture (POC)
 
 ## Shape

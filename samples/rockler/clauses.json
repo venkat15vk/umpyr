@@ -12,7 +12,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Uses 'may' for return right; outcome at discretion of merchant beyond stated 90-day window and proof of purchase conditions.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        474,
+        635
+      ],
+      "text_hash": "b31c0f70a10b1febdf7f731d8f3a0ff6ce6d963769a3dbb91b41b34a6bd56625",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-2",
@@ -27,7 +41,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'exclusions apply' is not specified in this document.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        636,
+        782
+      ],
+      "text_hash": "b2959c768361278f650b33c6bcf994ff5c5486d4222893f5a9ace610f2f7b7d5",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-3",
@@ -42,7 +70,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        783,
+        847
+      ],
+      "text_hash": "81161a4193c49aaebadc87db159934acbd979614718ef35e3e0143c1e70e7872",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-1",
@@ -57,7 +99,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Applied 'in Rockler's discretion'; outcome not fixed.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        848,
+        1094
+      ],
+      "text_hash": "17debaae754c6c5c6ed2e230e97526abbe97ac77df29823020ae920ba97aeffa",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-4",
@@ -72,7 +128,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1282,
+        1363
+      ],
+      "text_hash": "402cc605c7ddda389d871c9ee050783bb1d76d44f7de44ae77762d109286f8ea",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-1",
@@ -87,7 +157,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1364,
+        1450
+      ],
+      "text_hash": "627b8ed8eb0790a05c7fc7e8c502d80a739b491f6254f2cf1c93a4c5871c6d29",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-5",
@@ -102,7 +186,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'Some items' does not identify which items or the fee amount.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1528,
+        1566
+      ],
+      "text_hash": "730cf91507d45ca287682c19b79ae84d372efa83c93586c266656a0103bd64cd",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-6",
@@ -117,7 +215,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1567,
+        1635
+      ],
+      "text_hash": "4bd45b7b928f47f2d0779a1e533d07e6587316b86139fafd1c6d599afdfae3a2",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-2",
@@ -132,7 +244,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1636,
+        1797
+      ],
+      "text_hash": "3b7b371deeacea193ab8a45a13d58d57fb7b9825b48563e7d5bd80e43784403d",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-7",
@@ -147,7 +273,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Phrased as encouragement, not a firm requirement.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1798,
+        1888
+      ],
+      "text_hash": "543499e08595e2492109ae73b766e68fac5942e5dd65ccdcfd1af79473bf547c",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-8",
@@ -162,7 +302,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1889,
+        1960
+      ],
+      "text_hash": "f4665c91eed5e3c96cb3b652bc969bebec9ea9b5843484052febe63dc4af7e9a",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-1",
@@ -177,7 +331,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        1961,
+        2019
+      ],
+      "text_hash": "3a9f2fc0581a31ef597f822df168fa0c66dc667307fb54ee3f565bea9b3b43aa",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-9",
@@ -192,7 +360,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'may be returned' does not state a firm right to return by mail.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        2194,
+        2315
+      ],
+      "text_hash": "8b5a3d3416152193872db1a3d8c667ceca0ed7b8ef1b206719b3e84c4e35a976",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-10",
@@ -207,7 +389,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'may be subject to' leaves fee application undetermined.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Return Guidelines",
+      "page": null,
+      "span": [
+        2460,
+        2542
+      ],
+      "text_hash": "77e5e5985eb4e722c101712317f124c6fd5b85be5655fe8909a17f822153562b",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-11",
@@ -222,7 +418,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Third-party guidelines are not set out in this document.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        2566,
+        2701
+      ],
+      "text_hash": "3721ccbebe16db5c82b14fc09869eff3c121f7389f9c677e695e7d058e2b9e76",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-2",
@@ -237,7 +447,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        2761,
+        2940
+      ],
+      "text_hash": "c500c5c9fe8bd0afa84e32232f92b0392c0c639818c6f49311109d62c8698713",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-2",
@@ -252,7 +476,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Restocking fee amount basis is not given as a number.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3017,
+        3138
+      ],
+      "text_hash": "2eea18e728872d1f81dc618c0eb763c36000a98d72e56eb75c2c1a627e2da854",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-12",
@@ -267,7 +505,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3139,
+        3205
+      ],
+      "text_hash": "b2870dc56b723d82307dbd61c8290bfa6f0d4992ef67d4fd37244a73a435ec9e",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-13",
@@ -282,7 +534,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3206,
+        3256
+      ],
+      "text_hash": "7719d7d49e3a5c96afd805a011f8931a954324becefa82c20f746fdea24d5cba",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-3",
@@ -297,7 +563,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3268,
+        3375
+      ],
+      "text_hash": "7c648db5f24c57e1af0423507b3620fecc36fcf9319929856ba944aa8fa615d4",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-4",
@@ -312,7 +592,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3576,
+        3714
+      ],
+      "text_hash": "6ac4747b604ee7c35c2d14230f46bea2cc280873d2de331688ac79fde7ef41f9",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-5",
@@ -327,7 +621,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3491,
+        3564
+      ],
+      "text_hash": "728600c8d6658a89ecf05053bd1a5abdd2df06f0cf12f8f41034f3b8822c6928",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-6",
@@ -342,7 +650,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3904,
+        4048
+      ],
+      "text_hash": "4f3d6ec2d9c663f7bcdb8f027af2748ddff7463ac84f1a1aacba4c89cacfa087",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-3",
@@ -357,7 +679,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Restocking fee amount not specified.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4175,
+        4243
+      ],
+      "text_hash": "a2dce07492450095139c6cfcfa95861302a9e726f7838c0de599e1fc38d23a7f",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-14",
@@ -372,7 +708,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4244,
+        4315
+      ],
+      "text_hash": "3c59694b3cbef8954810b7638df3a0d9e916507b45302a5eab47ef2919b672a1",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-15",
@@ -387,7 +737,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4316,
+        4411
+      ],
+      "text_hash": "b471aab3588b39d4e0679efd5a5963e45fdf4ba4a647c6ba598be09fc8189bfe",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-16",
@@ -402,7 +766,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4559,
+        4671
+      ],
+      "text_hash": "9e01182f3e101f384d84ed7c845fd9bd0938abd6bd2bcb8ff1ad2cf5aa687044",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-4",
@@ -417,7 +795,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4790,
+        4837
+      ],
+      "text_hash": "89f0872883c4bdaf8c8052efed419084c5593e664707589d01c6d18a294b8515",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-3",
@@ -432,7 +824,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4838,
+        4954
+      ],
+      "text_hash": "3e5a01f37d06dc9da6af65e0b872ad7f3d0f9b98aa57963cfdc08825f6a4a7a3",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-4",
@@ -447,7 +853,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Apple Pay and Pay Pal",
+      "page": null,
+      "span": [
+        4977,
+        5088
+      ],
+      "text_hash": "6b0a842f2e4c4743c0178dd5512ae03a1416a9243b273822e6c90e9c5195c0be",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-5",
@@ -462,7 +882,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'may require' leaves refund method undetermined.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Cash or Debit Card Returns",
+      "page": null,
+      "span": [
+        5116,
+        5253
+      ],
+      "text_hash": "3fced6fe75f09f69adcba199cef197f544bd55db48d58086d41b3a62c8b1d6b2",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-1",
@@ -477,7 +911,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Cancellation explicitly not guaranteed; outcome discretionary.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "My Account/Ordering",
+      "page": null,
+      "span": [
+        7566,
+        7660
+      ],
+      "text_hash": "88e29458398725fef071216841042656b3c7cb62b7486caeda87e9aa56f736db",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-2",
@@ -492,7 +940,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "My Account/Ordering",
+      "page": null,
+      "span": [
+        7762,
+        7873
+      ],
+      "text_hash": "28b85f70fbf56503f849ed3d592c4aed189b94d7e3360156e5c29a5a287c7cc6",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-3",
@@ -507,7 +969,21 @@
     "relevant_to_disputes": false,
     "ambiguous": true,
     "ambiguity_note": "No criteria given for approval.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "My Account/Ordering",
+      "page": null,
+      "span": [
+        9464,
+        9499
+      ],
+      "text_hash": "7190fa6e19c5f2c216f1ef2f87b1139345f6f14605768439fccc8ffe0690d05d",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-6",
@@ -522,7 +998,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "My Account/Ordering",
+      "page": null,
+      "span": [
+        9824,
+        9926
+      ],
+      "text_hash": "4c351030c4e8d105cdd5aa803d9ff0039ee414df2aa602d50fcc3c4d88590f4b",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-7",
@@ -537,7 +1027,21 @@
     "relevant_to_disputes": false,
     "ambiguous": true,
     "ambiguity_note": "Promotion availability is discretionary.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Rockler Pricing and Promotions",
+      "page": null,
+      "span": [
+        197,
+        254
+      ],
+      "text_hash": "2236bb64fce036dda9afb741fda8ab210a45abaaa16468a2ef56589e1737db9a",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-8",
@@ -552,7 +1056,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10300,
+        10507
+      ],
+      "text_hash": "597656de208a498acf3cbaee40c3816f4477d1a238df6e3cb50537cdf520cbe4",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-9",
@@ -567,7 +1085,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10241,
+        10297
+      ],
+      "text_hash": "2f9094f2930f6aaec73e8ebc6d01d48348c9722a149e50e8a0ab0340afda9af5",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-10",
@@ -582,7 +1114,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10510,
+        10556
+      ],
+      "text_hash": "b5caf5e3e3c300be24fc064c9d5ed154a02b13e03105e394201fc2f5b37f99ff",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-11",
@@ -597,7 +1143,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10677,
+        10789
+      ],
+      "text_hash": "4ac3efccd661a5200084df812bfbc995d2b067e2aa62b19756ac61a4db27cb18",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-17",
@@ -612,7 +1172,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        15819,
+        15892
+      ],
+      "text_hash": "a86a44188c83079532f11469b5d3380e750af430359e11867c8be51913130e2c",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-4",
@@ -627,7 +1201,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18040,
+        18154
+      ],
+      "text_hash": "57212aae7cfb199255c72da33ce3ae2f365182dea845e137e15e82c3ea516d31",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-5",
@@ -642,7 +1230,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Recommended replacements are offered at discretion; no refund or cancellation right is stated.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18739,
+        18868
+      ],
+      "text_hash": "0d4a0566787a31d66c2b63e3cead7bfb745004d48598975ec7ce8b105769d477",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-5",
@@ -657,7 +1259,18 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": false
+    "verbatim": false,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": null,
+      "page": null,
+      "span": null,
+      "text_hash": "c0b709af10e14a4ad8ecfaba0db685e4c727452cefb0645fe195d4f100a499d0",
+      "public": true,
+      "located": false
+    }
   },
   {
     "clause_id": "RK-SHIP-6",
@@ -672,7 +1285,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Shipping to Contiguous United States",
+      "page": null,
+      "span": [
+        11959,
+        12203
+      ],
+      "text_hash": "8e597b29290f7cc21f53b53a22b13d1b2cada5b57b1e8c6271a2e31132919f92",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-DLY-1",
@@ -687,7 +1314,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10790,
+        10902
+      ],
+      "text_hash": "4dfba9875cb4d650a8f88752c6fcb6ebdb9ffd5a97739a0a88e58d58a47367c5",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-7",
@@ -702,7 +1343,21 @@
     "relevant_to_disputes": false,
     "ambiguous": true,
     "ambiguity_note": "'Most' leaves exceptions undefined.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Direct Ship Items",
+      "page": null,
+      "span": [
+        13670,
+        13735
+      ],
+      "text_hash": "c82a332e457a62d717994766b1002943e0d661d3b51bf63641523b7a4fabd72c",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-6",
@@ -717,7 +1372,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Direct Ship Items",
+      "page": null,
+      "span": [
+        13736,
+        13839
+      ],
+      "text_hash": "8b0f8355290e292eb96f99df34093a9a69ba91fed9e506ab68fe80f1059604de",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-DLY-2",
@@ -732,7 +1401,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Direct Ship Items",
+      "page": null,
+      "span": [
+        14610,
+        14789
+      ],
+      "text_hash": "226fc01703358c11df44a37c9449962a45b43bb851d775176ab983fbf4ba32c7",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-7",
@@ -747,7 +1430,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18415,
+        18674
+      ],
+      "text_hash": "e4814f92eb275cd0a149536380d073e735dd7e9813f6eccd5b8ccb1db20fbcf3",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-8",
@@ -762,7 +1459,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18928,
+        19108
+      ],
+      "text_hash": "c24363298bc91b7788b9cea84552a2fed8262ad4ace6889d493c79b61a93aa23",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-9",
@@ -777,7 +1488,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18301,
+        18408
+      ],
+      "text_hash": "305f0c90388511bdb0a1127c8037438a7c180285307584be5f8e230abed0f0e9",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-10",
@@ -792,7 +1517,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: Is there a fee for picking up in store?",
+      "page": null,
+      "span": [
+        19551,
+        19600
+      ],
+      "text_hash": "de684bd417a4a0509f32b9ebff79d18fc1fef7ae964161517795e816ae9e368a",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-11",
@@ -807,7 +1546,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: Can someone else pick up my order?",
+      "page": null,
+      "span": [
+        20039,
+        20127
+      ],
+      "text_hash": "17f87bffc3f90fe578db2de0af06da730ac638171382a8abd919a30e1b846111",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-18",
@@ -822,7 +1575,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Refers to a 'standard return policy' that is not stated in this document; the return window and conditions cannot be determined from this text.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: Can I return or exchange items I picked up in store?",
+      "page": null,
+      "span": [
+        20325,
+        20496
+      ],
+      "text_hash": "311070cbfc18d07df3e1bbaecae85fedac122b3ce8f5481bff7601b0a239bd66",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-12",
@@ -837,7 +1604,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: What if I need to cancel my order?",
+      "page": null,
+      "span": [
+        20538,
+        20600
+      ],
+      "text_hash": "1d7a1c9030d29064ecceab846f719d8b29336fb10c4ecd59131bc180d365debe",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-13",
@@ -852,7 +1633,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: What if I need to cancel my order?",
+      "page": null,
+      "span": [
+        20692,
+        20785
+      ],
+      "text_hash": "0a4f421481505ff032a65645d3171c0463dcf95969595838c85765cd7ebec41f",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-14",
@@ -867,7 +1662,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: How long will the store hold my order?",
+      "page": null,
+      "span": [
+        20831,
+        20929
+      ],
+      "text_hash": "6691e755ac5753321f67a30b11e3f54d89f9056e481847258a025a2219777ebe",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-15",
@@ -882,7 +1691,21 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "'Promptly' is not defined; no specific notification timeframe is given.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: What if an item is out of stock after I place my order?",
+      "page": null,
+      "span": [
+        20992,
+        21089
+      ],
+      "text_hash": "b411781cf36e429a44ba934b66e3a47bf67c6cf16dcc7965b69052937d5c5d52",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-16",
@@ -897,7 +1720,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Q: Can I change my pickup location after placing an order?",
+      "page": null,
+      "span": [
+        21152,
+        21264
+      ],
+      "text_hash": "c22c6fd6448e3bb330c53fcc0373d9e0991a3b65056e0aed4ced7d8bb7742e20",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-PAY-12",
@@ -912,7 +1749,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Free Rewards Cards with Purchase",
+      "page": null,
+      "span": [
+        10559,
+        10674
+      ],
+      "text_hash": "fdfb0a33dbf1e67e8b5e66fe63e94ab5681be52109c003b9b0351ce1b176cbb5",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GEN-1",
@@ -927,7 +1778,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Actions and Ongoing Effort",
+      "page": null,
+      "span": [
+        24244,
+        24328
+      ],
+      "text_hash": "df386cac64d46b264b7abe10d4033c5cb44ec865bcbdef97544faac3959882ea",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-17",
@@ -942,7 +1807,21 @@
     "relevant_to_disputes": false,
     "ambiguous": true,
     "ambiguity_note": "Discretionary right with no stated criteria.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-faq-ordering",
+      "document_title": "Rockler FAQ: ordering, shipping, returns, guarantees",
+      "document_version": "14ea844c290dcde601695029e23c0ce2c117e7c34cde894b0af634bbc1cd6da6",
+      "section": "Actions and Ongoing Effort",
+      "page": null,
+      "span": [
+        24329,
+        24401
+      ],
+      "text_hash": "b15eb09b6136bf6658b5a5050ef21e85cd070fb2bfb5302d853f8ee6de080103",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-GUAR-7",
@@ -957,7 +1836,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        3904,
+        4098
+      ],
+      "text_hash": "6f2a1dd0d6201b6d88435e9406763f76fc75bd9df7d16953cbad7cc54d7a57ef",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-19",
@@ -972,7 +1865,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": false
+    "verbatim": false,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Third Party Web Orders",
+      "page": null,
+      "span": [
+        4559,
+        4719
+      ],
+      "text_hash": "47cdf361ad05235a15acca85dfb32547237abef7a84ca09023ed73de64a70cec",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-SHIP-8",
@@ -987,7 +1894,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Shipping to Contiguous United States",
+      "page": null,
+      "span": [
+        12755,
+        12900
+      ],
+      "text_hash": "d27361533d647409a5d7231f55e61cdcd039ad80bd37d47079d1fe368cd5bbb9",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-18",
@@ -1002,7 +1923,21 @@
     "relevant_to_disputes": true,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Returns & Exchanges",
+      "page": null,
+      "span": [
+        18040,
+        18300
+      ],
+      "text_hash": "7bd0d887d894d5a033a8184d73ab77f138441cf3f953c67d9ce68b32da34fe5f",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-19",
@@ -1017,7 +1952,21 @@
     "relevant_to_disputes": false,
     "ambiguous": true,
     "ambiguity_note": "Typical timing only; not a guarantee.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Q: When will my order be ready for pickup?",
+      "page": null,
+      "span": [
+        19733,
+        19810
+      ],
+      "text_hash": "80d74b6e975adbb17c0d1351e1f2675097f0ceccc0cea150419c459bd4890ef6",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-ORD-20",
@@ -1032,7 +1981,21 @@
     "relevant_to_disputes": false,
     "ambiguous": false,
     "ambiguity_note": null,
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Q: Can someone else pick up my order?",
+      "page": null,
+      "span": [
+        20039,
+        20184
+      ],
+      "text_hash": "25f7cb01d38f27977d21a059e2010c6d8b7975833a32896b0fe065168a49eed2",
+      "public": true,
+      "located": true
+    }
   },
   {
     "clause_id": "RK-RET-20",
@@ -1047,6 +2010,20 @@
     "relevant_to_disputes": true,
     "ambiguous": true,
     "ambiguity_note": "Refers to a 'standard return policy' not included in this chunk; the return window and conditions are not stated here.",
-    "verbatim": true
+    "verbatim": true,
+    "provenance": {
+      "document_id": "rockler-return-policy",
+      "document_title": "Rockler return policy",
+      "document_version": "ddcf96a198badea4892c30d147bb3a94ad4294256c34b91b837d7ffca11a723c",
+      "section": "Q: Can I return or exchange items I picked up in store?",
+      "page": null,
+      "span": [
+        20381,
+        20496
+      ],
+      "text_hash": "6a3c349d9515ec84f45a35e183d7db4fc8d46a7e20e409143b3d07900a6066d0",
+      "public": true,
+      "located": true
+    }
   }
 ]

@@ -1,9 +1,24 @@
-import type { Ops } from "../lib/resolve";
+import type { Citation, Ops } from "../lib/resolve";
 
 const STATUS_COLOR: Record<string, string> = { fired: "var(--accent)", ok: "var(--accent)", ready: "var(--accent)", needs_fact: "var(--warn)", pending: "var(--muted)", evaluated: "var(--muted)", placeholder: "var(--muted)", "n/a": "var(--muted)" };
 
 function Pill({ text, tone = "accent" }: { text: string; tone?: "accent" | "amber" | "muted" }) {
   return <span className={`badge ${tone === "amber" ? "badge-amber" : ""}`} style={tone === "muted" ? { background: "var(--border)", color: "var(--muted)" } : undefined}>{text}</span>;
+}
+
+function where(c: Citation): string {
+  return [c.document, c.section ? `§ ${c.section}` : null, c.page ? `p.${c.page}` : null, c.document_version ? `v${c.document_version}` : null].filter(Boolean).join(" · ");
+}
+
+/** A rule chip that links to the source document; hover shows the clause text. Citations come from rule provenance, never from a model. */
+function Cite({ id, cit, fallback }: { id: string; cit?: Citation; fallback?: string }) {
+  if (!cit) return <div title={fallback}><span className="font-mono">{id}</span></div>;
+  return (
+    <div title={cit.quote}>
+      {cit.url && !cit.url.startsWith("practice://") ? <a className="font-mono underline" href={cit.url} target="_blank" rel="noreferrer">{id}</a> : <span className="font-mono">{id}</span>}
+      <span className="muted"> {where(cit)}{cit.public ? "" : " · internal"}</span>
+    </div>
+  );
 }
 
 function fmt(v: unknown): string {
@@ -65,7 +80,7 @@ export function OpsView({ ops }: { ops?: Ops }) {
               {ops.procedure.steps.map((s) => (
                 <tr key={s.step_id} className="border-t align-top" style={{ borderColor: "var(--border)" }}>
                   <td className="py-1 pr-2"><div>{s.name}</div><div className="muted">{s.kind} · {s.tool}</div></td>
-                  <td className="py-1 pr-2">{s.clause_ids.length ? s.clause_ids.map((c) => <div key={c} title={s.clauses[c]}><span className="font-mono">{c}</span></div>) : <span className="muted">—</span>}</td>
+                  <td className="py-1 pr-2">{s.clause_ids.length ? s.clause_ids.map((c) => <Cite key={c} id={c} cit={ops.citations?.[c]} fallback={s.clauses[c]} />) : <span className="muted">—</span>}</td>
                   <td className="py-1 pr-2">{Object.keys(s.fields).length ? Object.entries(s.fields).map(([k, v]) => <div key={k}><span className="font-mono">{k}</span> = {fmt(v)}</div>) : <span className="muted">—</span>}</td>
                   <td className="py-1"><span style={{ color: STATUS_COLOR[s.status] ?? "inherit" }}>{s.status}</span><div className="muted">{s.detail}</div></td>
                 </tr>
@@ -83,12 +98,24 @@ export function OpsView({ ops }: { ops?: Ops }) {
           {r.amount && <Pill text={`$${r.amount}`} tone="muted" />}
           {r.fault && <Pill text={`fault: ${r.fault}`} tone="muted" />}
           {ops.authorization && <Pill text={`authority: ${ops.authorization.decision}`} tone={ops.authorization.decision === "allow" ? "accent" : "amber"} />}
+          {r.escalation && <Pill text={`escalation: ${r.escalation.type.replace("_", " ")}`} tone="amber" />}
+          {r.gap && <Pill text={`ask: ${r.gap.type.replace("_", " ")}`} tone="muted" />}
         </div>
         <p className="mt-1">{r.explanation}</p>
         {r.missing_facts && r.missing_facts.length > 0 && <p className="mt-1"><span className="muted">Asking for:</span> {r.missing_facts.join(", ")}</p>}
         {r.conflicts && r.conflicts.length > 0 && <p className="mt-1 text-amber-600">Conflict: {r.conflicts.join("; ")}</p>}
         {ops.authorization && <p className="muted mt-1 text-xs">PDP: {ops.authorization.action} → {ops.authorization.decision} ({ops.authorization.reasons.join("; ")})</p>}
-        {r.clause_notes.length > 0 && (
+        {r.escalation && <p className="muted mt-1 text-xs">Escalation reason: {r.escalation.reason}</p>}
+        {r.citations && r.citations.length > 0 ? (
+          <ul className="mt-2 space-y-1 text-xs">
+            {r.citations.map((c) => (
+              <li key={c.clause_id}>
+                <Cite id={c.clause_id} cit={c} />
+                <div className="muted">{c.title}: “{c.quote}”</div>
+              </li>
+            ))}
+          </ul>
+        ) : r.clause_notes.length > 0 && (
           <ul className="mt-2 space-y-1 text-xs">
             {r.clause_notes.map((c) => <li key={c.clause_id}><span className="font-mono">{c.clause_id}</span> <span className="muted">{c.title}:</span> “{c.text}”</li>)}
           </ul>
@@ -109,9 +136,17 @@ export function OpsView({ ops }: { ops?: Ops }) {
           <Pill text={ops.governance.authority} tone="muted" />
           <Pill text={`supervisor ${ops.governance.supervisor_check}`} tone={ops.governance.supervisor_check === "passed" ? "accent" : "amber"} />
           {ops.governance.is_synthetic && <Pill text="synthetic" tone="amber" />}
+          {ops.governance.check && <Pill text={`check ${ops.governance.check.replace("_", " ")}`} tone="muted" />}
+          {ops.case && <Pill text={`case cost $${Number(ops.case.cost_usd).toFixed(4)} · ${ops.case.llm_calls} calls`} tone="muted" />}
         </div>
         <div className="muted mt-1 font-mono text-xs break-all">audit sha256 {ops.governance.audit_hash}</div>
+        {ops.case && <div className="muted font-mono text-xs break-all">ledger {ops.case.event_count} events · head {ops.case.head_hash?.slice(0, 16)}… · decision {ops.case.decision_hash?.slice(0, 16)}…</div>}
         {ops.supervisor.issues.length > 0 && <div className="mt-1 text-xs text-amber-600">Supervisor notes: {ops.supervisor.issues.join("; ")}{ops.supervisor.retried ? " (reply regenerated)" : ""}</div>}
+        {ops.status_events && ops.status_events.length > 0 && (
+          <details className="mt-2 text-xs"><summary className="muted cursor-pointer">customer status timeline ({ops.status_events.length})</summary>
+            <ol className="mt-1 space-y-0.5">{ops.status_events.map((e, i) => <li key={i}><span className="font-mono">{e.action}</span> <span className="muted">{e.message}</span></li>)}</ol>
+          </details>
+        )}
         <details className="mt-2 text-xs"><summary className="muted cursor-pointer">tool trace</summary>
           <ol className="mt-1 space-y-0.5">{ops.tools.map((t, i) => <li key={i}><span className="font-mono">{t.tool}</span> <span className="muted">{t.detail}</span></li>)}</ol>
         </details>

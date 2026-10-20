@@ -22,7 +22,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from umpyr_rules import Clause as RClause
-from umpyr_rules import Effect, JsonLogicError, Rule, RulePack, apply, collect_vars
+from umpyr_rules import Effect, JsonLogicError, Provenance, Rule, RulePack, apply, collect_vars
 
 from ..llm import LLMProvider, LLMRequest
 from ..llm.helpers import json_request, llm_json, llm_json_batch, llm_json_concurrent
@@ -327,6 +327,7 @@ def assemble_pack(workspace_id: str, clauses: list[dict], rules: list[Rule], ver
             tier=c["tier"],
             ambiguous=c["ambiguous"],
             ambiguity_note=c.get("ambiguity_note"),
+            provenance=Provenance.model_validate(c["provenance"]) if c.get("provenance") else None,
         )
         for c in clauses
     ]

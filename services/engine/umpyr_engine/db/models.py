@@ -9,6 +9,7 @@ from typing import Any
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
+    DDL,
     Boolean,
     Date,
     DateTime,
@@ -20,6 +21,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    event,
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -180,6 +182,14 @@ class Clause(Base, TimestampMixin):
     source_url: Mapped[str | None] = mapped_column(Text)
     ambiguous: Mapped[bool] = mapped_column(Boolean, default=False)
     ambiguity_note: Mapped[str | None] = mapped_column(Text)
+    # provenance (design v2 §6): enough to highlight the clause in its source document
+    document_version: Mapped[str | None] = mapped_column(String(64))  # sha256 of the fetched document
+    section: Mapped[str | None] = mapped_column(Text)
+    page: Mapped[int | None] = mapped_column(Integer)
+    span_start: Mapped[int | None] = mapped_column(Integer)
+    span_end: Mapped[int | None] = mapped_column(Integer)
+    text_hash: Mapped[str | None] = mapped_column(String(64))
+    public: Mapped[bool] = mapped_column(Boolean, default=True)  # customers may be shown this document
 
 
 class RulePack(Base, TimestampMixin):
@@ -306,6 +316,72 @@ class RulingRecord(Base, TimestampMixin):
     audit_hash: Mapped[str] = mapped_column(String(64), index=True)
 
 
+class ResolveCase(Base, TimestampMixin):
+    """One case per conversation (design v2 §3). The structured state lives in `state`; every stage of every
+    turn appends to `case_events`, whose chain head is `head_hash`; `decision_hash` commits the latest decision."""
+
+    __tablename__ = "resolve_cases"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("workspaces.id", ondelete="CASCADE"), index=True)
+    session_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("chat_sessions.id", ondelete="CASCADE"), unique=True, index=True
+    )
+    status: Mapped[str] = mapped_column(
+        String(20), default="open"
+    )  # open | needs_fact | pending_approval | escalated | resolved | denied
+    category_key: Mapped[str | None] = mapped_column(String(80))
+    reference: Mapped[str | None] = mapped_column(String(60))
+    state: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # facts, intents, plan, executed[] ...
+    escalation: Mapped[dict[str, Any] | None] = mapped_column(JSONB)  # {type, reason} typed per §7
+    turns: Mapped[int] = mapped_column(Integer, default=0)
+    cost_usd: Mapped[Decimal] = mapped_column(Numeric(12, 6), default=Decimal(0))
+    llm_calls: Mapped[int] = mapped_column(Integer, default=0)
+    event_count: Mapped[int] = mapped_column(Integer, default=0)
+    head_hash: Mapped[str | None] = mapped_column(String(64))
+    decision_hash: Mapped[str | None] = mapped_column(String(64))
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+
+class CaseEvent(Base):
+    """Append-only, hash-chained ledger (design v2 §15). A trigger forbids UPDATE and DELETE except when the
+    parent case is gone (retention cascade)."""
+
+    __tablename__ = "case_events"
+    __table_args__ = (UniqueConstraint("case_id", "seq", name="uq_case_event_seq"),)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    case_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("resolve_cases.id", ondelete="CASCADE"), index=True)
+    workspace_id: Mapped[str] = mapped_column(String(64), index=True)
+    seq: Mapped[int] = mapped_column(Integer)
+    turn: Mapped[int] = mapped_column(Integer, default=0)
+    actor: Mapped[str] = mapped_column(String(30))  # customer | umpyr | merchant_reviewer | merchant_system | check
+    action: Mapped[str] = mapped_column(String(40), index=True)
+    basis: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    result: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    cost_usd: Mapped[Decimal] = mapped_column(Numeric(12, 6), default=Decimal(0))
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    prev_hash: Mapped[str | None] = mapped_column(String(64))
+    hash: Mapped[str] = mapped_column(String(64), index=True)
+
+
+CASE_EVENTS_APPEND_ONLY_DDL = """
+CREATE OR REPLACE FUNCTION case_events_append_only() RETURNS trigger AS $$
+BEGIN
+  IF TG_OP = 'DELETE' AND NOT EXISTS (SELECT 1 FROM resolve_cases WHERE id = OLD.case_id) THEN
+    RETURN OLD;  -- parent case deleted (retention): cascade is allowed
+  END IF;
+  RAISE EXCEPTION USING MESSAGE = 'case_events is append-only (refused ' || TG_OP || ')';
+END;
+$$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS case_events_no_update ON case_events;
+CREATE TRIGGER case_events_no_update BEFORE UPDATE OR DELETE ON case_events
+  FOR EACH ROW EXECUTE FUNCTION case_events_append_only();
+"""
+event.listen(CaseEvent.__table__, "after_create", DDL(CASE_EVENTS_APPEND_ONLY_DDL))
+
+
 class Job(Base, TimestampMixin):
     __tablename__ = "jobs"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
@@ -352,6 +428,8 @@ class LLMCall(Base):
     request_id: Mapped[str | None] = mapped_column(String(120))
     latency_ms: Mapped[int | None] = mapped_column(Integer)
     day: Mapped[date] = mapped_column(Date, index=True)
+    case_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), index=True)  # cost per case (v2 §1)
+    session_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

@@ -285,7 +285,7 @@ def test_modes_and_limit_route_through_pdp(session_factory, tiny_workspace):
             out = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")
             assert out["ops"]["status"] == expected, (mode, limit)
             msg = out["ops"]["agent_message"]
-            assert msg["protocol"] == "umpyr-resolve/0.1" and msg["status"] == expected and msg["audit_hash"]
+            assert msg["protocol"] == "umpyr-resolve/0.2" and msg["status"] == expected and msg["audit_hash"]
 
 
 class MissingRefLLM(FakeLLM):
@@ -383,3 +383,113 @@ def test_unmatched_reference_is_named_not_sticky_and_escalates_after_three(
         ops = run_turn(s, llm, emb, chat, "I already told you, it is R-553456. Read my message.")["ops"]
         assert ops["status"] == "escalated"
         assert "confirmed R-553456 twice" in ops["ruling"]["explanation"]
+
+
+class MeteredFakeLLM(FakeLLM):
+    """FakeLLM that reports a cost to the per-case meter, as the real provider does."""
+
+    def complete(self, req: LLMRequest) -> LLMResponse:
+        from umpyr_engine.llm.meter import current
+
+        resp = super().complete(req)
+        meter = current()
+        if meter:
+            meter.add(req.step, 0.0005, 10, 10)
+        return resp
+
+
+def test_turn_writes_case_ledger_citations_and_cost(session_factory, tiny_workspace):
+    import uuid
+
+    from umpyr_engine.resolve.ledger import CaseLedger
+
+    llm, emb = MeteredFakeLLM(), FakeEmbedder()
+    with session_factory() as s:
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="agent", mode="autonomous", auto_approve_limit=Decimal("100"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+        assert ops["status"] == "resolved"
+        case = ops["case"]
+        case_id = uuid.UUID(case["id"])
+        assert case["head_hash"] and case["decision_hash"] and case["event_count"] >= 10 and case["turns"] == 1
+        assert Decimal(case["cost_usd"]) > 0 and case["llm_calls"] == len(llm.calls)
+        assert Decimal(ops["governance"]["turn_cost_usd"]) == Decimal(case["cost_usd"])
+        # citations resolved from provenance (clause text hash, never model text)
+        cits = ops["ruling"]["citations"]
+        assert cits and cits[0]["clause_id"] == "T-DMG-1" and len(cits[0]["text_hash"]) == 64
+        assert ops["citations"]["T-DMG-1"]["quote"].startswith("Damaged items") and cits[0]["public"] is True
+        agent = ops["agent_message"]
+        assert agent["case_id"] == case["id"] and agent["citations"][0]["clause_id"] == "T-DMG-1"
+        assert agent["decision_hash"] == case["decision_hash"]
+        assert ops["ruling"]["escalation"] is None and ops["governance"]["check"] == "not_configured"
+        assert ops["status_events"][0]["action"] == "message.received"
+        assert ops["status_events"][-1]["action"] == "decision.resolved"
+        events = s.query(m.CaseEvent).filter_by(case_id=case_id).order_by(m.CaseEvent.seq).all()
+        actions = [e.action for e in events]
+        assert actions[:3] == ["case.opened", "message.received", "check.ingest"]
+        for a in (
+            "classification",
+            "precedent.retrieved",
+            "plan.selected",
+            "record.lookup",
+            "extraction",
+            "rule_check",
+            "check.pre_execution",
+            "gate",
+            "notification.drafted",
+            "decision",
+        ):
+            assert a in actions, a
+        assert actions[-1] == "decision"
+        rule_ev = next(e for e in events if e.action == "rule_check")
+        assert rule_ev.basis["citations"][0]["clause_id"] == "T-DMG-1" and rule_ev.basis["rule_pack_version"] == "t1"
+        assert sum(Decimal(e.cost_usd) for e in events) == Decimal(case["cost_usd"])
+        assert CaseLedger.verify(s, case_id)["ok"]
+        # second turn appends to the same case and keeps the chain valid
+        ops2 = run_turn(s, llm, emb, chat, "Thanks, that works.")["ops"]
+        assert ops2["case"]["id"] == case["id"] and ops2["case"]["turns"] == 2
+        assert ops2["case"]["event_count"] > case["event_count"]
+        assert CaseLedger.verify(s, case_id)["ok"]
+        row = s.get(m.ResolveCase, case_id)
+        assert row.status == "resolved" and row.resolved_at is not None and row.category_key == "returns"
+
+
+def test_escalations_are_typed(session_factory, tiny_workspace, monkeypatch):
+    from umpyr_engine.config import get_settings
+
+    llm, emb = FakeLLM(), FakeEmbedder()
+    with session_factory() as s:  # over the auto-approve limit -> queued -> governance_gate
+        chat = m.ChatSession(
+            workspace_id=tiny_workspace, channel="email", mode="autonomous", auto_approve_limit=Decimal("10"), state={}
+        )
+        s.add(chat)
+        s.commit()
+        ops = run_turn(s, llm, emb, chat, "Order R-900001 arrived broken, photos attached.")["ops"]
+        assert ops["status"] == "pending_approval"
+        assert ops["ruling"]["escalation"]["type"] == "governance_gate"
+        assert s.get(m.ResolveCase, __import__("uuid").UUID(ops["case"]["id"])).escalation["type"] == "governance_gate"
+        assert any(e["action"] == "gate.queued" for e in ops["status_events"])
+    monkeypatch.setenv("ASSUME_REFERENCE_EXISTS", "false")
+    get_settings.cache_clear()
+    llm = MissingRefLLM()  # extraction returns no reference, so an unknown order number stays unknown
+    try:
+        with session_factory() as s:  # record never found -> ask is a data gap, then escalation is a data gap
+            chat = m.ChatSession(
+                workspace_id=tiny_workspace,
+                channel="email",
+                mode="autonomous",
+                auto_approve_limit=Decimal("100"),
+                state={},
+            )
+            s.add(chat)
+            s.commit()
+            ops = run_turn(s, llm, emb, chat, "Broken clamp, order R-773456, photos attached.")["ops"]
+            assert ops["status"] == "needs_fact" and ops["ruling"]["gap"]["type"] == "data_gap"
+            ops = run_turn(s, llm, emb, chat, "It is R-773456, I am sure.")["ops"]
+            assert ops["status"] == "escalated" and ops["ruling"]["escalation"]["type"] == "data_gap"
+    finally:
+        monkeypatch.delenv("ASSUME_REFERENCE_EXISTS", raising=False)
+        get_settings.cache_clear()

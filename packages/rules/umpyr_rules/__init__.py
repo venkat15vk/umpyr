@@ -10,7 +10,7 @@
 from .audit import audit_hash, canonical_json
 from .engine import evaluate
 from .jsonlogic import JsonLogicError, apply, collect_vars
-from .model import Check, Clause, Effect, Rule, RulePack, Ruling, validate_rule
+from .model import Check, Clause, Effect, Provenance, Rule, RulePack, Ruling, validate_rule
 from .pdp import Action, Actor, Authorization, PDPPolicy, Resource, authorize
 
 __all__ = [
@@ -23,6 +23,7 @@ __all__ = [
     "Check",
     "Clause",
     "Effect",
+    "Provenance",
     "Rule",
     "RulePack",
     "Ruling",

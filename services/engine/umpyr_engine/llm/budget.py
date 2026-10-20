@@ -58,6 +58,8 @@ class BudgetGuard:
         is_batch: bool,
         request_id: str | None,
         latency_ms: int | None,
+        case_id=None,
+        session_id=None,
     ) -> Decimal:
         cost = cost_usd(
             model,
@@ -84,6 +86,8 @@ class BudgetGuard:
                     request_id=request_id,
                     latency_ms=latency_ms,
                     day=day,
+                    case_id=case_id,
+                    session_id=session_id,
                 )
             )
             stmt = pg_insert(DailySpend).values(day=day, cost_usd=cost, calls=1)
