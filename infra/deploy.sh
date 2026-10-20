@@ -99,6 +99,7 @@ deploy_secrets_railway() {
   local DAILY_COST_CAP_USD="${DAILY_COST_CAP_USD_PROD:-1}"
   for n in ANTHROPIC_API_KEY CLAUDE_MODEL API_GATEWAY_SECRET DAILY_COST_CAP_USD VOYAGE_API_KEY; do push_railway_var "$n"; done
   railway variables set --service "$RAILWAY_SERVICE" --skip-deploys \
+    RAILWAY_DOCKERFILE_PATH=infra/Dockerfile \
     LLM_PROVIDER=claude LLM_BATCH=false ENGINE_ENV=prod SEED_ON_BOOT=true ASSUME_REFERENCE_EXISTS=true \
     EMBEDDING_PROVIDER="${EMBEDDING_PROVIDER_PROD:-local}" CORS_ORIGINS="https://$PUBLIC_HOST" >/dev/null
   echo "   railway fixed settings"
