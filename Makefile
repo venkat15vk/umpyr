@@ -29,3 +29,14 @@ spend:            ## today's LLM spend by step
 
 smoke:            ## one tiny Haiku call (costs < $0.001)
 	cd services/engine && uv run umpyr llm smoke
+
+# --- release (tokens from .env; run as `make deploy`, or `! make deploy` inside Claude Code) ---
+.PHONY: deploy deploy-engine deploy-web deploy-secrets
+deploy:           ## secrets + engine (Railway) + web (Cloudflare Pages)
+	infra/deploy.sh all
+deploy-engine:    ## engine only
+	infra/deploy.sh engine
+deploy-web:       ## web only
+	infra/deploy.sh web
+deploy-secrets:   ## push secrets/variables from .env to Pages and Railway
+	infra/deploy.sh secrets

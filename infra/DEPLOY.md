@@ -173,7 +173,45 @@ Watch spend: Railway → `umpyr-engine` → **Logs**, or
 
 ---
 
-## 4. Updating later
+## 4. Releases after the first setup: one command, tokens in .env
+
+Logins are not needed again. Both CLIs accept a token from the environment, and `infra/deploy.sh`
+loads the repo-root `.env` into its own process (via python-dotenv, never printed) and pipes secrets
+through stdin.
+
+Which account you used to sign up does not matter: a Gmail login on Cloudflare and a GitHub login on
+Railway both just produce tokens.
+
+Create the tokens once:
+
+| Variable in `.env` | Where to get it |
+|---|---|
+| `RAILWAY_TOKEN` | Railway → project `umpyr` → **Settings** → **Tokens** → New token, environment *production* (a **project** token; it can only deploy this project) |
+| `RAILWAY_SERVICE` | `umpyr-engine` (or whatever you named the service) |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare → profile icon → **My Profile** → **API Tokens** → **Create Token** → *Create Custom Token*: permissions **Account · Cloudflare Pages · Edit** and **Account · Account Settings · Read** |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard → **Workers & Pages** → right-hand sidebar *Account ID* |
+| `PAGES_PROJECT` | `umpyr-web` |
+| `DEMO_PASSWORD`, `SESSION_SECRET`, `API_GATEWAY_SECRET` | the values from steps 0 and 2b |
+| `API_ORIGIN` | `https://<railway-domain>` |
+| `PUBLIC_ORIGIN` | `https://www.umpyr.org` |
+
+Then:
+
+```bash
+make deploy-secrets   # once, or whenever a secret/variable changes: pushes them to Pages and Railway
+make deploy           # every release: secrets + engine (railway up) + web (build + pages deploy)
+make deploy-engine    # engine only
+make deploy-web       # web only
+```
+
+Inside a Claude Code session type `! make deploy`; the `!` prefix runs it as you, outside the agent's
+permission rules, so the agent never handles the tokens and the values never appear in the transcript.
+
+Two things still need the dashboard once: creating the Railway Postgres and setting its
+`DATABASE_URL` reference on the service (step 1), and adding the custom domain to the Pages project
+(step 2c).
+
+## 5. Manual update (no tokens)
 
 ```bash
 # engine
@@ -187,7 +225,7 @@ valid until they expire (7 days); rotate `SESSION_SECRET` too to log everyone ou
 
 ---
 
-## 5. Not deployed on purpose
+## 6. Not deployed on purpose
 
 - **Worker** (`umpyr worker`): only needed for `/try` uploads and retention; the public build hides `/try`.
   To add it later: a second Railway service from the same Dockerfile with start command
