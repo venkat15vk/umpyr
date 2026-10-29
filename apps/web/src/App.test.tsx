@@ -9,5 +9,6 @@ describe("App shell", () => {
     expect(screen.getByText("Umpyr Resolve")).toBeInTheDocument();
     expect(screen.getAllByText(/Rockler/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/BJ's Wholesale Club/).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("Check Risk & Intent").length).toBeGreaterThan(0);
   });
 });

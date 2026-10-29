@@ -1,36 +1,34 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import categoriesJson from "../../../../samples/bjs/categories.json";
+import historyJson from "../../../../samples/bjs/history.json";
 import ordersJson from "../../../../samples/bjs/orders.json";
 import packJson from "../../../../samples/bjs/rule_pack.json";
 import proceduresJson from "../../../../samples/bjs/procedures.json";
 import ticketsJson from "../../../../samples/bjs/tickets.json";
-import { Disclaimer, Field, Hash, JsonBlock, Pill, RaciChips, RaciLegend, StatusDot } from "../components/bjs/ui";
-import { LocalResolveAdapter, type ResolveAdapter } from "../lib/bjs/adapters";
-import type { ResolveRun, RuleCheck, RunOptions, RunStep } from "../lib/bjs/resolveEngine";
+import { MetricsStrip } from "../components/MetricsStrip";
+import { OpsView } from "../components/OpsView";
+import { Field, Hash, JsonBlock, Pill, RaciChips, RaciLegend } from "../components/bjs/ui";
+import { customerTurn, emptyState, merchantAnswer, rerun, type ChatState, type Ctx, type TurnResult } from "../lib/bjs/chat";
+import type { ResolveRun, RunOptions } from "../lib/bjs/resolveEngine";
 import type { Category, Claim, Order, Procedure, RulePack, Ticket } from "../lib/bjs/types";
+import type { CustomerBlock, Ops } from "../lib/resolve";
 
 const categories = categoriesJson as Category[];
 const orders = ordersJson as unknown as Order[];
 const pack = packJson as unknown as RulePack;
 const procedures = proceduresJson as unknown as Procedure[];
 const tickets = ticketsJson as unknown as Ticket[];
+// Same ctx the FastAPI engine would hold for workspace "bjs"; the deterministic runCase sits behind lib/bjs/adapters.ts.
+const ctx: Ctx = { pack, procedures, orders, categories, history: historyJson as unknown as Ctx["history"] };
 
-// Adapter boundary: swap for RemoteResolveAdapter when the engine exposes /workspaces/bjs/cases/replay.
-const adapter: ResolveAdapter = new LocalResolveAdapter({ pack, procedures, orders, categories });
-
-/** Illustrative impact figures for the header strip. Not measured; targets for a BJ's-scale pilot. */
-const IMPACT = [
-  { label: "tickets auto-resolved", value: "71%", vs: "vs 0% today" },
-  { label: "median time to resolution", value: "3 min 40 s", vs: "vs ~26 h help desk" },
-  { label: "cost per contact", value: "$0.42", vs: "vs ~$6.80 seat-based" },
-  { label: "agent-channel share", value: "18%", vs: "members' AI agents" },
-];
+type Opts = Omit<RunOptions, "facts" | "customer_confirmed" | "staff_approved">;
+type Message = { role: "customer" | "assistant"; text: string; ops?: Ops | null; customer?: CustomerBlock | null; run?: ResolveRun | null };
 
 type FieldMeta = { label: string; type: "boolean" | "number" | "text" | "select"; options?: string[] };
 const FIELD_META: Record<string, FieldMeta> = {
   reason: { label: "Claim reason", type: "select" },
-  requested_remedy: { label: "Requested remedy", type: "select", options: ["refund", "partial_refund", "price_adjustment", "replacement", "redeliver", "none"] },
+  requested_remedy: { label: "Requested remedy", type: "select", options: ["refund", "partial_refund", "price_adjustment", "replacement", "redeliver", "store_credit", "none"] },
   has_photos: { label: "Photo provided", type: "boolean" },
   reported_within_hours: { label: "Reported after (hours)", type: "number" },
   quantity_intended: { label: "Units intended", type: "number" },
@@ -43,19 +41,18 @@ const FIELD_META: Record<string, FieldMeta> = {
   hold_age_hours: { label: "Age of pending hold (hours)", type: "number" },
 };
 const HIDDEN = new Set(["item_id", "description", "item_ids", "requested_amount"]);
+const reasonsFor = (categoryKey: string) => [...new Set(pack.rules.filter((r) => r.categories.includes(categoryKey)).flatMap((r) => r.claim_reasons))];
 
-function reasonsFor(categoryKey: string): string[] {
-  return [...new Set(pack.rules.filter((r) => r.categories.includes(categoryKey)).flatMap((r) => r.claim_reasons))];
-}
-
-function FactsEditor({ ticket, run, facts, onChange }: { ticket: Ticket; run: ResolveRun; facts: RunOptions["facts"]; onChange: (f: RunOptions["facts"]) => void }) {
+/** Editable claim facts: changing one re-runs the ruling (the engine's "fact extraction is editable" contract). */
+function FactsEditor({ run, facts, onChange }: { run: ResolveRun; facts: RunOptions["facts"]; onChange: (f: RunOptions["facts"]) => void }) {
   const claim = run.facts.claim as Claim & Record<string, unknown>;
-  const keys = Object.keys(ticket.extracted).filter((k) => !HIDDEN.has(k));
+  const required = [...new Set(pack.rules.filter((r) => r.categories.includes(run.ticket.category_key)).flatMap((r) => r.requires).filter((p) => p.startsWith("claim.")).map((p) => p.slice(6)))];
+  const keys = [...new Set([...Object.keys(run.ticket.extracted), ...required])].filter((k) => !HIDDEN.has(k));
   const set = (k: string, v: unknown) => onChange({ ...facts, [k]: v });
   return (
     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
       <Field label="Item">
-        <select className="input" value={(facts.item_id ?? ticket.extracted.item_id) as string} onChange={(e) => set("item_id", e.target.value)}>
+        <select className="input" value={(facts.item_id ?? run.ticket.extracted.item_id) as string} onChange={(e) => set("item_id", e.target.value)}>
           {run.order?.items.map((i) => <option key={i.item_id} value={i.item_id}>{i.name}</option>)}
         </select>
       </Field>
@@ -72,197 +69,270 @@ function FactsEditor({ ticket, run, facts, onChange }: { ticket: Ticket; run: Re
           );
         }
         if (meta.type === "select") {
-          const opts = k === "reason" ? reasonsFor(ticket.category_key) : meta.options ?? [];
+          const opts = k === "reason" ? reasonsFor(run.ticket.category_key) : meta.options ?? [];
           return <Field key={k} label={meta.label}><select className="input" value={String(v ?? "")} onChange={(e) => set(k, e.target.value)}>{opts.map((o) => <option key={o} value={o}>{o}</option>)}</select></Field>;
         }
         if (meta.type === "number") return <Field key={k} label={meta.label}><input className="input" type="number" value={v === null || v === undefined ? "" : String(v)} onChange={(e) => set(k, e.target.value === "" ? null : Number(e.target.value))} /></Field>;
         return <Field key={k} label={meta.label}><input className="input" value={String(v ?? "")} onChange={(e) => set(k, e.target.value)} /></Field>;
       })}
-      <div className="sm:col-span-2 lg:col-span-3 muted text-[11px]">Order, item, member and fulfilment facts come from BJ's record (read-only here): {run.facts.item.name} · {run.order?.fulfilment.method.replace(/_/g, " ")} · member {run.order?.member.tier === "club_plus" ? "Club+" : "Club"} · payments {run.order?.payments ? `${run.order.payments.posted_captures} posted, ${run.order.payments.pending_holds} pending` : "n/a"}.</div>
+      <div className="muted text-[11px] sm:col-span-2 lg:col-span-3">Order, item, member and fulfilment facts come from BJ's record (read-only): {run.facts.item.name} · {run.order?.fulfilment.method.replace(/_/g, " ")} · member {run.order?.member.tier === "club_plus" ? "Club+" : "Club"} · payments {run.order?.payments ? `${run.order.payments.posted_captures} posted, ${run.order.payments.pending_holds} pending` : "n/a"}.</div>
     </div>
   );
 }
 
-function Checks({ checks }: { checks: RuleCheck[] }) {
+const FAULT_TEXT: Record<string, string> = {
+  customer: "the member",
+  agent: "the member's AI agent (acted outside the member's instruction)",
+  agent_platform: "the agent platform (attestation, protocol or mandate handling)",
+  merchant: "BJ's (club, warehouse or systems)",
+  third_party: "a third party (delivery partner, carrier or payment processor)",
+  indeterminate: "not determinable from the facts on file",
+};
+
+/** BJ's-specific blocks inside the Ruling section: fault, editable facts, terms hash, execution, lifecycle closure. */
+function RulingExtra({ run, state, onFacts, onStaff, onConfirm }: { run: ResolveRun; state: ChatState; onFacts: (f: RunOptions["facts"]) => void; onStaff: () => void; onConfirm: () => void }) {
+  const win = pack.clauses.find((c) => c.clause_id === run.ruling.winning_clause_id);
   return (
-    <table className="w-full text-[11px]">
-      <thead className="muted text-left"><tr><th className="pr-2">Rule</th><th className="pr-2">Tier</th><th className="pr-2">Result</th><th>Fields</th></tr></thead>
-      <tbody>
-        {checks.map((c) => {
-          const clause = pack.clauses.find((x) => x.clause_id === c.clause_id);
-          return (
-            <tr key={c.rule_id} className="border-t align-top" style={{ borderColor: "var(--border)" }}>
-              <td className="py-1 pr-2">
-                <div className="font-mono">{clause?.source_url.startsWith("http") ? <a className="underline" href={clause.source_url} target="_blank" rel="noreferrer" title={clause.text}>{c.rule_id}</a> : <span title={clause?.text}>{c.rule_id}</span>}</div>
-                <div className="muted">{c.description}</div>
-                {clause && !clause.confirmed && <Pill text="illustrative practice rule" tone="amber" />}
-              </td>
-              <td className="py-1 pr-2">{c.tier} p{c.priority}</td>
-              <td className="py-1 pr-2" style={{ color: c.fired ? "var(--accent)" : c.missing.length ? "var(--warn)" : "var(--muted)" }}>{c.fired ? "fired" : c.missing.length ? `missing ${c.missing.join(", ")}` : "not fired"}</td>
-              <td className="py-1 font-mono">{Object.entries(c.fields).map(([k, v]) => <div key={k}>{k} = {v === undefined ? "—" : JSON.stringify(v)}</div>)}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="mt-2 space-y-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>
+      <div><span className="muted">Fault:</span> <b>{run.ruling.fault}</b> · {FAULT_TEXT[run.ruling.fault]}</div>
+      {win && !win.confirmed && <div><Pill text="illustrative practice rule" tone="amber" /> <span className="muted">{win.clause_id} was not read on bjs.com; it stands in for a practice BJ's would confirm.</span></div>}
+      <details>
+        <summary className="muted cursor-pointer">extracted facts (edit to re-run the ruling)</summary>
+        <div className="mt-2"><FactsEditor run={run} facts={state.overrides} onChange={onFacts} /></div>
+      </details>
+      {run.pdp.decision === "needs_approval" && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="muted">Policy decision point: {run.pdp.reasons.join("; ")}</span>
+          {!state.staff_approved ? <button className="btn btn-primary" onClick={onStaff}>Approve as BJ's staff</button> : <Pill text="approved by BJ's staff" />}
+        </div>
+      )}
+      {run.terms.status !== "n/a" && (
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="muted">Terms the member confirms</span>
+            <Pill text={run.terms.status === "confirmed" ? "confirmed" : "awaiting confirmation"} tone={run.terms.status === "confirmed" ? "accent" : "amber"} />
+            {run.terms.status === "awaiting" && run.execution.status !== "waiting_approval" && <button className="btn !px-2 !py-0.5" onClick={onConfirm}>{run.ticket.channel === "agent" ? "Agent returns terms_accepted" : "Member clicks confirm"}</button>}
+          </div>
+          <Hash hex={run.terms.hash} label="terms sha256" />
+          <details><summary className="muted cursor-pointer">terms</summary><JsonBlock value={run.terms.terms} maxHeight={200} /></details>
+          {run.terms.confirmation && <details><summary className="muted cursor-pointer">confirmation</summary><JsonBlock value={run.terms.confirmation} maxHeight={140} /></details>}
+          <div className="muted">Nothing settles before the member confirms this hash. Money never touches Umpyr.</div>
+        </div>
+      )}
+      {run.execution.status !== "none" && (
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-2"><span className="muted">Execution (mock BJ's API)</span><Pill text={run.execution.status.replace("_", " ")} tone={run.execution.status === "executed" ? "accent" : run.execution.status === "shadow" ? "muted" : "amber"} /></div>
+          {run.execution.request && (
+            <div className="grid gap-2 md:grid-cols-2">
+              <div><div className="muted">request → BJ's</div><JsonBlock value={run.execution.request} maxHeight={200} /></div>
+              <div><div className="muted">response ← BJ's</div><JsonBlock value={run.execution.response} maxHeight={200} /></div>
+            </div>
+          )}
+        </div>
+      )}
+      <div><span className="muted">Lifecycle closure (BJ's side):</span> {run.lifecycle_note}</div>
+    </div>
   );
 }
 
-function StepBody({ step, run, ticket, opts, setOpts }: { step: RunStep; run: ResolveRun; ticket: Ticket; opts: RunOptions; setOpts: (o: RunOptions) => void }) {
-  switch (step.id) {
-    case "intake": {
-      const masked = (step.data as { masked: unknown }).masked;
-      return ticket.channel === "email"
-        ? <div className="space-y-1 text-xs">{(masked as { role: string; text: string }[]).map((m, i) => <div key={i} className="rounded-md p-2" style={{ background: "var(--bg)", border: "1px solid var(--border)" }}><span className="muted">{m.role} (masked): </span>{m.text}</div>)}</div>
-        : <JsonBlock value={masked} maxHeight={220} />;
-    }
-    case "order_match": return run.order ? <details className="text-xs"><summary className="muted cursor-pointer">BJ's order record</summary><JsonBlock value={run.order} maxHeight={260} /></details> : null;
-    case "facts": return <FactsEditor ticket={ticket} run={run} facts={opts.facts} onChange={(facts) => setOpts({ ...opts, facts })} />;
-    case "rule": {
-      const win = pack.clauses.find((c) => c.clause_id === run.ruling.winning_clause_id);
-      return (
-        <div className="space-y-2 text-xs">
-          {win && <div className="rounded-md p-2" style={{ background: "var(--bg)", border: "1px solid var(--border)" }}><div className="flex flex-wrap items-center gap-2"><span className="font-mono">{win.clause_id}</span><span className="font-medium">{win.title}</span><Pill text={win.tier} tone="muted" />{win.confirmed ? <a className="underline muted" href={win.source_url} target="_blank" rel="noreferrer">{win.source_title}</a> : <Pill text="illustrative" tone="amber" />}</div><div className="muted mt-1">“{win.text}”</div></div>}
-          <details><summary className="muted cursor-pointer">{run.checks.length} applicable rules · pack {run.pack_version}</summary><div className="mt-1 overflow-x-auto"><Checks checks={run.checks} /></div></details>
-        </div>
-      );
-    }
-    case "resolution": return run.procedure ? <details className="text-xs"><summary className="muted cursor-pointer">{run.procedure.steps.length} approved steps</summary><ol className="mt-1 space-y-0.5">{run.procedure.steps.map((s) => <li key={s.step_id}><span className="font-mono">{s.step_id}</span> {s.name} <span className="muted">· {s.kind} · {s.tool}{s.clause_ids.length ? ` · ${s.clause_ids.join(", ")}` : ""}</span></li>)}</ol></details> : null;
-    case "pdp": return (
-      <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="muted">{run.pdp.reasons.join("; ")}</span>
-        {run.pdp.decision === "needs_approval" && !opts.staff_approved && <button className="btn btn-primary" onClick={() => setOpts({ ...opts, staff_approved: true })}>Approve as BJ's staff</button>}
-        {opts.staff_approved && <Pill text="approved by BJ's staff" />}
-      </div>
-    );
-    case "terms": {
-      const d = step.data as { terms: Record<string, unknown>; hash: string; confirmation: Record<string, unknown> | null };
-      return (
-        <div className="space-y-2 text-xs">
-          <Hash hex={d.hash} label="terms sha256" />
-          <details><summary className="muted cursor-pointer">terms the member confirms</summary><JsonBlock value={d.terms} maxHeight={200} /></details>
-          {run.terms.status === "awaiting" && <button className="btn btn-primary" onClick={() => setOpts({ ...opts, customer_confirmed: true })}>{ticket.channel === "agent" ? "Agent returns terms_accepted (member approved)" : "Member clicks confirm"}</button>}
-          {d.confirmation && <JsonBlock value={d.confirmation} maxHeight={140} />}
-        </div>
-      );
-    }
-    case "execute": return run.execution.request ? <div className="grid gap-2 text-xs md:grid-cols-2"><div><div className="muted">request → BJ's</div><JsonBlock value={run.execution.request} maxHeight={200} /></div><div><div className="muted">response ← BJ's</div><JsonBlock value={run.execution.response} maxHeight={200} /></div></div> : null;
-    case "audit": return (
-      <div className="space-y-1 text-xs">
-        <Hash hex={run.audit.hash} label="record sha256" />
-        <Hash hex={run.audit.signature} label={`signature hmac-sha256 kid=${run.audit.kid}`} />
-        <details><summary className="muted cursor-pointer">audit record</summary><JsonBlock value={run.audit.record} maxHeight={260} /></details>
-      </div>
-    );
-    default: return null;
-  }
+/** BJ's-specific blocks inside Governance: the signature over the audit record and RACI per pipeline step. */
+function GovernanceExtra({ run }: { run: ResolveRun }) {
+  return (
+    <div className="mt-2 space-y-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>
+      <Hash hex={run.audit.signature} label={`signature hmac-sha256 kid=${run.audit.kid}`} />
+      <details><summary className="muted cursor-pointer">signed audit record</summary><JsonBlock value={run.audit.record} maxHeight={260} /></details>
+      <details>
+        <summary className="muted cursor-pointer">RACI per pipeline step ({run.steps.length})</summary>
+        <div className="muted mt-1"><RaciLegend /></div>
+        <table className="mt-1 w-full">
+          <tbody>
+            {run.steps.map((s) => (
+              <tr key={s.id} className="border-t align-top" style={{ borderColor: "var(--border)" }}>
+                <td className="py-1 pr-2 whitespace-nowrap"><span className="muted font-mono">{String(s.n).padStart(2, "0")}</span> {s.name}</td>
+                <td className="py-1"><RaciChips raci={s.raci} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <div className="muted">Pre-payment risk and intent on agent-placed orders is a separate product: <Link className="underline" to="/bjs/check">Check Risk &amp; Intent →</Link></div>
+    </div>
+  );
 }
 
 export function BjsResolve() {
-  const [categoryKey, setCategoryKey] = useState(categories[0].key);
-  const [opts, setOpts] = useState<RunOptions>({ channel: "email", mode: "autonomous", auto_approve_limit: 100, facts: {}, customer_confirmed: false, staff_approved: false });
-  const [open, setOpen] = useState<Record<string, boolean>>({ intake: true, facts: true, rule: true, terms: true, execute: true, audit: true });
+  const [opts, setOpts] = useState<Opts>({ channel: "email", mode: "autonomous", auto_approve_limit: 100 });
+  const [state, setState] = useState<ChatState>(emptyState());
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [tab, setTab] = useState<"customer" | "merchant">("customer");
+  const [merchantQ, setMerchantQ] = useState("");
+  const [merchantLog, setMerchantLog] = useState<{ q: string; a: string }[]>([]);
+  const endRef = useRef<HTMLDivElement>(null);
 
-  const ticket = useMemo(() => tickets.find((t) => t.category_key === categoryKey && t.channel === opts.channel) ?? tickets[0], [categoryKey, opts.channel]);
-  const run = useMemo(() => adapter.run(ticket, opts) as ResolveRun, [ticket, opts]);
-  const category = categories.find((c) => c.key === categoryKey)!;
+  const examples = useMemo(() => tickets.filter((t) => t.channel === opts.channel), [opts.channel]);
 
-  const pick = (key: string) => { setCategoryKey(key); setOpts((o) => ({ ...o, facts: {}, customer_confirmed: false, staff_approved: false })); };
-  const setChannel = (channel: "email" | "agent") => setOpts((o) => ({ ...o, channel, facts: {}, customer_confirmed: false, staff_approved: false }));
-  const decisionTone = run.ruling.decision === "approve" || run.ruling.decision === "partial" ? "accent" : run.ruling.decision === "deny" ? "amber" : "muted";
+  // scroll the chat only when a message is added, not when an ops-side action re-runs the last turn
+  useEffect(() => {
+    if (typeof endRef.current?.scrollIntoView === "function") endRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [messages.length]);
+
+  const start = () => { setState(emptyState()); setMessages([]); setInput(""); };
+
+  const apply = (r: TurnResult, replaceLast: boolean) => {
+    setState(r.state);
+    const msg: Message = { role: "assistant", text: r.reply, ops: r.ops, customer: r.customer, run: r.run };
+    setMessages((m) => {
+      if (replaceLast) {
+        const idx = [...m].reverse().findIndex((x) => x.role === "assistant");
+        if (idx >= 0) { const copy = [...m]; copy[m.length - 1 - idx] = msg; return copy; }
+      }
+      return [...m, msg];
+    });
+  };
+
+  const send = (text: string, example?: Ticket) => {
+    if (!text.trim()) return;
+    setInput("");
+    setMessages((m) => [...m, { role: "customer", text }]);
+    apply(customerTurn(state, text, opts, ctx, example), false);
+  };
+
+  // Ops-side actions re-run the same turn (no new message), like the engine's PATCH on a case.
+  const rerunWith = (patch: Partial<ChatState>, nextOpts: Opts = opts) => {
+    const s = { ...state, ...patch };
+    const r = rerun(s, nextOpts, ctx);
+    if (r) apply(r, true); else setState(s);
+  };
+  const setOption = (patch: Partial<Opts>) => {
+    const next = { ...opts, ...patch };
+    setOpts(next);
+    if (state.ticket) rerunWith({}, next);
+  };
+
+  const ask = () => {
+    if (!merchantQ.trim()) return;
+    const q = merchantQ;
+    setMerchantQ("");
+    setMerchantLog((l) => [...l, { q, a: merchantAnswer(q, ctx, tickets) }]);
+  };
+
+  const last = [...messages].reverse().find((m) => m.ops);
+  const lastOps = last?.ops ?? undefined;
+  const lastRun = last?.run ?? null;
 
   return (
     <div className="flex flex-col gap-3">
       <div className="panel flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
-        <span className="font-semibold">BJ's Wholesale Club · Resolve</span>
-        <Disclaimer product="Resolve" />
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          <label className="flex items-center gap-1"><span className="muted">Channel</span>
-            <select className="input !w-auto" value={opts.channel} onChange={(e) => setChannel(e.target.value as "email" | "agent")}><option value="email">Forwarded email</option><option value="agent">Member's AI agent</option></select></label>
-          <label className="flex items-center gap-1"><span className="muted">Mode</span>
-            <select className="input !w-auto" value={opts.mode} onChange={(e) => setOpts({ ...opts, mode: e.target.value as RunOptions["mode"] })}><option value="autonomous">Autonomous</option><option value="assist">Assist</option><option value="shadow">Shadow</option></select></label>
-          <label className="flex items-center gap-1"><span className="muted">Auto-approve ≤ $</span>
-            <input className="input !w-24" type="number" min={0} step={25} value={opts.auto_approve_limit} onChange={(e) => setOpts({ ...opts, auto_approve_limit: Number(e.target.value) })} /></label>
-          <button className="btn" onClick={() => pick(categoryKey)}>Reset case</button>
+        <span className="font-semibold">BJ's Wholesale Club</span>
+        <span className="badge badge-amber">synthetic data</span>
+        <span className="badge badge-amber" title="Illustrative demo, not affiliated with BJ's Wholesale Club">illustrative · not affiliated with BJ's</span>
+        <span className="muted">·</span>
+        <label className="flex items-center gap-1">
+          <span className="muted">Mode</span>
+          <select className="input !w-auto" value={opts.mode} onChange={(e) => setOption({ mode: e.target.value as Opts["mode"] })}>
+            <option value="autonomous">Autonomous</option>
+            <option value="assist">Assist</option>
+            <option value="shadow">Shadow</option>
+          </select>
+        </label>
+        <label className="flex items-center gap-1">
+          <span className="muted">Reply channel</span>
+          <select className="input !w-auto" value={opts.channel} onChange={(e) => setOption({ channel: e.target.value as Opts["channel"] })}>
+            <option value="email">Email</option>
+            <option value="agent">Member's AI agent</option>
+          </select>
+        </label>
+        <label className="flex items-center gap-1">
+          <span className="muted">Auto-approve ≤ $</span>
+          <input className="input !w-24" type="number" min={0} step={25} value={opts.auto_approve_limit} onChange={(e) => setOption({ auto_approve_limit: Number(e.target.value) })} />
+        </label>
+        <div className="ml-auto flex items-center gap-2">
+          <button className={`btn ${tab === "customer" ? "btn-primary" : ""}`} onClick={() => setTab("customer")}>Customer chat</button>
+          <button className={`btn ${tab === "merchant" ? "btn-primary" : ""}`} onClick={() => setTab("merchant")}>Merchant chat</button>
+          <button className="btn" onClick={start}>New case</button>
         </div>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        {IMPACT.map((m) => (
-          <div key={m.label} className="panel px-3 py-2">
-            <div className="text-lg font-semibold">{m.value}</div>
-            <div className="muted text-xs">{m.label} <span className="opacity-70">· {m.vs}</span></div>
-          </div>
-        ))}
-        <div className="muted text-[11px] sm:col-span-2 lg:col-span-4 -mt-1">Impact figures are illustrative targets for a BJ's-scale pilot, not measurements.</div>
-      </div>
+      <MetricsStrip workspace="bjs" />
 
-      <div className="flex flex-wrap gap-2">
-        {categories.map((c) => <button key={c.key} className={`btn text-xs ${c.key === categoryKey ? "btn-primary" : ""}`} onClick={() => pick(c.key)}>{c.name}</button>)}
-      </div>
-
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-        <div className="space-y-3">
-          <section className="panel p-3 text-sm">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-semibold">Ticket</h2>
-              <Pill text={ticket.ticket_id} tone="muted" />
-              <Pill text={ticket.channel === "email" ? "forwarded email" : `agent · ${ticket.agent_message?.agent.platform}`} tone="muted" />
-              <Pill text="synthetic" tone="amber" />
-            </div>
-            <div className="muted mt-1 text-xs">{category.description}</div>
-            <div className="mt-2 font-medium">{ticket.subject}</div>
-            {ticket.channel === "email"
-              ? ticket.thread?.map((m, i) => <div key={i} className="mt-2 rounded-lg px-3 py-2 text-sm whitespace-pre-wrap" style={{ background: "var(--accent-soft)", border: "1px solid var(--border)" }}><div className="muted mb-1 text-xs">{m.role} · {m.at} · raw (before masking)</div>{m.text}</div>)
-              : <div className="mt-2"><div className="muted mb-1 text-xs">protocol {ticket.agent_message?.protocol} · structured claim from the member's agent</div><JsonBlock value={ticket.agent_message} maxHeight={260} /></div>}
-          </section>
-
-          <section className="panel p-3 text-sm">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-semibold">Decision card</h2>
-              <Pill text={run.ruling.decision} tone={decisionTone} />
-              {run.ruling.remedy && <Pill text={`remedy: ${run.ruling.remedy}`} tone="muted" />}
-              {run.ruling.amount && <Pill text={`$${run.ruling.amount}`} tone="muted" />}
-              <Pill text={`fault: ${run.ruling.fault}`} tone="muted" />
-              <Pill text={`PDP: ${run.pdp.decision}`} tone={run.pdp.decision === "allow" ? "accent" : "amber"} />
-              {run.ruling.winning_rule_id && <Pill text={run.ruling.winning_rule_id} tone="muted" />}
-              <Pill text={`pack ${run.pack_version}`} tone="muted" />
-            </div>
-            <p className="mt-2 text-xs">{run.ruling.explanation}</p>
-            <div className="mt-2">
-              <div className="muted mb-1 text-xs">{opts.channel === "agent" ? "Umpyr → member's agent (umpyr-resolve/0.2)" : "Umpyr → member (email reply)"}</div>
-              {opts.channel === "agent" ? <JsonBlock value={run.agent_reply} maxHeight={260} /> : <div className="rounded-lg px-3 py-2 text-sm whitespace-pre-wrap" style={{ background: "var(--bg)", border: "1px solid var(--border)" }}>{run.reply}</div>}
-            </div>
-            <div className="muted mt-2 text-xs"><b>Lifecycle closure (BJ's side):</b> {run.lifecycle_note}</div>
-          </section>
-          <div className="muted text-xs">Pre-payment risk and intent on agent-placed orders is a separate product: <Link className="underline" to="/bjs/check">Umpyr Check for BJ's →</Link></div>
-        </div>
-
-        <aside className="space-y-2 text-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2 px-1"><h2 className="font-semibold">Pipeline · case {run.case_id}</h2><RaciLegend /></div>
-          {run.steps.map((s) => (
-            <section key={s.id} className="panel p-3">
-              <div className="flex flex-wrap items-start gap-2">
-                <StatusDot status={s.status} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="muted font-mono text-xs">{String(s.n).padStart(2, "0")}</span>
-                    <span className="font-medium">{s.name}</span>
-                    <Pill text={s.status.replace("_", " ")} tone={s.status === "done" || s.status === "fired" ? "accent" : s.status === "waiting" || s.status === "needs_fact" ? "amber" : "muted"} />
-                    {(s.id === "intake" || s.id === "facts" || s.id === "rule" || s.id === "terms" || s.id === "execute" || s.id === "audit" || s.id === "order_match" || s.id === "resolution") && (
-                      <button className="btn ml-auto !px-2 !py-0.5 text-xs" onClick={() => setOpen({ ...open, [s.id]: !open[s.id] })}>{open[s.id] ? "hide" : "show"}</button>
-                    )}
-                  </div>
-                  <div className="mt-1 text-xs">{s.summary}</div>
-                  {s.detail && s.detail !== s.summary && <div className="muted mt-0.5 text-xs">{s.detail}</div>}
-                  <div className="mt-1.5"><RaciChips raci={s.raci} /></div>
-                  {(open[s.id] || s.id === "pdp") && <div className="mt-2"><StepBody step={s} run={run} ticket={ticket} opts={opts} setOpts={setOpts} /></div>}
+      {tab === "customer" ? (
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <section className="panel flex min-h-[70vh] min-w-0 flex-col">
+            <div className="flex-1 space-y-3 overflow-y-auto p-3">
+              {messages.length === 0 && (
+                <div className="muted text-sm">
+                  <p>Write as a member (include your order number, BJ-7001 to BJ-7010), or start from an example:</p>
+                  <ul className="mt-2 space-y-1">
+                    {examples.map((ex) => {
+                      const text = ex.channel === "email" ? ex.thread?.[0]?.text ?? ex.subject : JSON.stringify(ex.agent_message, null, 2);
+                      return (
+                        <li key={ex.ticket_id}>
+                          <button className="btn w-full justify-start overflow-hidden text-left" onClick={() => send(text, ex)}>
+                            <span className="badge">{ex.category_key}</span>
+                            <span className="min-w-0 truncate">{ex.channel === "email" ? `${text.slice(0, 110)}…` : `${ex.agent_message?.agent.platform} agent · ${ex.subject}`}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
+              )}
+              {messages.map((m, i) => (
+                <div key={i} className={`max-w-[92%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${m.role === "customer" ? "ml-auto" : ""}`} style={{ background: m.role === "customer" ? "var(--accent-soft)" : "var(--bg)", border: "1px solid var(--border)" }}>
+                  <div className="muted mb-1 text-xs">{m.role === "customer" ? (opts.channel === "agent" ? "Member's agent" : "Member") : opts.channel === "agent" && m.ops?.agent_message ? "Umpyr → member's agent" : "Umpyr"}{m.ops ? ` · ${m.ops.status.replace("_", " ")}` : ""}</div>
+                  {m.role === "assistant" && m.customer && m.customer.status_lines.length > 0 && (
+                    <div className="muted mb-1 text-xs">{m.customer.status_lines.join(" · ")}</div>
+                  )}
+                  {m.role === "customer" && m.text.trimStart().startsWith("{") ? <pre className="overflow-x-auto text-xs">{m.text}</pre> : m.role === "assistant" && m.ops?.agent_message && opts.channel === "agent" ? <pre className="overflow-x-auto text-xs">{JSON.stringify(m.ops.agent_message, null, 2)}</pre> : m.text}
+                  {m.role === "assistant" && m.run && m.run.terms.status === "awaiting" && m.run.execution.status === "waiting_confirmation" && i === messages.length - 1 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button className="btn text-xs" onClick={() => send(opts.channel === "agent" ? "terms_accepted: the member confirms these terms." : "I confirm these terms.")}>{opts.channel === "agent" ? "Agent returns terms_accepted" : "Confirm these terms"}{m.run.ruling.amount ? ` · $${m.run.ruling.amount}` : ""}</button>
+                    </div>
+                  )}
+                  {m.role === "assistant" && m.customer && m.customer.queue?.sla && (
+                    <div className="muted mt-1 text-xs">{`You will hear back ${m.customer.queue.sla}.`}</div>
+                  )}
+                  {m.role === "assistant" && m.customer && m.customer.citations.length > 0 && (
+                    <div className="muted mt-1 text-xs">
+                      Sources: {m.customer.citations.map((c, j) => (
+                        <span key={j}>{j > 0 ? "; " : ""}{c.url ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div ref={endRef} />
+            </div>
+            <form className="flex gap-2 border-t p-3" style={{ borderColor: "var(--border)" }} onSubmit={(e) => { e.preventDefault(); send(input); }}>
+              <input className="input" placeholder="Describe the problem (include your order number, e.g. BJ-7002)…" value={input} onChange={(e) => setInput(e.target.value)} />
+              <button className="btn btn-primary" type="submit">Send</button>
+            </form>
+          </section>
+          <OpsView
+            ops={lastOps}
+            planner="procedure library, deterministic"
+            rulingExtra={lastRun ? <RulingExtra run={lastRun} state={state} onFacts={(overrides) => rerunWith({ overrides })} onStaff={() => rerunWith({ staff_approved: true })} onConfirm={() => rerunWith({ customer_confirmed: true })} /> : null}
+            governanceExtra={lastRun ? <GovernanceExtra run={lastRun} /> : null}
+          />
+        </div>
+      ) : (
+        <section className="panel flex min-h-[70vh] min-w-0 flex-col">
+          <div className="flex-1 space-y-3 overflow-y-auto p-3 text-sm">
+            <p className="muted">Ask about BJ's own data: "what drifts most?", "top categories by pain", "which rule fires most?", "which clauses are illustrative?"</p>
+            {merchantLog.map((x, i) => (
+              <div key={i} className="space-y-1">
+                <div className="ml-auto max-w-[85%] rounded-lg px-3 py-2" style={{ background: "var(--accent-soft)" }}>{x.q}</div>
+                <div className="max-w-[85%] rounded-lg px-3 py-2 whitespace-pre-wrap" style={{ background: "var(--bg)", border: "1px solid var(--border)" }}>{x.a}</div>
               </div>
-            </section>
-          ))}
-        </aside>
-      </div>
+            ))}
+          </div>
+          <form className="flex gap-2 border-t p-3" style={{ borderColor: "var(--border)" }} onSubmit={(e) => { e.preventDefault(); ask(); }}>
+            <input className="input" placeholder="Ask about categories, drift, rules…" value={merchantQ} onChange={(e) => setMerchantQ(e.target.value)} />
+            <button className="btn btn-primary" type="submit">Ask</button>
+          </form>
+        </section>
+      )}
     </div>
   );
 }

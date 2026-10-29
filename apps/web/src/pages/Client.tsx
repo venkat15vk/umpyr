@@ -4,6 +4,7 @@ import { ApiError } from "../lib/api";
 import { askMerchant, createSession, getExamples, getSummary, patchSession, sendMessage, type ChatSession, type Example, type Message, type Ops } from "../lib/resolve";
 import { Link } from "react-router-dom";
 import { OpsView } from "../components/OpsView";
+import { MetricsStrip } from "../components/MetricsStrip";
 
 const NAMES: Record<string, string> = { rockler: "Rockler", alaska: "Alaska Airlines" };
 
@@ -118,12 +119,14 @@ export function Client() {
         </div>
       </div>
 
+      <MetricsStrip workspace={client} />
+
       {budgetHit && <div className="panel p-3 text-sm" style={{ borderColor: "var(--warn)" }}><span className="badge badge-amber">Demo budget reached for today</span> <span className="muted">The engine stopped making model calls. Come back tomorrow (UTC) or raise the cap.</span></div>}
       {error && <div className="panel p-3 text-sm text-amber-600">{error}</div>}
 
       {tab === "customer" ? (
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          <section className="panel flex min-h-[70vh] flex-col">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <section className="panel flex min-h-[70vh] min-w-0 flex-col">
             <div className="flex-1 space-y-3 overflow-y-auto p-3">
               {messages.length === 0 && (
                 <div className="muted text-sm">
@@ -131,9 +134,9 @@ export function Client() {
                   <ul className="mt-2 space-y-1">
                     {examples.map((ex) => (
                       <li key={ex.category_key}>
-                        <button className="btn w-full justify-start text-left" onClick={() => send(ex.text)}>
+                        <button className="btn w-full justify-start overflow-hidden text-left" onClick={() => send(ex.text)}>
                           <span className="badge">{ex.category_key}</span>
-                          <span className="truncate">{ex.text.slice(0, 110)}…</span>
+                          <span className="min-w-0 truncate">{ex.text.slice(0, 110)}…</span>
                         </button>
                       </li>
                     ))}
@@ -188,7 +191,7 @@ export function Client() {
           <OpsView ops={lastOps} />
         </div>
       ) : (
-        <section className="panel flex min-h-[70vh] flex-col">
+        <section className="panel flex min-h-[70vh] min-w-0 flex-col">
           <div className="flex-1 space-y-3 overflow-y-auto p-3 text-sm">
             <p className="muted">Ask about your own data: "what drifts most?", "top categories by pain", "which rule fires most in drift findings?"</p>
             {merchantLog.map((x, i) => (

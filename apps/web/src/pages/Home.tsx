@@ -7,7 +7,7 @@ const DEMOS = [
   { to: "/rockler", merchant: "Rockler", product: "Resolve", line: "Woodworking retailer. Live chat ruled by compiled return, guarantee and backorder policy; ops view shows every step.", live: true },
   { to: "/alaska", merchant: "Alaska Airlines", product: "Resolve", line: "Refunds, delays, bag guarantee and DOT rules in precedence order; options turns when the passenger must choose.", live: true },
   { to: "/bjs", merchant: "BJ's Wholesale Club", product: "Resolve", line: "Eight dispute categories on email and agent channels: rule fired, fault, PDP, terms-hash confirmation, mock BJ's execution, signed audit.", live: false },
-  { to: "/bjs/check", merchant: "BJ's Wholesale Club", product: "Check", line: "Risk and intent on agentic orders before payment: mandate vs cart, fraud, abuse and agent scores, step-up, hash commitment.", live: false },
+  { to: "/bjs/check", merchant: "BJ's Wholesale Club", product: "Check Risk & Intent", line: "Risk and intent on agentic orders before payment: mandate vs cart, fraud, abuse and agent scores, step-up, hash commitment.", live: false },
 ];
 
 export function Home() {

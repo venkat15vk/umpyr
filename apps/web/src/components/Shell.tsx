@@ -17,8 +17,8 @@ export function Shell() {
           <nav className="ml-4 flex items-center gap-3 text-sm">
             <NavLink to="/rockler" className="muted hover:underline">Rockler</NavLink>
             <NavLink to="/alaska" className="muted hover:underline">Alaska</NavLink>
-            <NavLink to="/bjs" className="muted hover:underline">BJ's Resolve</NavLink>
-            <NavLink to="/bjs/check" className="muted hover:underline">BJ's Check</NavLink>
+            <NavLink to="/bjs" end className="muted hover:underline">BJ's</NavLink>
+            <NavLink to="/bjs/check" className="muted hover:underline">Check Risk &amp; Intent</NavLink>
             {!PUBLIC_DEMO && <NavLink to="/try" className="muted hover:underline">Try your data</NavLink>}
           </nav>
           <div className="ml-auto flex items-center gap-2">

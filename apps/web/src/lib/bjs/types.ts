@@ -113,6 +113,7 @@ export type Claim = {
   wants_cancel_membership?: boolean | null;
   used_benefits_since_renewal?: boolean | null;
   hold_age_hours?: number | null;
+  cases_to_keep?: number | null; // agent order error: cases the member keeps
 };
 
 export type FactBundle = { order: Order; item: Item; claim: Claim; member: Member; fulfilment: Fulfilment; agent?: AgentRecord | null; mandate?: Mandate | null; [k: string]: unknown };

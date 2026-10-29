@@ -1,0 +1,1514 @@
+{
+ "workspace": "bjs",
+ "version": "2026-10-29.1",
+ "note": "Synthetic closed cases used for neighbour retrieval and the historical planner. Shape follows samples/rockler/cases.jsonl. Illustrative demo, not affiliated with BJ's Wholesale Club.",
+ "cases": [
+  {
+   "ticket_id": "BJ-H-3000",
+   "category_key": "sdd_missing_substituted",
+   "channel": "agent",
+   "opened_at": "2026-09-20T14:00:00Z",
+   "hours_to_resolve": 0.4,
+   "reason": "missing_item",
+   "summary": "Same-day delivery arrived without the dishwasher pacs; member reported within the hour and asked for a refund.",
+   "member_token": "mem_64e6e94502",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "19.99",
+    "rule_id": "BJ-SDD-3.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "19.99"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3001",
+   "category_key": "sdd_missing_substituted",
+   "channel": "agent",
+   "opened_at": "2026-09-26T11:00:00Z",
+   "hours_to_resolve": 1.1,
+   "reason": "substituted_item",
+   "summary": "Delivery substituted the house-brand paper towels for the branded pack with substitutions turned off.",
+   "member_token": "mem_8564279300",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": "4.50",
+    "rule_id": "BJ-SDD-4.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": "4.50"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3002",
+   "category_key": "sdd_missing_substituted",
+   "channel": "email",
+   "opened_at": "2026-09-02T09:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "missing_item",
+   "summary": "Two of four cases of water missing from a same-day delivery; driver photo shows three bags.",
+   "member_token": "mem_be4a931b8b",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "11.98",
+    "rule_id": "BJ-SDD-3.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "11.98"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3003",
+   "category_key": "sdd_missing_substituted",
+   "channel": "email",
+   "opened_at": "2026-09-03T10:00:00Z",
+   "hours_to_resolve": 5.2,
+   "reason": "substituted_item",
+   "summary": "Substitution accepted in the app but member says the swapped brand was not what they wanted.",
+   "member_token": "mem_a452a3b1b6",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-SDD-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "store_credit",
+    "amount": "6.00"
+   },
+   "is_drift": true,
+   "drift_reason": "goodwill credit where policy denies: substitutions were allowed on the order",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3004",
+   "category_key": "sdd_missing_substituted",
+   "channel": "agent",
+   "opened_at": "2026-09-24T15:00:00Z",
+   "hours_to_resolve": 9.0,
+   "reason": "missing_item",
+   "summary": "Rotisserie chicken missing; reported two days later after the delivery window.",
+   "member_token": "mem_b9e6fb542d",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "needs_fact",
+    "remedy": null,
+    "amount": null,
+    "rule_id": null
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "6.99"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3005",
+   "category_key": "sdd_missing_substituted",
+   "channel": "email",
+   "opened_at": "2026-09-24T17:00:00Z",
+   "hours_to_resolve": 0.3,
+   "reason": "substituted_item",
+   "summary": "Agent-placed order: agent approved a substitution the member had not allowed in the mandate.",
+   "member_token": "mem_4dcb8a8b3b",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "9.49",
+    "rule_id": "BJ-SDD-4.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "9.49"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3006",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-18T15:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "spoiled",
+   "summary": "Salmon fillet smelled off at club pickup; photo attached the same afternoon.",
+   "member_token": "mem_7d8864434f",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "24.98",
+    "rule_id": "BJ-RET-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "24.98"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3007",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-27T16:00:00Z",
+   "hours_to_resolve": 0.2,
+   "reason": "damaged",
+   "summary": "Eggs crushed in a curbside pickup bag; reported at the car.",
+   "member_token": "mem_1aa37d3539",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "replacement",
+    "amount": "5.49",
+    "rule_id": "BJ-RET-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "replacement",
+    "amount": "5.49"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3008",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-04T12:00:00Z",
+   "hours_to_resolve": 2.0,
+   "reason": "spoiled",
+   "summary": "Berries moldy, reported 16 days after purchase without a photo.",
+   "member_token": "mem_54d1c0ae94",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-2.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3009",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-17T12:00:00Z",
+   "hours_to_resolve": 3.1,
+   "reason": "damaged",
+   "summary": "Frozen pizza box crushed; member had already thrown it out, no photo.",
+   "member_token": "mem_b2c93b7f91",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "needs_fact",
+    "remedy": null,
+    "amount": null,
+    "rule_id": null
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "8.99"
+   },
+   "is_drift": true,
+   "drift_reason": "approved without the photo the procedure asks for",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3010",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-24T14:00:00Z",
+   "hours_to_resolve": 0.8,
+   "reason": "spoiled",
+   "summary": "Milk past date at pickup; member asked for a replacement, staff refunded instead.",
+   "member_token": "mem_83c5ed3b4e",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "replacement",
+    "amount": "3.79",
+    "rule_id": "BJ-RET-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "3.79"
+   },
+   "is_drift": true,
+   "drift_reason": "remedy differs from the policy remedy",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3011",
+   "category_key": "perishable_damaged",
+   "channel": "email",
+   "opened_at": "2026-09-07T09:00:00Z",
+   "hours_to_resolve": 0.4,
+   "reason": "damaged",
+   "summary": "Ground beef package leaking in a same-day delivery; reported in the hour with photo.",
+   "member_token": "mem_c31f0d378d",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "21.47",
+    "rule_id": "BJ-RET-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "21.47"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3012",
+   "category_key": "pickup_issue",
+   "channel": "agent",
+   "opened_at": "2026-09-17T10:00:00Z",
+   "hours_to_resolve": 1.5,
+   "reason": "pickup_not_ready",
+   "summary": "Curbside order ready 45 minutes after the promised time; member waited in the car.",
+   "member_token": "mem_61f5ac9a10",
+   "steps": [
+    "lookup_order",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "0.00",
+    "rule_id": "BJ-PU-4.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "store_credit",
+    "amount": "10.00"
+   },
+   "is_drift": true,
+   "drift_reason": "goodwill credit above the policy remedy (fee waiver only)",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3013",
+   "category_key": "pickup_issue",
+   "channel": "email",
+   "opened_at": "2026-09-19T14:00:00Z",
+   "hours_to_resolve": 0.7,
+   "reason": "pickup_cancelled_late",
+   "summary": "Order not collected within the hold window; handling fee stands.",
+   "member_token": "mem_7e0d5ff324",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PU-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3014",
+   "category_key": "pickup_issue",
+   "channel": "email",
+   "opened_at": "2026-09-16T13:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "pickup_not_ready",
+   "summary": "Pickup fee charged on an order the club marked ready late.",
+   "member_token": "mem_b167d1348c",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "3.99",
+    "rule_id": "BJ-PU-4.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "3.99"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3015",
+   "category_key": "pickup_issue",
+   "channel": "agent",
+   "opened_at": "2026-09-24T12:00:00Z",
+   "hours_to_resolve": 1.9,
+   "reason": "pickup_not_ready",
+   "summary": "Member says the order was late; club timestamps show it was ready on time.",
+   "member_token": "mem_ef2dcf1883",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PU-4.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3016",
+   "category_key": "pickup_issue",
+   "channel": "email",
+   "opened_at": "2026-09-13T15:00:00Z",
+   "hours_to_resolve": 6.4,
+   "reason": "pickup_cancelled_late",
+   "summary": "Member asked to cancel the pickup after the hold expired, cites a family emergency.",
+   "member_token": "mem_c981fccdd9",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PU-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "4.99"
+   },
+   "is_drift": true,
+   "drift_reason": "fee waived on compassionate grounds; no clause covers it",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3017",
+   "category_key": "pickup_issue",
+   "channel": "agent",
+   "opened_at": "2026-09-15T14:00:00Z",
+   "hours_to_resolve": 0.3,
+   "reason": "pickup_not_ready",
+   "summary": "Curbside: one item out of stock at pickup, charged anyway.",
+   "member_token": "mem_298cedc519",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "7.49",
+    "rule_id": "BJ-PU-4.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "7.49"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3018",
+   "category_key": "coupon_price_adjust",
+   "channel": "agent",
+   "opened_at": "2026-09-08T12:00:00Z",
+   "hours_to_resolve": 0.4,
+   "reason": "coupon_not_applied",
+   "summary": "Clipped digital coupon missing from an ExpressPay receipt; coupon valid on the item.",
+   "member_token": "mem_c43c3d24e3",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "price_adjustment",
+    "amount": "4.00",
+    "rule_id": "BJ-CPN-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "price_adjustment",
+    "amount": "4.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3019",
+   "category_key": "coupon_price_adjust",
+   "channel": "email",
+   "opened_at": "2026-09-24T09:00:00Z",
+   "hours_to_resolve": 0.9,
+   "reason": "price_adjustment",
+   "summary": "Vacuum dropped $60 nine days after purchase; member asks for the difference.",
+   "member_token": "mem_d4e90ce05c",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": "60.00",
+    "rule_id": "BJ-CPN-3.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": "60.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3020",
+   "category_key": "coupon_price_adjust",
+   "channel": "email",
+   "opened_at": "2026-09-13T12:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "coupon_not_applied",
+   "summary": "Coupon had expired the day before the trip.",
+   "member_token": "mem_aecf3b629c",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-CPN-2.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3021",
+   "category_key": "coupon_price_adjust",
+   "channel": "agent",
+   "opened_at": "2026-09-07T10:00:00Z",
+   "hours_to_resolve": 20.0,
+   "reason": "price_adjustment",
+   "summary": "Item went on sale 40 days after purchase; member asks for the difference.",
+   "member_token": "mem_f9f013e693",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-CPN-3.r2"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": "12.00"
+   },
+   "is_drift": true,
+   "drift_reason": "adjustment granted outside the practice window; illustrative clause BJ-CPN-3",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3022",
+   "category_key": "coupon_price_adjust",
+   "channel": "email",
+   "opened_at": "2026-09-14T09:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "coupon_not_applied",
+   "summary": "Coupon applied to the wrong size variant at the register.",
+   "member_token": "mem_94f1079666",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "price_adjustment",
+    "amount": "2.50",
+    "rule_id": "BJ-CPN-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "price_adjustment",
+    "amount": "2.50"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3023",
+   "category_key": "coupon_price_adjust",
+   "channel": "email",
+   "opened_at": "2026-09-14T14:00:00Z",
+   "hours_to_resolve": 0.9,
+   "reason": "coupon_not_applied",
+   "summary": "Member clipped the coupon after checkout and asks for it retroactively.",
+   "member_token": "mem_0d3a5e153b",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-CPN-2.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3024",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-04T12:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "membership_refund",
+   "summary": "Auto-renewal charged yesterday; member wants to cancel and has not shopped since.",
+   "member_token": "mem_a5aec65406",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00",
+    "rule_id": "BJ-MEM-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3025",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-25T11:00:00Z",
+   "hours_to_resolve": 1.0,
+   "reason": "membership_refund",
+   "summary": "Club+ renewal charged; member shopped twice since, asks for a refund.",
+   "member_token": "mem_183328444e",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "120.00",
+    "rule_id": "BJ-MEM-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "120.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3026",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-07T09:00:00Z",
+   "hours_to_resolve": 1.4,
+   "reason": "membership_refund",
+   "summary": "Second membership refund request on the same membership within a year.",
+   "member_token": "mem_3cea088bf0",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-MEM-2.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3027",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-24T17:00:00Z",
+   "hours_to_resolve": 2.2,
+   "reason": "membership_refund",
+   "summary": "Member asks for a prorated refund but wants to keep shopping.",
+   "member_token": "mem_32868227a7",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "needs_fact",
+    "remedy": null,
+    "amount": null,
+    "rule_id": null
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3028",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-09T14:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "membership_refund",
+   "summary": "Renewal charged to a card the member had removed; member cancels.",
+   "member_token": "mem_c55d5d5f52",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00",
+    "rule_id": "BJ-MEM-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3029",
+   "category_key": "membership_renewal",
+   "channel": "email",
+   "opened_at": "2026-09-09T16:00:00Z",
+   "hours_to_resolve": 0.8,
+   "reason": "membership_refund",
+   "summary": "Member moved out of state, no club nearby, renewal three months ago.",
+   "member_token": "mem_08bd7bf6fb",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00",
+    "rule_id": "BJ-MEM-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "membership_refund",
+    "amount": "60.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3030",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-23T16:00:00Z",
+   "hours_to_resolve": 0.9,
+   "reason": "change_of_mind",
+   "summary": "65-inch TV, change of mind, 100 days after purchase.",
+   "member_token": "mem_82e475a461",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-1.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3031",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-25T10:00:00Z",
+   "hours_to_resolve": 0.7,
+   "reason": "change_of_mind",
+   "summary": "House-brand cookware unopened, 200 days after purchase.",
+   "member_token": "mem_844aacc0b3",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "129.99",
+    "rule_id": "BJ-RET-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "129.99"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3032",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-22T13:00:00Z",
+   "hours_to_resolve": 30.0,
+   "reason": "change_of_mind",
+   "summary": "Laptop returned on day 88 with receipt.",
+   "member_token": "mem_d2b34cb679",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-1.r2"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "store_credit",
+    "amount": "599.00"
+   },
+   "is_drift": true,
+   "drift_reason": "store credit issued on an electronics return outside the 90-day window",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3033",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-25T14:00:00Z",
+   "hours_to_resolve": 1.1,
+   "reason": "change_of_mind",
+   "summary": "Bulk order of 12 cases of water, member wants to return 10 unopened cases.",
+   "member_token": "mem_841555812b",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-5.r1"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3034",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-08T13:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "change_of_mind",
+   "summary": "Patio set, 40 days, with receipt, unused.",
+   "member_token": "mem_229a4e6cf7",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "449.00",
+    "rule_id": "BJ-RET-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "449.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3035",
+   "category_key": "return_eligibility",
+   "channel": "email",
+   "opened_at": "2026-09-05T16:00:00Z",
+   "hours_to_resolve": 0.3,
+   "reason": "change_of_mind",
+   "summary": "Gift card return request.",
+   "member_token": "mem_8be7710aaa",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-5.r1"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3036",
+   "category_key": "agent_order_error",
+   "channel": "email",
+   "opened_at": "2026-09-27T16:00:00Z",
+   "hours_to_resolve": 0.8,
+   "reason": "agent_quantity_error",
+   "summary": "Mandate said 6 packs; agent ordered 6 cases. Member keeps one case.",
+   "member_token": "mem_6b49796de9",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "215.88",
+    "rule_id": "BJ-AGT-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "215.88"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3037",
+   "category_key": "agent_order_error",
+   "channel": "agent",
+   "opened_at": "2026-09-12T13:00:00Z",
+   "hours_to_resolve": 0.4,
+   "reason": "agent_quantity_error",
+   "summary": "Agent ordered the 2-pack instead of the single; member accepts the extra.",
+   "member_token": "mem_9223426fa5",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-5.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3038",
+   "category_key": "agent_order_error",
+   "channel": "email",
+   "opened_at": "2026-09-02T15:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "agent_quantity_error",
+   "summary": "Agent duplicated the order after a timeout; two identical deliveries.",
+   "member_token": "mem_011ff28b47",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "84.30",
+    "rule_id": "BJ-AGT-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "84.30"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3039",
+   "category_key": "agent_order_error",
+   "channel": "agent",
+   "opened_at": "2026-09-10T16:00:00Z",
+   "hours_to_resolve": 18.0,
+   "reason": "agent_quantity_error",
+   "summary": "Agent platform unattested; member disputes the quantity.",
+   "member_token": "mem_24a5772256",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "escalate",
+    "close"
+   ],
+   "policy": {
+    "decision": "escalate",
+    "remedy": null,
+    "amount": null,
+    "rule_id": null
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "48.00"
+   },
+   "is_drift": true,
+   "drift_reason": "refund issued where the agent could not be attested; no clause covers it",
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3040",
+   "category_key": "agent_order_error",
+   "channel": "email",
+   "opened_at": "2026-09-05T09:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "agent_quantity_error",
+   "summary": "Member confirmed the checkout mandate with the case quantity shown.",
+   "member_token": "mem_8b9a03f3cf",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-RET-5.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3041",
+   "category_key": "agent_order_error",
+   "channel": "email",
+   "opened_at": "2026-09-10T16:00:00Z",
+   "hours_to_resolve": 0.7,
+   "reason": "agent_quantity_error",
+   "summary": "Agent ordered 20 instead of 2 of a perishable; member kept 2.",
+   "member_token": "mem_755471008d",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "71.82",
+    "rule_id": "BJ-AGT-1.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "71.82"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3042",
+   "category_key": "duplicate_charge_hold",
+   "channel": "email",
+   "opened_at": "2026-09-14T15:00:00Z",
+   "hours_to_resolve": 0.5,
+   "reason": "duplicate_charge",
+   "summary": "Two posted captures of the same amount for one order.",
+   "member_token": "mem_af6b699e32",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "75.90",
+    "rule_id": "BJ-PAY-3.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "75.90"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3043",
+   "category_key": "duplicate_charge_hold",
+   "channel": "email",
+   "opened_at": "2026-09-26T14:00:00Z",
+   "hours_to_resolve": 0.3,
+   "reason": "preauth_hold",
+   "summary": "$100 pump pre-authorization, 10 hours old.",
+   "member_token": "mem_a02ee9b3a2",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PAY-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3044",
+   "category_key": "duplicate_charge_hold",
+   "channel": "email",
+   "opened_at": "2026-09-16T12:00:00Z",
+   "hours_to_resolve": 0.9,
+   "reason": "preauth_hold",
+   "summary": "Pump pre-authorization still pending after six days.",
+   "member_token": "mem_b122376077",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "release_hold",
+    "amount": "100.00",
+    "rule_id": "BJ-PAY-1.r2"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "release_hold",
+    "amount": "100.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3045",
+   "category_key": "duplicate_charge_hold",
+   "channel": "email",
+   "opened_at": "2026-09-22T09:00:00Z",
+   "hours_to_resolve": 0.6,
+   "reason": "duplicate_charge",
+   "summary": "One posted capture and one pending authorization; member reads both as charges.",
+   "member_token": "mem_15e904264c",
+   "steps": [
+    "lookup_order",
+    "rule",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PAY-3.r2"
+   },
+   "staff_outcome": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3046",
+   "category_key": "duplicate_charge_hold",
+   "channel": "email",
+   "opened_at": "2026-09-02T12:00:00Z",
+   "hours_to_resolve": 0.4,
+   "reason": "duplicate_charge",
+   "summary": "Membership fee charged twice in the same minute.",
+   "member_token": "mem_a3a43a0dbe",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "60.00",
+    "rule_id": "BJ-PAY-3.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": "60.00"
+   },
+   "is_drift": false,
+   "drift_reason": null,
+   "is_synthetic": true
+  },
+  {
+   "ticket_id": "BJ-H-3047",
+   "category_key": "duplicate_charge_hold",
+   "channel": "agent",
+   "opened_at": "2026-09-01T14:00:00Z",
+   "hours_to_resolve": 4.0,
+   "reason": "preauth_hold",
+   "summary": "Hold 30 hours old; member insists on a release, staff released it early.",
+   "member_token": "mem_d8faea941e",
+   "steps": [
+    "lookup_order",
+    "extract_facts",
+    "rule",
+    "authorize",
+    "confirm_terms",
+    "merchant_api",
+    "close"
+   ],
+   "policy": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "rule_id": "BJ-PAY-2.r1"
+   },
+   "staff_outcome": {
+    "decision": "approve",
+    "remedy": "release_hold",
+    "amount": "100.00"
+   },
+   "is_drift": true,
+   "drift_reason": "hold released before the policy window",
+   "is_synthetic": true
+  }
+ ]
+}

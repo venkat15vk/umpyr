@@ -13,6 +13,7 @@ beyond the name in text. Built 2026-10-28 for a partner presentation; no model c
 | `orders.json` | 10 synthetic orders (same-day delivery, curbside, in-club, membership, gas, agent-placed) |
 | `tickets.json` | 16 synthetic tickets: 8 categories x 2 channels (forwarded email, member's AI agent) with the facts the extractor pulls |
 | `check_scenarios.json` | 8 `umpyr-check/0.1` requests (agent, mandate, cart, masked member, context) with the expected decision |
+| `history.json` | 48 synthetic closed cases (6 per category, 9 drifting from policy) used for neighbour cases, the historical planner and precedent on pushback; shape follows `samples/rockler/cases.jsonl` |
 
 ## Confirmed vs illustrative
 
@@ -42,6 +43,15 @@ The impact metrics on the Resolve page header and every timing on the Check page
   `hold_age_hours`; new claim reasons `missing_item`, `substituted_item`, `spoiled`, `pickup_not_ready`,
   `pickup_cancelled_late`, `coupon_not_applied`, `price_adjustment`, `membership_refund`, `agent_quantity_error`,
   `duplicate_charge`, `preauth_hold`.
+
+## Chat layer (`apps/web/src/lib/bjs/chat.ts`)
+
+The `/bjs` page is the Rockler/Alaska page: customer chat (examples plus free text, multi-turn), merchant chat, and
+the shared `OpsView`. `chat.ts` maps a deterministic run onto the engine's `Ops` shape: keyword router (confidence
+below 0.70 falls back to the order record's fulfilment), regex fact extractor that sets only what the text supports
+(rules ask for the rest), token-Jaccard neighbours and historical planner over `history.json`, precedent on pushback,
+deterministic supervisor check. Merchant chat answers drift, category, rule, clause and agent questions from the
+same fixtures. No model calls.
 
 ## Engine boundary
 

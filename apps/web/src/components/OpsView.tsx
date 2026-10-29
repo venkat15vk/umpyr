@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Citation, Ops } from "../lib/resolve";
 
 const STATUS_COLOR: Record<string, string> = { fired: "var(--accent)", ok: "var(--accent)", ready: "var(--accent)", needs_fact: "var(--warn)", pending: "var(--muted)", evaluated: "var(--muted)", placeholder: "var(--muted)", "n/a": "var(--muted)" };
@@ -28,7 +29,8 @@ function fmt(v: unknown): string {
   return String(v);
 }
 
-export function OpsView({ ops }: { ops?: Ops }) {
+/** `planner` names the live planner; `rulingExtra` / `governanceExtra` let a demo add merchant-specific blocks inside the same sections. */
+export function OpsView({ ops, planner = "Haiku, fixed vocabulary", rulingExtra, governanceExtra }: { ops?: Ops; planner?: string; rulingExtra?: ReactNode; governanceExtra?: ReactNode }) {
   if (!ops) {
     return (
       <aside className="panel p-4 text-sm">
@@ -103,7 +105,7 @@ export function OpsView({ ops }: { ops?: Ops }) {
               <div className="font-mono">{ops.plan.historical.steps.join(" → ") || "—"}</div>
             </div>
             <div>
-              <div className="muted">Live planner (Haiku, fixed vocabulary)</div>
+              <div className="muted">Live planner ({planner})</div>
               <div className="font-mono">{ops.plan.live.steps.join(" → ") || "—"}</div>
               {ops.plan.live.rationale && <div className="muted">{ops.plan.live.rationale}</div>}
             </div>
@@ -171,6 +173,7 @@ export function OpsView({ ops }: { ops?: Ops }) {
             <ul className="mt-1 space-y-0.5">{ops.checks.map((c) => <li key={c.rule_id}><span className="font-mono">{c.rule_id}</span> <span className="muted">{c.tier} p{c.priority}</span> → {c.fired ? "fired" : c.missing.length ? `missing ${c.missing.join(", ")}` : "not fired"}</li>)}</ul>
           </details>
         )}
+        {rulingExtra}
       </section>
 
       <section className="panel p-3">
@@ -196,6 +199,7 @@ export function OpsView({ ops }: { ops?: Ops }) {
         <details className="mt-2 text-xs"><summary className="muted cursor-pointer">tool trace</summary>
           <ol className="mt-1 space-y-0.5">{ops.tools.map((t, i) => <li key={i}><span className="font-mono">{t.tool}</span> <span className="muted">{t.detail}</span></li>)}</ol>
         </details>
+        {governanceExtra}
       </section>
     </aside>
   );
