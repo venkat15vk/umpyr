@@ -64,7 +64,7 @@ function loginPage(next: string, error = ""): Response {
   .err{color:#b45309;margin:8px 0 0;font-size:14px}
 </style></head><body>
 <form method="post" action="/login">
-  <h1>Umpyr demo</h1>
+  <h1>Umpyr Resolve demo</h1>
   <p>Enter the access password you were given.</p>
   <input type="password" name="password" autocomplete="current-password" autofocus required>
   <input type="hidden" name="next" value="${safeNext.replace(/"/g, "&quot;")}">

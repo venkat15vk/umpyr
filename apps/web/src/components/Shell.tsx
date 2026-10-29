@@ -11,7 +11,7 @@ export function Shell() {
         <div className="mx-auto flex max-w-screen-2xl items-center gap-4 px-4 py-2">
           <Link to="/" className="flex items-center gap-2 font-semibold">
             <Logo />
-            <span>Umpyr</span>
+            <span>Umpyr Resolve</span>
             <span className="badge badge-amber">POC</span>
           </Link>
           <nav className="ml-4 flex items-center gap-3 text-sm">
