@@ -11,12 +11,14 @@ export function Shell() {
         <div className="mx-auto flex max-w-screen-2xl items-center gap-4 px-4 py-2">
           <Link to="/" className="flex items-center gap-2 font-semibold">
             <Logo />
-            <span>Umpyr Resolve</span>
+            <span>Umpyr</span>
             <span className="badge badge-amber">POC</span>
           </Link>
           <nav className="ml-4 flex items-center gap-3 text-sm">
             <NavLink to="/rockler" className="muted hover:underline">Rockler</NavLink>
             <NavLink to="/alaska" className="muted hover:underline">Alaska</NavLink>
+            <NavLink to="/bjs" className="muted hover:underline">BJ's Resolve</NavLink>
+            <NavLink to="/bjs/check" className="muted hover:underline">BJ's Check</NavLink>
             {!PUBLIC_DEMO && <NavLink to="/try" className="muted hover:underline">Try your data</NavLink>}
           </nav>
           <div className="ml-auto flex items-center gap-2">

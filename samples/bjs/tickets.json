@@ -1,0 +1,575 @@
+[
+ {
+  "ticket_id": "BJ-T-1001",
+  "category_key": "sdd_missing_substituted",
+  "channel": "email",
+  "created_at": "2026-10-21T14:05:00Z",
+  "subject": "Missing item on today's delivery - order BJ-7001",
+  "order_id": "BJ-7001",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-21T14:05:00Z",
+    "text": "Hi, my same-day delivery for order BJ-7001 came at 12:41 today but the Tide PODS (112 ct) were not in any of the bags. I checked twice. I'd like a refund for that item please. The paper towels also came as the Berkley Jensen brand and I had substitutions turned off, but I'll keep those. You can reach me at dana.whitfield@example.net or (617) 555-0142. Thanks, Dana Whitfield, 88 Linden Street, Medford, MA 02155"
+   }
+  ],
+  "extracted": {
+   "item_id": "L3",
+   "reason": "missing_item",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L3"
+   ],
+   "reported_within_hours": 2,
+   "description": "Tide PODS 112 ct not in delivery; paper towels substituted with substitutions off"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-1002",
+  "category_key": "sdd_missing_substituted",
+  "channel": "agent",
+  "created_at": "2026-10-21T15:20:00Z",
+  "subject": "Unapproved substitution on same-day delivery",
+  "order_id": "BJ-7001",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "Meta Muse",
+    "agent_id": "muse_agt_f55ff16f",
+    "attested": true
+   },
+   "member_token": "mem_ca0df2c95a",
+   "order_id": "BJ-7001",
+   "claim": {
+    "reason": "substituted_item",
+    "item_ids": [
+     "L2"
+    ],
+    "detail": "Bounty 12 pk replaced with Berkley Jensen 12 pk; substitutions_allowed=false on the order; no approval text received",
+    "requested_remedy": "refund",
+    "reported_within_hours": 3
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-21T15:20:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L2",
+   "reason": "substituted_item",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L2"
+   ],
+   "reported_within_hours": 3,
+   "description": "Substituted without approval while substitutions were off"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-2001",
+  "category_key": "perishable_damaged",
+  "channel": "email",
+  "created_at": "2026-10-24T13:10:00Z",
+  "subject": "Salmon from pickup order was spoiled",
+  "order_id": "BJ-7002",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-24T13:10:00Z",
+    "text": "Hello, I picked up order BJ-7002 this morning and the Wellsley Farms salmon fillet smelled off as soon as I opened it at home - clearly spoiled. I threw it out. I have a photo of the package and the sell-by date. Please refund the $29.99. Regards, Priya Raman, priya.raman@example.org, (508) 555-0199"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "spoiled",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "has_photos": true,
+   "reported_within_hours": 3,
+   "description": "Wellsley Farms salmon spoiled at pickup"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-2002",
+  "category_key": "perishable_damaged",
+  "channel": "agent",
+  "created_at": "2026-11-13T09:00:00Z",
+  "subject": "Crushed strawberries from pickup order",
+  "order_id": "BJ-7002",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "Google Gemini",
+    "agent_id": "gem_agt_2c3a4249",
+    "attested": true
+   },
+   "member_token": "mem_29c1b289e7",
+   "order_id": "BJ-7002",
+   "claim": {
+    "reason": "damaged",
+    "item_ids": [
+     "L2"
+    ],
+    "detail": "Both 2 lb Driscoll's strawberry packs were crushed under the water case; member only reported now",
+    "requested_remedy": "refund",
+    "has_photos": null,
+    "reported_within_hours": 480
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-11-13T09:00:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L2",
+   "reason": "damaged",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L2"
+   ],
+   "has_photos": null,
+   "reported_within_hours": 480,
+   "description": "Driscoll's strawberries crushed; reported 20 days after pickup"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-3001",
+  "category_key": "pickup_issue",
+  "channel": "email",
+  "created_at": "2026-10-25T12:30:00Z",
+  "subject": "Curbside order not ready, waited almost an hour",
+  "order_id": "BJ-7003",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-25T12:30:00Z",
+    "text": "I scheduled curbside pickup for 11:00 on order BJ-7003, checked in at 11:02 in the app, and the order didn't come out until 11:52. I also got charged a $3.99 pickup fee and the Cheez-Its were out of stock. I'd like the fee refunded at least. - Marcus Oyelaran, m.oyelaran@example.com, 781-555-0167"
+   }
+  ],
+  "extracted": {
+   "item_id": "L2",
+   "reason": "pickup_not_ready",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L2"
+   ],
+   "reported_within_hours": 1,
+   "description": "Checked in on time; order ready 50 minutes late; pickup fee charged; one item out of stock"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-3002",
+  "category_key": "pickup_issue",
+  "channel": "agent",
+  "created_at": "2026-10-28T09:15:00Z",
+  "subject": "Pickup order cancelled, handling fee charged",
+  "order_id": "BJ-7003",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "OpenAI Dots",
+    "agent_id": "dots_agt_f46dd28a",
+    "attested": true
+   },
+   "member_token": "mem_153812ae5f",
+   "order_id": "BJ-7003",
+   "claim": {
+    "reason": "pickup_cancelled_late",
+    "item_ids": [
+     "L1",
+     "L3"
+    ],
+    "detail": "Member scheduled 10/25 11:00, did not collect; order cancelled 10/26 at close; pickup handling fee charged; member asks for fee reversal",
+    "requested_remedy": "refund",
+    "reported_within_hours": 70
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-28T09:15:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L1",
+   "reason": "pickup_cancelled_late",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1",
+    "L3"
+   ],
+   "reported_within_hours": 70,
+   "description": "Not collected within the hold window; handling fee charged"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-4001",
+  "category_key": "coupon_price_adjust",
+  "channel": "email",
+  "created_at": "2026-10-22T19:02:00Z",
+  "subject": "Clipped coupon didn't apply at ExpressPay",
+  "order_id": "BJ-7004",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-22T19:02:00Z",
+    "text": "Hi, I clipped the $4 off Tide PODS coupon in the app yesterday and paid with ExpressPay today (order BJ-7004) but the receipt shows full price $27.99. Can you apply the coupon? Thanks, Elena Castellanos - elena.c@example.net - (401) 555-0123"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "coupon_not_applied",
+   "requested_remedy": "price_adjustment",
+   "item_ids": [
+    "L1"
+   ],
+   "coupon_id": "CPN-88121",
+   "reported_within_hours": 2,
+   "description": "Clipped digital coupon not applied at ExpressPay checkout"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-4002",
+  "category_key": "coupon_price_adjust",
+  "channel": "agent",
+  "created_at": "2026-10-29T08:00:00Z",
+  "subject": "Price dropped after purchase: adjustment request",
+  "order_id": "BJ-7004",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "Meta Muse",
+    "agent_id": "muse_agt_4539e4b4",
+    "attested": true
+   },
+   "member_token": "mem_2396a1256a",
+   "order_id": "BJ-7004",
+   "claim": {
+    "reason": "price_adjustment",
+    "item_ids": [
+     "L2"
+    ],
+    "detail": "Dyson V12 bought 10/22 at 449.99; club price now 399.99 (coupon book 10/29); member asks for the 50.00 difference",
+    "requested_remedy": "price_adjustment",
+    "advertised_price": "399.99",
+    "reported_within_hours": 158
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-29T08:00:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L2",
+   "reason": "price_adjustment",
+   "requested_remedy": "price_adjustment",
+   "item_ids": [
+    "L2"
+   ],
+   "advertised_price": "399.99",
+   "reported_within_hours": 158,
+   "description": "Price dropped 7 days after purchase"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-5001",
+  "category_key": "membership_renewal",
+  "channel": "email",
+  "created_at": "2026-10-16T08:40:00Z",
+  "subject": "Charged $60 for a renewal I didn't want",
+  "order_id": "BJ-7005",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-16T08:40:00Z",
+    "text": "I was charged $60 on 10/15 for a BJ's membership renewal. I haven't been to the club since spring and didn't realize auto-renew was on. Please refund it and cancel. Thanks, Robert Nkemelu, rob.nkemelu@example.com, (203) 555-0188"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "membership_refund",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "wants_cancel_membership": true,
+   "used_benefits_since_renewal": false,
+   "reported_within_hours": 30,
+   "description": "Auto-renewal charged; member wants refund and cancellation"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-5002",
+  "category_key": "membership_renewal",
+  "channel": "agent",
+  "created_at": "2026-10-20T10:00:00Z",
+  "subject": "Member asks whether Club+ renewal can be refunded",
+  "order_id": "BJ-7010",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "Google Gemini",
+    "agent_id": "gem_agt_66220e71",
+    "attested": true
+   },
+   "member_token": "mem_133e572155",
+   "order_id": "BJ-7010",
+   "claim": {
+    "reason": "membership_refund",
+    "item_ids": [
+     "L1"
+    ],
+    "detail": "Club+ renewed 10/15 at $120; member cancelled and was refunded once before (2024); now moving out of state; asks for refund of the fee",
+    "requested_remedy": "refund",
+    "wants_cancel_membership": true,
+    "used_benefits_since_renewal": true,
+    "reported_within_hours": 127
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-20T10:00:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L1",
+   "reason": "membership_refund",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "wants_cancel_membership": true,
+   "used_benefits_since_renewal": true,
+   "reported_within_hours": 127,
+   "description": "Club+ renewal; a prior cancellation refund exists on the membership"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-6001",
+  "category_key": "return_eligibility",
+  "channel": "email",
+  "created_at": "2026-10-20T16:15:00Z",
+  "subject": "Can I return my TV? Bought in July",
+  "order_id": "BJ-7006",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-20T16:15:00Z",
+    "text": "Hi there, I bought an LG 65\" TV on July 12 (order BJ-7006). It works fine but it's too big for the room. Can I bring it back for a refund? I still have the box. Thanks, Grace Lindqvist, grace.l@example.org, 860-555-0150"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "change_of_mind",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "reported_within_hours": 2400,
+   "description": "Change of mind on a TV, 100 days after purchase"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-6002",
+  "category_key": "return_eligibility",
+  "channel": "agent",
+  "created_at": "2027-01-28T10:00:00Z",
+  "subject": "Return eligibility: cookware set after 200 days",
+  "order_id": "BJ-7006",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "OpenAI Dots",
+    "agent_id": "dots_agt_730bea4f",
+    "attested": true
+   },
+   "member_token": "mem_e341fcc488",
+   "order_id": "BJ-7006",
+   "claim": {
+    "reason": "change_of_mind",
+    "item_ids": [
+     "L2"
+    ],
+    "detail": "Berkley Jensen 12-piece cookware set bought 7/12/2026, still sealed in the box; member asks if it can be returned 200 days later",
+    "requested_remedy": "refund",
+    "reported_within_hours": 4800
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2027-01-28T10:00:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L2",
+   "reason": "change_of_mind",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L2"
+   ],
+   "reported_within_hours": 4800,
+   "description": "House-brand cookware, unopened, 200 days after purchase"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-7001",
+  "category_key": "agent_order_error",
+  "channel": "email",
+  "created_at": "2026-10-26T16:40:00Z",
+  "subject": "My assistant ordered 10 CASES of paper plates",
+  "order_id": "BJ-7007",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-26T16:40:00Z",
+    "text": "I asked my Muse assistant to get 10 packs of the Wellsley Farms paper plates for a party. A DoorDash driver just delivered 10 CASES - that's 120 packs - and I was charged $1,088.79 on order BJ-7007. I only need one case at most. Please take the rest back and refund me. Sam Petrakis, sam.petrakis@example.net, (617) 555-0177, 14 Orchard Lane, Waltham, MA"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "agent_quantity_error",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "quantity_intended": 10,
+   "quantity_received": 120,
+   "cases_to_keep": 1,
+   "reported_within_hours": 2,
+   "description": "Mandate said 10 packs; agent ordered 10 cases of 12"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-7002",
+  "category_key": "agent_order_error",
+  "channel": "agent",
+  "created_at": "2026-10-26T14:30:00Z",
+  "subject": "Agent self-report: quantity unit error on BJ-7007",
+  "order_id": "BJ-7007",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "Meta Muse",
+    "agent_id": "muse_agt_20377cec",
+    "attested": true
+   },
+   "member_token": "mem_018c267d72",
+   "order_id": "BJ-7007",
+   "claim": {
+    "reason": "agent_quantity_error",
+    "item_ids": [
+     "L1"
+    ],
+    "detail": "Mandate m_ad328846: 10 x pack. Cart built: 10 x case (pack_size 12). Umpyr Check step-up chk_ad328846aa18 was answered by the platform's auto-confirm, not by the member. Requesting return of 9 unopened cases and refund.",
+    "requested_remedy": "refund",
+    "quantity_intended": 10,
+    "quantity_received": 120,
+    "cases_to_keep": 1,
+    "reported_within_hours": 0
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-26T14:30:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L1",
+   "reason": "agent_quantity_error",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "quantity_intended": 10,
+   "quantity_received": 120,
+   "cases_to_keep": 1,
+   "reported_within_hours": 0,
+   "description": "Agent self-reports pack/case unit error"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-8001",
+  "category_key": "duplicate_charge_hold",
+  "channel": "email",
+  "created_at": "2026-10-25T09:30:00Z",
+  "subject": "Charged twice for delivery order BJ-7008",
+  "order_id": "BJ-7008",
+  "thread": [
+   {
+    "role": "customer",
+    "at": "2026-10-25T09:30:00Z",
+    "text": "My card statement shows two posted charges of $75.90 from BJ's on 10/23 for the same delivery order BJ-7008. Not pending - both posted. Please refund one. Thanks, Tom Abernathy, tom.abernathy@example.com, (978) 555-0134"
+   }
+  ],
+  "extracted": {
+   "item_id": "L1",
+   "reason": "duplicate_charge",
+   "requested_remedy": "refund",
+   "item_ids": [],
+   "hold_age_hours": 46,
+   "description": "Two posted captures of 75.90 for one order"
+  },
+  "is_synthetic": true
+ },
+ {
+  "ticket_id": "BJ-T-8002",
+  "category_key": "duplicate_charge_hold",
+  "channel": "agent",
+  "created_at": "2026-10-27T18:00:00Z",
+  "subject": "Member sees $100 charge after buying $41 of gas",
+  "order_id": "BJ-7009",
+  "agent_message": {
+   "protocol": "umpyr-resolve/0.2",
+   "type": "claim",
+   "agent": {
+    "platform": "OpenAI Dots",
+    "agent_id": "dots_agt_2b12242f",
+    "attested": true
+   },
+   "member_token": "mem_b3af560ffa",
+   "order_id": "BJ-7009",
+   "claim": {
+    "reason": "preauth_hold",
+    "item_ids": [
+     "L1"
+    ],
+    "detail": "Debit card shows a $100.00 pending charge from BJ's Gas plus the $41.17 fuel purchase from this morning; member asks for the $100 back",
+    "requested_remedy": "refund",
+    "hold_age_hours": 10
+   },
+   "consent": {
+    "scope": "resolve_order_issue",
+    "granted_at": "2026-10-27T18:00:00Z"
+   }
+  },
+  "extracted": {
+   "item_id": "L1",
+   "reason": "preauth_hold",
+   "requested_remedy": "refund",
+   "item_ids": [
+    "L1"
+   ],
+   "hold_age_hours": 10,
+   "description": "$100 debit pre-authorization at the pump, 10 hours old"
+  },
+  "is_synthetic": true
+ }
+]

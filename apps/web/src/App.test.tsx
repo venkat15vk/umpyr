@@ -6,7 +6,8 @@ describe("App shell", () => {
   it("renders the header and sandbox links", () => {
     vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve("[]") })));
     render(<App />);
-    expect(screen.getByText("Umpyr Resolve")).toBeInTheDocument();
-    expect(screen.getAllByText("Rockler sandbox").length).toBeGreaterThan(0);
+    expect(screen.getByText("Umpyr")).toBeInTheDocument();
+    expect(screen.getAllByText(/Rockler/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/BJ's Wholesale Club/).length).toBeGreaterThanOrEqual(2);
   });
 });

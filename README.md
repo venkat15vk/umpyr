@@ -115,6 +115,15 @@ Uploads are stored on local disk under `services/engine/data/uploads/` (git-igno
 R2 with presigned URLs is wired in M5. `umpyr retention` (or the worker, hourly) deletes expired upload workspaces
 and their files.
 
+## BJ's demos (fixtures, no engine)
+
+`/bjs` (Umpyr Resolve) and `/bjs/check` (Umpyr Check) run deterministic simulations in the browser over
+`samples/bjs/*.json`; no model calls, no engine, no spend. Fixtures, confirmed-vs-illustrative policy facts and the
+ontology extensions are described in `samples/bjs/README.md`; the engine boundary is
+`apps/web/src/lib/bjs/adapters.ts`. Tests: `cd apps/web && npm test` (SHA-256 vectors, JSON Logic, every ticket on
+both channels, every Check scenario and two live flips). Preview deploy without touching production:
+`make deploy-web-preview` (alias `https://bjs-preview.umpyr-web.pages.dev`, behind the same password gate).
+
 ## Tests
 
 ```bash

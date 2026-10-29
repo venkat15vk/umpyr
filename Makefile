@@ -44,5 +44,7 @@ deploy-engine:    ## engine only
 	infra/deploy.sh engine
 deploy-web:       ## web only
 	infra/deploy.sh web
+deploy-web-preview: ## web to a Pages preview branch (PREVIEW_BRANCH=bjs-preview); production untouched
+	infra/deploy.sh web-preview
 deploy-secrets:   ## push secrets/variables from .env to Pages and Railway
 	infra/deploy.sh secrets

@@ -46,6 +46,11 @@ class Fault(StrEnum):
     airline = "airline"
     uncontrollable = "uncontrollable"  # weather, ATC, etc.
     unknown = "unknown"
+    # BJ's demos (2026-10-28): agentic-commerce fault parties
+    agent = "agent"  # the customer's AI agent acted outside the customer's mandate
+    agent_platform = "agent_platform"  # the platform behind the agent (attestation, protocol, mandate handling)
+    third_party = "third_party"  # delivery partner, carrier or payment processor
+    indeterminate = "indeterminate"  # not determinable from the facts on file
 
 
 class Tier(StrEnum):

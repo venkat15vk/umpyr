@@ -1,0 +1,80 @@
+[
+ {"category_key": "sdd_missing_substituted", "version": 1, "name": "Same-day delivery: missing or substituted item",
+  "steps": [
+   {"step_id": "sdd.s1", "kind": "verify", "name": "Look up delivery order", "tool": "lookup_order", "clause_ids": ["BJ-SDD-1"], "instruction": "Confirm fulfilment method, partner, who picked, substitution setting and the line items.", "required_facts": ["fulfilment.method", "fulfilment.picked_by", "fulfilment.substitutions_allowed"]},
+   {"step_id": "sdd.s2", "kind": "gather", "name": "Identify the affected line", "tool": "extract_facts", "clause_ids": [], "instruction": "Which item is missing or substituted; when the member noticed.", "required_facts": ["claim.item_ids", "claim.reported_within_hours"]},
+   {"step_id": "sdd.s3", "kind": "check", "name": "Apply delivery rules", "tool": "rule", "clause_ids": ["BJ-SDD-2", "BJ-SDD-3", "BJ-SDD-4"], "instruction": "Missing item: refund. Substitution: depends on the member's substitution setting.", "required_facts": ["item.condition"]},
+   {"step_id": "sdd.s4", "kind": "decide", "name": "Fault and remedy", "tool": "rule", "clause_ids": ["BJ-SDD-5"], "instruction": "Fault follows who picked the order.", "required_facts": []},
+   {"step_id": "sdd.s5", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "Authorize the refund against the auto-approve limit.", "required_facts": []},
+   {"step_id": "sdd.s6", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "Terms hash confirmed by the member or their agent.", "required_facts": []},
+   {"step_id": "sdd.s7", "kind": "execute", "name": "BJ's issues refund", "tool": "merchant_api", "clause_ids": [], "instruction": "Refund to original payment via BJ's order service.", "required_facts": []},
+   {"step_id": "sdd.s8", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Partner pick accuracy and substitution compliance logged.", "required_facts": []}
+  ]},
+ {"category_key": "perishable_damaged", "version": 1, "name": "Damaged or spoiled perishable or bulk goods",
+  "steps": [
+   {"step_id": "per.s1", "kind": "verify", "name": "Look up order", "tool": "lookup_order", "clause_ids": ["BJ-RET-6"], "instruction": "Pickup or delivery date starts the window.", "required_facts": ["item.is_perishable", "item.brand"]},
+   {"step_id": "per.s2", "kind": "gather", "name": "Evidence and timing", "tool": "extract_facts", "clause_ids": ["BJ-RET-7"], "instruction": "When noticed; photo if reported after 72 hours.", "required_facts": ["claim.reported_within_hours", "claim.has_photos"]},
+   {"step_id": "per.s3", "kind": "check", "name": "Apply grocery rules", "tool": "rule", "clause_ids": ["BJ-RET-2", "BJ-RET-7"], "instruction": "90-day grocery window; house-brand money-back guarantee.", "required_facts": []},
+   {"step_id": "per.s4", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "Authorize refund.", "required_facts": []},
+   {"step_id": "per.s5", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "per.s6", "kind": "execute", "name": "BJ's issues refund", "tool": "merchant_api", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "per.s7", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Shrink disposition and cause attribution.", "required_facts": []}
+  ]},
+ {"category_key": "pickup_issue", "version": 1, "name": "Pickup not ready, partial or cancelled",
+  "steps": [
+   {"step_id": "pu.s1", "kind": "verify", "name": "Look up pickup order", "tool": "lookup_order", "clause_ids": ["BJ-PU-2", "BJ-PU-3"], "instruction": "Scheduled time, ready time, fee charged, items picked up.", "required_facts": ["fulfilment.ready_delay_minutes", "order.fees_total"]},
+   {"step_id": "pu.s2", "kind": "check", "name": "Apply pickup rules", "tool": "rule", "clause_ids": ["BJ-PU-1", "BJ-PU-3", "BJ-PU-4"], "instruction": "Hold window, handling fee, fee refund practice.", "required_facts": []},
+   {"step_id": "pu.s3", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "pu.s4", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "pu.s5", "kind": "execute", "name": "BJ's refunds fee", "tool": "merchant_api", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "pu.s6", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Pick-rate scorecard.", "required_facts": []}
+  ]},
+ {"category_key": "coupon_price_adjust", "version": 1, "name": "Coupon not applied or price adjustment",
+  "steps": [
+   {"step_id": "cpn.s1", "kind": "verify", "name": "Look up receipt and clipped coupons", "tool": "lookup_order", "clause_ids": ["BJ-CPN-1"], "instruction": "Was the coupon clipped before purchase and valid on the item?", "required_facts": ["item.coupon_id", "claim.coupon_id"]},
+   {"step_id": "cpn.s2", "kind": "check", "name": "Apply coupon and price rules", "tool": "rule", "clause_ids": ["BJ-CPN-2", "BJ-CPN-3"], "instruction": "No published general price-adjustment policy: anything outside the TV price match escalates to a person.", "required_facts": []},
+   {"step_id": "cpn.s3", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "cpn.s4", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "cpn.s5", "kind": "execute", "name": "BJ's issues adjustment", "tool": "merchant_api", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "cpn.s6", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Coupon failure reported with coupon id.", "required_facts": []}
+  ]},
+ {"category_key": "membership_renewal", "version": 1, "name": "Membership renewal or fee refund",
+  "steps": [
+   {"step_id": "mem.s1", "kind": "verify", "name": "Look up membership", "tool": "lookup_order", "clause_ids": ["BJ-MEM-1"], "instruction": "Tier, fee, renewal date, Easy Renewal, prior fee refunds.", "required_facts": ["member.prior_fee_refunds", "member.fee_paid"]},
+   {"step_id": "mem.s2", "kind": "gather", "name": "Does the member want to cancel?", "tool": "extract_facts", "clause_ids": ["BJ-MEM-3"], "instruction": "State what ends with the membership before they decide.", "required_facts": ["claim.wants_cancel_membership"]},
+   {"step_id": "mem.s3", "kind": "check", "name": "Apply money-back guarantee", "tool": "rule", "clause_ids": ["BJ-MEM-2"], "instruction": "First cancellation: refund; later ones: no refund.", "required_facts": []},
+   {"step_id": "mem.s4", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "mem.s5", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "Confirmation closes the membership.", "required_facts": []},
+   {"step_id": "mem.s6", "kind": "execute", "name": "BJ's refunds fee and cancels", "tool": "merchant_api", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "mem.s7", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Retention and win-back flag.", "required_facts": []}
+  ]},
+ {"category_key": "return_eligibility", "version": 1, "name": "Return eligibility by category",
+  "steps": [
+   {"step_id": "ret.s1", "kind": "verify", "name": "Look up purchase", "tool": "lookup_order", "clause_ids": ["BJ-RET-6"], "instruction": "Purchase/pickup/delivery date, category window, final-sale flags.", "required_facts": ["item.return_window_days", "item.is_non_returnable"]},
+   {"step_id": "ret.s2", "kind": "check", "name": "Apply return windows", "tool": "rule", "clause_ids": ["BJ-RET-1", "BJ-RET-3", "BJ-RET-4", "BJ-RET-5"], "instruction": "365 days general; 90 electronics; 30 home; final-sale list.", "required_facts": ["claim.reported_within_hours"]},
+   {"step_id": "ret.s3", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "ret.s4", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "ret.s5", "kind": "execute", "name": "BJ's opens the return", "tool": "merchant_api", "clause_ids": [], "instruction": "In-club return with receipt.", "required_facts": []},
+   {"step_id": "ret.s6", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Disposition at the club.", "required_facts": []}
+  ]},
+ {"category_key": "agent_order_error", "version": 1, "name": "Agent-placed order: quantity or pack-size error",
+  "steps": [
+   {"step_id": "agt.s1", "kind": "verify", "name": "Look up order and Umpyr Check record", "tool": "lookup_order", "clause_ids": ["BJ-AGT-1"], "instruction": "Placed by which agent; what Check decided; who answered the step-up.", "required_facts": ["order.placed_by", "order.check.intent_outcome", "order.check.confirmation_by"]},
+   {"step_id": "agt.s2", "kind": "gather", "name": "What was intended vs received", "tool": "extract_facts", "clause_ids": [], "instruction": "Units intended, units received, how many cases the member keeps.", "required_facts": ["claim.quantity_intended", "claim.quantity_received", "claim.cases_to_keep"]},
+   {"step_id": "agt.s3", "kind": "check", "name": "Bulk final-sale clause vs agent mismatch", "tool": "rule", "clause_ids": ["BJ-RET-5", "BJ-AGT-1"], "instruction": "Member-confirmed bulk buy is final sale; platform-confirmed mismatch is the agent's.", "required_facts": []},
+   {"step_id": "agt.s4", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "Large refunds queue for BJ's staff.", "required_facts": []},
+   {"step_id": "agt.s5", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "The member, not the agent, confirms the settlement.", "required_facts": []},
+   {"step_id": "agt.s6", "kind": "execute", "name": "BJ's collects excess and refunds", "tool": "merchant_api", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "agt.s7", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Restock; feed agent drift to Check.", "required_facts": []}
+  ]},
+ {"category_key": "duplicate_charge_hold", "version": 1, "name": "Duplicate charge or pre-authorization hold",
+  "steps": [
+   {"step_id": "pay.s1", "kind": "verify", "name": "Look up charges", "tool": "lookup_order", "clause_ids": ["BJ-PAY-1"], "instruction": "Count posted captures and pending holds for the order.", "required_facts": ["order.payments.posted_captures", "order.payments.pending_holds"]},
+   {"step_id": "pay.s2", "kind": "gather", "name": "Age of the hold", "tool": "extract_facts", "clause_ids": [], "instruction": "When did the pending line appear?", "required_facts": ["claim.hold_age_hours"]},
+   {"step_id": "pay.s3", "kind": "check", "name": "Apply payment rules", "tool": "rule", "clause_ids": ["BJ-PAY-1", "BJ-PAY-2", "BJ-PAY-3"], "instruction": "Holds are explained; true duplicates are reversed.", "required_facts": []},
+   {"step_id": "pay.s4", "kind": "authorize", "name": "PDP", "tool": "authorize", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "pay.s5", "kind": "confirm", "name": "Member confirms terms", "tool": "confirm_terms", "clause_ids": [], "instruction": "", "required_facts": []},
+   {"step_id": "pay.s6", "kind": "execute", "name": "BJ's reverses duplicate", "tool": "merchant_api", "clause_ids": [], "instruction": "Through the processor to the original card.", "required_facts": []},
+   {"step_id": "pay.s7", "kind": "close", "name": "Lifecycle closure", "tool": "close", "clause_ids": [], "instruction": "Reconciliation log.", "required_facts": []}
+  ]}
+]

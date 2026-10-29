@@ -7,6 +7,9 @@
 #   infra/deploy.sh bootstrap-cloudflare  only the Cloudflare half (Pages project, secrets, web, domain + DNS)
 #   infra/deploy.sh engine     build + deploy the engine to Railway        (needs RAILWAY_API_TOKEN or RAILWAY_TOKEN)
 #   infra/deploy.sh web        build + deploy the web app to Cloudflare    (needs CLOUDFLARE_API_TOKEN)
+#   infra/deploy.sh web-preview build + deploy the web app to a Pages PREVIEW branch (PREVIEW_BRANCH, default bjs-preview);
+#                              production and the custom domain are untouched. Also pushes the gate secrets to the
+#                              preview environment so /login works on the *.umpyr-web.pages.dev preview URL.
 #   infra/deploy.sh secrets    push DEMO_PASSWORD / SESSION_SECRET / API_GATEWAY_SECRET / API_ORIGIN to Pages
 #                              and API_GATEWAY_SECRET / ANTHROPIC_API_KEY / CLAUDE_MODEL / DAILY_COST_CAP_USD to Railway
 #   infra/deploy.sh all        secrets, engine, web
@@ -81,6 +84,31 @@ deploy_web() {
   ( cd apps/web && npm ci --no-audit --no-fund --silent && VITE_API_BASE_URL=/api VITE_PUBLIC_DEMO=true npm run build --silent )
   echo "==> Cloudflare Pages: $PAGES_PROJECT"
   ( cd apps/web && $WRANGLER pages deploy --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true )
+}
+
+push_pages_preview_secrets() { # NAMES... : set as secret_text on the Pages PREVIEW environment via the API (wrangler has no --env for pages secrets)
+  need CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID
+  local body
+  body="$(NAMES="$*" uv run --no-sync python -c '
+import json, os
+vars = {n: {"type": "secret_text", "value": os.environ[n]} for n in os.environ["NAMES"].split() if os.environ.get(n)}
+print(json.dumps({"deployment_configs": {"preview": {"env_vars": vars}}}))')"
+  printf '%s' "$body" | cf -X PATCH "$CF_API/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT" --data @- \
+    | jpy 'print("   preview env vars:", "ok" if d.get("success") else d.get("errors")); sys.exit(0 if d.get("success") else 1)'
+}
+
+deploy_web_preview() {
+  need CLOUDFLARE_API_TOKEN
+  local branch="${PREVIEW_BRANCH:-bjs-preview}"
+  ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET
+  API_ORIGIN="${API_ORIGIN:-$(state_get API_ORIGIN)}"; export API_ORIGIN
+  echo "==> preview secrets -> Cloudflare Pages ($PAGES_PROJECT, preview environment)"
+  push_pages_preview_secrets DEMO_PASSWORD SESSION_SECRET API_GATEWAY_SECRET API_ORIGIN
+  echo "==> build web (public demo)"
+  ( cd apps/web && npm ci --no-audit --no-fund --silent && VITE_API_BASE_URL=/api VITE_PUBLIC_DEMO=true npm run build --silent )
+  echo "==> Cloudflare Pages preview: $PAGES_PROJECT @ $branch"
+  ( cd apps/web && $WRANGLER pages deploy --project-name "$PAGES_PROJECT" --branch "$branch" --commit-dirty=true )
+  echo "   preview alias: https://$branch.$PAGES_PROJECT.pages.dev"
 }
 
 push_pages_secret() { # NAME (value read from the env var of the same name)
@@ -207,6 +235,7 @@ case "${1:-}" in
   bootstrap-cloudflare) need DEMO_PASSWORD; ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET; API_ORIGIN="${API_ORIGIN:-$(state_get API_ORIGIN)}"; export API_ORIGIN; bootstrap_cloudflare ;;
   engine)    deploy_engine ;;
   web)       deploy_web ;;
+  web-preview) deploy_web_preview ;;
   secrets)   deploy_secrets ;;
   all)       deploy_secrets; deploy_engine; deploy_web ;;
   *) sed -n '2,14p' "$0"; exit 1 ;;

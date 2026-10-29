@@ -1,0 +1,1445 @@
+{
+ "workspace": "bjs",
+ "version": "2026-10-28.1",
+ "scenarios": [
+  {
+   "id": "clean_restock",
+   "title": "Clean match: weekly restock",
+   "agent_label": "Muse",
+   "tagline": "Everything inside the mandate. Approve in milliseconds.",
+   "expected": "approve",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_e8bc163c82ee",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9101",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Meta Muse",
+     "agent_id": "muse_agt_f55ff16f",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.meta.ai",
+     "fingerprint_id": "fp_c301b94ee9",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 165.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_e8bc163c",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "90.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "WF-CHK-6",
+       "description": "Wellsley Farms Boneless Chicken Breast 6 lb",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "22.00",
+       "brand": "Wellsley Farms",
+       "substitutable": false
+      },
+      {
+       "sku": "BAN-3",
+       "description": "Bananas 3 lb",
+       "quantity": 2,
+       "unit": "each",
+       "max_unit_price": "2.50",
+       "brand": null,
+       "substitutable": false
+      },
+      {
+       "sku": "BJ-WAT-40",
+       "description": "Berkley Jensen Purified Water 40 pk",
+       "quantity": 1,
+       "unit": "pack",
+       "max_unit_price": "5.00",
+       "brand": "Berkley Jensen",
+       "substitutable": false
+      },
+      {
+       "sku": "BJ-EGG-24",
+       "description": "Wellsley Farms Large Eggs 24 ct",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "6.50",
+       "brand": "Wellsley Farms",
+       "substitutable": false
+      },
+      {
+       "sku": "TIDE-POD-112",
+       "description": "Tide PODS 112 ct",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "29.00",
+       "brand": "Tide",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_fc59708e",
+      "valid": true,
+      "issuer": "attest.meta.ai"
+     },
+     "natural_language": "Weekly restock: chicken, bananas, water, eggs, Tide pods"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "WF-CHK-6",
+       "description": "Wellsley Farms Boneless Chicken Breast, 6 lb",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "19.98",
+       "line_total": "19.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "BAN-3",
+       "description": "Bananas, 3 lb",
+       "brand": null,
+       "department": "fresh",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "1.89",
+       "line_total": "3.78",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-WAT-40",
+       "description": "Berkley Jensen Purified Water, 40 pk",
+       "brand": "Berkley Jensen",
+       "department": "grocery",
+       "quantity": 1,
+       "unit": "pack",
+       "pack_size": 40,
+       "unit_price": "4.49",
+       "line_total": "4.49",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-EGG-24",
+       "description": "Wellsley Farms Large Eggs, 24 ct",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "5.79",
+       "line_total": "5.79",
+       "substituted_for": null
+      },
+      {
+       "sku": "TIDE-POD-112",
+       "description": "Tide PODS Laundry Detergent, 112 ct",
+       "brand": "Tide",
+       "department": "household",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "27.99",
+       "line_total": "27.99",
+       "substituted_for": null
+      }
+     ],
+     "fees": "9.99",
+     "tax": "0.00",
+     "total": "72.02",
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_ca0df2c95a",
+     "tier": "club_plus",
+     "tenure_days": 1500,
+     "email_hash": "sha256:d4c73318fb638c3bbc627810",
+     "device_hash": "sha256:d174ccd248ad2bfff0fc79cd",
+     "card": {
+      "bin_hash": "sha256:fa8decbed3b12199",
+      "last4_hash": "sha256:2239b12af947b0a6",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 6,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 170.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "MA",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "pack_size_drift",
+   "title": "Pack-size drift: packs read as cases",
+   "agent_label": "Muse",
+   "tagline": "Mandate: 2 packs of paper towels. Cart: 2 cases of 12. Step-up.",
+   "expected": "step_up",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_ad328846aa18",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9102",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Meta Muse",
+     "agent_id": "muse_agt_20377cec",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.meta.ai",
+     "fingerprint_id": "fp_52dde86290",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 140.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_ad328846",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "75.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "BTY-PT-12",
+       "description": "Bounty Select-A-Size Paper Towels 12 pk",
+       "quantity": 2,
+       "unit": "pack",
+       "max_unit_price": "26.00",
+       "brand": "Bounty",
+       "substitutable": false
+      },
+      {
+       "sku": "WF-CUP-2",
+       "description": "Wellsley Farms Plastic Cups 2 pk",
+       "quantity": 1,
+       "unit": "pack",
+       "max_unit_price": "13.00",
+       "brand": "Wellsley Farms",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_fd26860c",
+      "valid": true,
+      "issuer": "attest.meta.ai"
+     },
+     "natural_language": "2 packs of Bounty paper towels and a pack of cups"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "BTY-PT-12-CASE",
+       "description": "Bounty Select-A-Size Paper Towels, case of 12 packs",
+       "brand": "Bounty",
+       "department": "paper",
+       "quantity": 2,
+       "unit": "case",
+       "pack_size": 12,
+       "unit_price": "299.88",
+       "line_total": "599.76",
+       "substituted_for": null
+      },
+      {
+       "sku": "WF-CUP-2",
+       "description": "Wellsley Farms Plastic Cups, 2 pk",
+       "brand": "Wellsley Farms",
+       "department": "paper",
+       "quantity": 1,
+       "unit": "pack",
+       "pack_size": 2,
+       "unit_price": "11.99",
+       "line_total": "11.99",
+       "substituted_for": null
+      }
+     ],
+     "fees": "9.99",
+     "tax": "0.00",
+     "total": "621.74",
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_018c267d72",
+     "tier": "club_plus",
+     "tenure_days": 1500,
+     "email_hash": "sha256:a408d967ebd3da85fdca6af5",
+     "device_hash": "sha256:4c2cf477d7a9662b8f2309f5",
+     "card": {
+      "bin_hash": "sha256:a19e228bda2e0c65",
+      "last4_hash": "sha256:ca6e5c8a67e6c3aa",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 6,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 150.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "MA",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "substitution_ceiling",
+   "title": "Price ceiling breached after a substitution",
+   "agent_label": "Dots",
+   "tagline": "Substitutions allowed, but the replacement costs 72% more per unit and pushes the total over the ceiling.",
+   "expected": "step_up",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_41242b9fae56",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9103",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "OpenAI Dots",
+     "agent_id": "dots_agt_f46dd28a",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.openai.com",
+     "fingerprint_id": "fp_ca0d9f5af4",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 165.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_41242b9f",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "85.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "WF-CHK-6",
+       "description": "Wellsley Farms Boneless Chicken Breast 6 lb",
+       "quantity": 2,
+       "unit": "each",
+       "max_unit_price": "21.00",
+       "brand": "Wellsley Farms",
+       "substitutable": true
+      },
+      {
+       "sku": "WF-GRD-BF",
+       "description": "Wellsley Farms 85% Lean Ground Beef 5 lb",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "26.00",
+       "brand": "Wellsley Farms",
+       "substitutable": true
+      },
+      {
+       "sku": "HNY-NUT-2",
+       "description": "Honey Nut Cheerios 2 pk",
+       "quantity": 1,
+       "unit": "pack",
+       "max_unit_price": "9.00",
+       "brand": "Cheerios",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": true,
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_df0e534c",
+      "valid": true,
+      "issuer": "attest.openai.com"
+     },
+     "natural_language": "Chicken, ground beef, cereal; substitutions ok if similar"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "PRD-ORG-CHK-6",
+       "description": "Perdue Organic Boneless Chicken Breast, 6 lb",
+       "brand": "Perdue",
+       "department": "fresh",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "36.09",
+       "line_total": "72.18",
+       "substituted_for": "WF-CHK-6"
+      },
+      {
+       "sku": "WF-GRD-BF",
+       "description": "Wellsley Farms 85% Lean Ground Beef, 5 lb",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "24.95",
+       "line_total": "24.95",
+       "substituted_for": null
+      },
+      {
+       "sku": "HNY-NUT-2",
+       "description": "Honey Nut Cheerios, 2 pk",
+       "brand": "Cheerios",
+       "department": "grocery",
+       "quantity": 1,
+       "unit": "pack",
+       "pack_size": 2,
+       "unit_price": "7.99",
+       "line_total": "7.99",
+       "substituted_for": null
+      }
+     ],
+     "fees": "9.99",
+     "tax": "0.00",
+     "total": "115.11",
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_153812ae5f",
+     "tier": "club",
+     "tenure_days": 1500,
+     "email_hash": "sha256:0d7e1ded534d59f1623d55d1",
+     "device_hash": "sha256:c981568ce6738ca7a6bfb6df",
+     "card": {
+      "bin_hash": "sha256:cfca834fb61d2652",
+      "last4_hash": "sha256:34e7536e5c2e6d29",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 6,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 170.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "MA",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "delegated_party",
+   "title": "Delegated binding: stock up for the party under $300",
+   "agent_label": "Gemini",
+   "tagline": "No line items mandated. The agent chooses inside the ceiling. Approve with a note.",
+   "expected": "approve",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_5b840157e7e8",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9104",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Google Gemini",
+     "agent_id": "gem_agt_2c3a4249",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.google.com",
+     "fingerprint_id": "fp_41e74ea48f",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 210.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper",
+       "seasonal"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_5b840157",
+     "kind": "intent",
+     "binding": "delegated",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "300.00",
+     "currency": "USD",
+     "items": [],
+     "substitutions_allowed": true,
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-31T10:00:00Z",
+      "end": "2026-10-31T12:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_b46f9771",
+      "valid": true,
+      "issuer": "attest.google.com"
+     },
+     "natural_language": "Stock up for Saturday's party for 20 people, under $300, pickup at the Medford club"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "WF-PLT-12",
+       "description": "Wellsley Farms Heavy-Duty Paper Plates, 12 pk",
+       "brand": "Wellsley Farms",
+       "department": "paper",
+       "quantity": 1,
+       "unit": "pack",
+       "pack_size": 12,
+       "unit_price": "8.99",
+       "line_total": "8.99",
+       "substituted_for": null
+      },
+      {
+       "sku": "WF-CUP-2",
+       "description": "Wellsley Farms Plastic Cups, 2 pk",
+       "brand": "Wellsley Farms",
+       "department": "paper",
+       "quantity": 2,
+       "unit": "pack",
+       "pack_size": 2,
+       "unit_price": "11.99",
+       "line_total": "23.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-WAT-40",
+       "description": "Berkley Jensen Purified Water, 40 pk",
+       "brand": "Berkley Jensen",
+       "department": "grocery",
+       "quantity": 2,
+       "unit": "pack",
+       "pack_size": 40,
+       "unit_price": "4.49",
+       "line_total": "8.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "WF-WINGS-5",
+       "description": "Wellsley Farms Party Wings, 5 lb",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 3,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "17.49",
+       "line_total": "52.47",
+       "substituted_for": null
+      },
+      {
+       "sku": "LAYS-VAR-50",
+       "description": "Lay's Variety Pack, 50 ct",
+       "brand": "Lay's",
+       "department": "grocery",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "18.99",
+       "line_total": "37.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "WF-VEG-TRAY",
+       "description": "Wellsley Farms Vegetable Tray, 4 lb",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "14.99",
+       "line_total": "29.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "CK-SODA-36",
+       "description": "Coca-Cola, 36 pk",
+       "brand": "Coca-Cola",
+       "department": "grocery",
+       "quantity": 2,
+       "unit": "pack",
+       "pack_size": 36,
+       "unit_price": "16.99",
+       "line_total": "33.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-ICE-20",
+       "description": "Berkley Jensen Ice, 20 lb",
+       "brand": "Berkley Jensen",
+       "department": "grocery",
+       "quantity": 4,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "3.29",
+       "line_total": "13.16",
+       "substituted_for": null
+      }
+     ],
+     "fees": "0.00",
+     "tax": "0.00",
+     "total": "209.52",
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-31T10:00:00Z",
+      "end": "2026-10-31T12:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_2396a1256a",
+     "tier": "club_plus",
+     "tenure_days": 1500,
+     "email_hash": "sha256:1568c8586de423fcbd030f5d",
+     "device_hash": "sha256:03307d5bfb86d23a7f53384b",
+     "card": {
+      "bin_hash": "sha256:d02ae26d92fc4f4e",
+      "last4_hash": "sha256:362213a147912cf1",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 6,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 190.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper",
+       "seasonal"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "MA",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "reseller_pattern",
+   "title": "Reseller / arbitrage across masked members",
+   "agent_label": "Dots",
+   "tagline": "Each order looks fine alone. The same agent fingerprint bought this constrained SKU for 14 memberships today. Hold.",
+   "expected": "hold",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_3b96fc064fa8",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9105",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "OpenAI Dots",
+     "agent_id": "dots_agt_162c0f74",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.openai.com",
+     "fingerprint_id": "fp_ae6b12c7f3",
+     "history": {
+      "orders_90d": 640,
+      "merchants_90d": 61,
+      "avg_basket_usd": 880.0,
+      "dispute_rate": 0.012,
+      "first_seen_days_ago": 41,
+      "typical_departments": [
+       "electronics",
+       "toys",
+       "seasonal"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_3b96fc06",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "1550.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "SNY-PS5P-B",
+       "description": "Sony PlayStation 5 Pro Console Bundle",
+       "quantity": 2,
+       "unit": "each",
+       "max_unit_price": "760.00",
+       "brand": "Sony",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-28T17:00:00Z",
+      "end": "2026-10-28T19:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_e8f67c41",
+      "valid": true,
+      "issuer": "attest.openai.com"
+     },
+     "natural_language": "Two PS5 Pro bundles for pickup"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "SNY-PS5P-B",
+       "description": "Sony PlayStation 5 Pro Console Bundle",
+       "brand": "Sony",
+       "department": "electronics",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "749.99",
+       "line_total": "1499.98",
+       "substituted_for": null
+      }
+     ],
+     "fees": "0.00",
+     "tax": "0.00",
+     "total": "1499.98",
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-28T17:00:00Z",
+      "end": "2026-10-28T19:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_3a895e449f",
+     "tier": "club",
+     "tenure_days": 48,
+     "email_hash": "sha256:aae02d1fbc550937f5e46e7e",
+     "device_hash": "sha256:43dabaf2140f9177c31989c1",
+     "card": {
+      "bin_hash": "sha256:0bb7b362f3e66d1a",
+      "last4_hash": "sha256:332d993d724e10f1",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 40
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 2,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 610.0,
+      "typical_departments": [
+       "electronics",
+       "toys"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "NJ",
+     "ip_region": "NJ",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 14,
+     "sku_demand_tier": "constrained",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "membership_sharing",
+   "title": "Membership sharing across agent fingerprints",
+   "agent_label": "Muse",
+   "tagline": "Valid mandate, matching cart, but one membership is driven by four agents in four states. Step-up to the primary member.",
+   "expected": "step_up",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_71e769095923",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9106",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Meta Muse",
+     "agent_id": "muse_agt_730bea4f",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.meta.ai",
+     "fingerprint_id": "fp_3127820642",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 120.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_71e76909",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "95.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "WF-OO-3L",
+       "description": "Wellsley Farms Extra Virgin Olive Oil 3 L",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "26.00",
+       "brand": "Wellsley Farms",
+       "substitutable": false
+      },
+      {
+       "sku": "BJ-TP-30",
+       "description": "Berkley Jensen Ultra Soft Bath Tissue 30 rolls",
+       "quantity": 1,
+       "unit": "pack",
+       "max_unit_price": "23.00",
+       "brand": "Berkley Jensen",
+       "substitutable": false
+      },
+      {
+       "sku": "WF-SAL-25",
+       "description": "Wellsley Farms Atlantic Salmon 2.5 lb",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "32.00",
+       "brand": "Wellsley Farms",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_1b0ec848",
+      "valid": true,
+      "issuer": "attest.meta.ai"
+     },
+     "natural_language": "Olive oil, bath tissue, salmon"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "WF-OO-3L",
+       "description": "Wellsley Farms Extra Virgin Olive Oil, 3 L",
+       "brand": "Wellsley Farms",
+       "department": "grocery",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "24.99",
+       "line_total": "24.99",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-TP-30",
+       "description": "Berkley Jensen Ultra Soft Bath Tissue, 30 rolls",
+       "brand": "Berkley Jensen",
+       "department": "paper",
+       "quantity": 1,
+       "unit": "pack",
+       "pack_size": 30,
+       "unit_price": "21.99",
+       "line_total": "21.99",
+       "substituted_for": null
+      },
+      {
+       "sku": "WF-SAL-25",
+       "description": "Wellsley Farms Atlantic Salmon Fillet, 2.5 lb",
+       "brand": "Wellsley Farms",
+       "department": "fresh",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "29.99",
+       "line_total": "29.99",
+       "substituted_for": null
+      }
+     ],
+     "fees": "9.99",
+     "tax": "0.00",
+     "total": "86.96",
+     "fulfilment": "same_day_delivery",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_e341fcc488",
+     "tier": "club",
+     "tenure_days": 1500,
+     "email_hash": "sha256:9335d79e0a1925b93281f822",
+     "device_hash": "sha256:2f507fe19c1a8b9e83c8492f",
+     "card": {
+      "bin_hash": "sha256:a796be3f5c217e0a",
+      "last4_hash": "sha256:e902b67c17542f3e",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 19,
+      "cards_7d": 1,
+      "addresses_30d": 4,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 4,
+      "regions_30d": [
+       "MA",
+       "FL",
+       "TX",
+       "CA"
+      ],
+      "agents_30d": 4
+     },
+     "history": {
+      "avg_basket_usd": 170.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "FL",
+     "ip_region": "FL",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "spoofed_agent",
+   "title": "Compromised or spoofed agent",
+   "agent_label": "Unknown",
+   "tagline": "Clean card, clean device, plausible cart. No attestation and the mandate signature fails. Decline.",
+   "expected": "decline",
+   "ordinary_expected": "approve",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_13d28fed9bec",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9107",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Meta Muse",
+     "agent_id": "muse_agt_be78d0dc",
+     "protocol": "ap2/0.1",
+     "attested": false,
+     "attestation_issuer": null,
+     "fingerprint_id": "fp_7a61bfb15a",
+     "history": {
+      "orders_90d": 0,
+      "merchants_90d": 0,
+      "avg_basket_usd": 0.0,
+      "dispute_rate": 0.0,
+      "first_seen_days_ago": 0,
+      "typical_departments": []
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_13d28fed",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "800.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "APL-APP3",
+       "description": "Apple AirPods Pro 3",
+       "quantity": 2,
+       "unit": "each",
+       "max_unit_price": "240.00",
+       "brand": "Apple",
+       "substitutable": false
+      },
+      {
+       "sku": "BJ-GC-100",
+       "description": "BJ's Gift Card $100",
+       "quantity": 3,
+       "unit": "each",
+       "max_unit_price": "100.00",
+       "brand": "BJ's",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "ship",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_unknown_9f3a",
+      "valid": false,
+      "issuer": "attest.meta.ai"
+     },
+     "natural_language": "AirPods and gift cards shipped to home"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "APL-APP3",
+       "description": "Apple AirPods Pro 3",
+       "brand": "Apple",
+       "department": "electronics",
+       "quantity": 2,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "229.99",
+       "line_total": "459.98",
+       "substituted_for": null
+      },
+      {
+       "sku": "BJ-GC-100",
+       "description": "BJ's Gift Card, $100",
+       "brand": "BJ's",
+       "department": "gift_card",
+       "quantity": 3,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "100.00",
+       "line_total": "300.00",
+       "substituted_for": null
+      }
+     ],
+     "fees": "0.00",
+     "tax": "0.00",
+     "total": "759.98",
+     "fulfilment": "ship",
+     "delivery_window": {
+      "start": "2026-10-28T16:00:00Z",
+      "end": "2026-10-28T18:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_61d00b88ae",
+     "tier": "club_plus",
+     "tenure_days": 2100,
+     "email_hash": "sha256:c8becada9abe9344277d42d7",
+     "device_hash": "sha256:d758f5539816252fc728a69a",
+     "card": {
+      "bin_hash": "sha256:f7db3c9c42aecc83",
+      "last4_hash": "sha256:e58b2843eaa9b9a8",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 5,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 160.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household",
+       "paper"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "MA",
+     "ip_is_datacenter": false,
+     "device_age_days": 300
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  },
+  {
+   "id": "out_of_pattern",
+   "title": "High-value electronics outside the member's pattern",
+   "agent_label": "Gemini",
+   "tagline": "A grocery-only member's agent buys a $1,299 TV from a new device. An ordinary tool reviews or declines; Umpyr asks the member through the agent.",
+   "expected": "step_up",
+   "ordinary_expected": "review",
+   "request": {
+    "protocol": "umpyr-check/0.1",
+    "request_id": "req_1cb7637b6957",
+    "merchant_id": "bjs-wholesale-demo",
+    "order_ref": "BJ-AGT-9108",
+    "at": "2026-10-28T14:02:11Z",
+    "agent": {
+     "platform": "Google Gemini",
+     "agent_id": "gem_agt_ce609b5b",
+     "protocol": "ap2/0.1",
+     "attested": true,
+     "attestation_issuer": "attest.google.com",
+     "fingerprint_id": "fp_e21c25a24e",
+     "history": {
+      "orders_90d": 120,
+      "merchants_90d": 14,
+      "avg_basket_usd": 430.0,
+      "dispute_rate": 0.004,
+      "first_seen_days_ago": 210,
+      "typical_departments": [
+       "grocery",
+       "household",
+       "electronics"
+      ]
+     }
+    },
+    "mandate": {
+     "mandate_id": "m_1cb7637b",
+     "kind": "checkout",
+     "binding": "specified",
+     "confirmed": true,
+     "issued_at": "2026-10-28T13:58:40Z",
+     "expires_at": "2026-10-28T15:00:00Z",
+     "price_ceiling": "1400.00",
+     "currency": "USD",
+     "items": [
+      {
+       "sku": "LG-TV-75",
+       "description": "LG 75\" Class 4K UHD Smart TV",
+       "quantity": 1,
+       "unit": "each",
+       "max_unit_price": "1350.00",
+       "brand": "LG",
+       "substitutable": false
+      }
+     ],
+     "substitutions_allowed": false,
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-29T10:00:00Z",
+      "end": "2026-10-29T12:00:00Z"
+     },
+     "signature": {
+      "alg": "ES256",
+      "kid": "kid_01ad3acc",
+      "valid": true,
+      "issuer": "attest.google.com"
+     },
+     "natural_language": "The 75 inch LG TV on sale, pickup tomorrow"
+    },
+    "cart": {
+     "lines": [
+      {
+       "sku": "LG-TV-75",
+       "description": "LG 75\" Class 4K UHD Smart TV",
+       "brand": "LG",
+       "department": "electronics",
+       "quantity": 1,
+       "unit": "each",
+       "pack_size": null,
+       "unit_price": "1299.99",
+       "line_total": "1299.99",
+       "substituted_for": null
+      }
+     ],
+     "fees": "0.00",
+     "tax": "0.00",
+     "total": "1299.99",
+     "fulfilment": "club_pickup",
+     "delivery_window": {
+      "start": "2026-10-29T10:00:00Z",
+      "end": "2026-10-29T12:00:00Z"
+     },
+     "club_id": "club-0042"
+    },
+    "customer": {
+     "member_token": "mem_59360be607",
+     "tier": "club",
+     "tenure_days": 900,
+     "email_hash": "sha256:cd321c70a18632bc77c69bb0",
+     "device_hash": "sha256:390d32e07ef0eab6c7d91fe6",
+     "card": {
+      "bin_hash": "sha256:1e4f773a54f39278",
+      "last4_hash": "sha256:d0d2528164898c77",
+      "issuer_country": "US",
+      "funding": "credit",
+      "age_days_on_file": 400
+     },
+     "velocity": {
+      "orders_24h": 1,
+      "orders_30d": 6,
+      "cards_7d": 1,
+      "addresses_30d": 1,
+      "declines_7d": 0
+     },
+     "membership": {
+      "fingerprints_30d": 1,
+      "regions_30d": [
+       "MA"
+      ],
+      "agents_30d": 1
+     },
+     "history": {
+      "avg_basket_usd": 165.0,
+      "typical_departments": [
+       "grocery",
+       "fresh",
+       "household"
+      ],
+      "chargebacks_12m": 0,
+      "returns_rate": 0.02,
+      "disputes_12m": 0
+     },
+     "shipping_region": "MA",
+     "ip_region": "NH",
+     "ip_is_datacenter": false,
+     "device_age_days": 0
+    },
+    "context": {
+     "peer_orders_same_sku_24h": 0,
+     "sku_demand_tier": "normal",
+     "promo_codes": [],
+     "promo_stack_depth": 0
+    }
+   }
+  }
+ ]
+}

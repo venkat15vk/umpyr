@@ -5,6 +5,8 @@ import { Client } from "./pages/Client";
 import { Try } from "./pages/Try";
 import { Onboard } from "./pages/Onboard";
 import { Setup } from "./pages/Setup";
+import { BjsResolve } from "./pages/BjsResolve";
+import { BjsCheck } from "./pages/BjsCheck";
 import { ThemeProvider } from "./lib/theme";
 import { PUBLIC_DEMO } from "./lib/api";
 
@@ -15,6 +17,8 @@ export default function App() {
         <Routes>
           <Route element={<Shell />}>
             <Route path="/" element={<Home />} />
+            <Route path="/bjs" element={<BjsResolve />} />
+            <Route path="/bjs/check" element={<BjsCheck />} />
             {!PUBLIC_DEMO && <Route path="/try" element={<Try />} />}
             <Route path="/:client" element={<Client />} />
             {!PUBLIC_DEMO && <Route path="/:client/onboard" element={<Onboard />} />}

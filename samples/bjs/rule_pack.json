@@ -1,0 +1,1627 @@
+{
+ "workspace": "bjs",
+ "version": "2026-10-28.1",
+ "clauses": [
+  {
+   "clause_id": "BJ-SDD-1",
+   "title": "Who fulfils same-day delivery",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/26908852016660-Same-Day-Delivery-Third-Party-Partners-Terms-of-Service",
+   "source_title": "Same-Day Delivery Third-Party Partners",
+   "text": "BJ's partners with Instacart, DoorDash, and Roadie for our Same-Day Delivery program. A BJ's team member or third-party shopper will pick the items in your order."
+  },
+  {
+   "clause_id": "BJ-SDD-2",
+   "title": "Out of stock and substitutions",
+   "tier": "commitment",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/26909684026260-What-happens-if-an-item-I-ordered-is-out-of-stock",
+   "source_title": "Out-of-stock items on Same-Day Delivery",
+   "text": "If an item is out of stock you are not charged for it. If you allow substitutions on your order, we will text you to approve or decline any replacement items."
+  },
+  {
+   "clause_id": "BJ-SDD-3",
+   "title": "Missing or damaged delivery item",
+   "tier": "commitment",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/26908723486100-What-should-I-do-if-I-have-an-issue-with-my-Same-Day-Delivery-order",
+   "source_title": "Issues with a Same-Day Delivery order",
+   "text": "If an item is missing or damaged from your Same-Day Delivery order, you can initiate a return through the Return Center in Order History."
+  },
+  {
+   "clause_id": "BJ-SDD-4",
+   "title": "Substitution made while substitutions were off (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "practice://bjs/sdd-unapproved-substitution",
+   "source_title": "Illustrative practice rule",
+   "text": "ILLUSTRATIVE: when a replacement item is delivered although the member declined substitutions, the substituted line is refunded in full; the member may keep or return the item."
+  },
+  {
+   "clause_id": "BJ-SDD-5",
+   "title": "Third-party providers are not BJ's employees",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/delivery-terms/",
+   "source_title": "Delivery and Pickup Terms",
+   "text": "You acknowledge that Third-Party Providers are not BJ's employees."
+  },
+  {
+   "clause_id": "BJ-RET-1",
+   "title": "General return window",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "BJ's accepts returns on most items within 365 days of purchase, unless otherwise specified. Items purchased more than one year ago are not eligible for return. Refunds are issued to the original form of payment."
+  },
+  {
+   "clause_id": "BJ-RET-2",
+   "title": "Groceries and house brands",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "No returns will be accepted after 90 days from date of purchase. BJ's Wholesale Club offers a 100% money-back guarantee on Wellsley Farms grocery and perishable items. Proof of purchase required."
+  },
+  {
+   "clause_id": "BJ-RET-3",
+   "title": "Electronics window",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "Electronics: 90 days. Includes undamaged televisions, home theater displays, computers/laptops, tablets, e-bikes and e-scooters."
+  },
+  {
+   "clause_id": "BJ-RET-4",
+   "title": "Home items window",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "Home: 30 days. Air conditioners, patio sets and structures, mattresses including box springs and bed-in-a-box."
+  },
+  {
+   "clause_id": "BJ-RET-5",
+   "title": "Final sale and non-returnable items",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "Not returnable: gift cards; alcohol, cigarettes, tobacco and lottery; opened software, DVDs and video games; items marked final sale; online bulk buys of 10 or more units totalling over $1,000; reseller purchases; returns without proof of purchase."
+  },
+  {
+   "clause_id": "BJ-RET-6",
+   "title": "When the return window starts",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/returns/",
+   "source_title": "BJ's Return Policy",
+   "text": "The return window starts at the purchase date for in-club and ExpressPay purchases, the pickup date for pickup orders, and the delivery date for delivered orders."
+  },
+  {
+   "clause_id": "BJ-RET-7",
+   "title": "Late-reported perishable damage needs evidence (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "practice://bjs/perishable-evidence",
+   "source_title": "Illustrative practice rule",
+   "text": "ILLUSTRATIVE: perishable damage reported more than 72 hours after pickup or delivery is refunded when the member provides a photo; without one it is declined."
+  },
+  {
+   "clause_id": "BJ-PU-1",
+   "title": "Pickup hold window and handling fee",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/delivery-terms/",
+   "source_title": "Delivery and Pickup Terms",
+   "text": "We will hold your pickup order until the close of business the day after your scheduled pickup time. If you do not pick up the order it will be canceled, and you authorize BJ's to charge a pickup handling fee for the canceled order."
+  },
+  {
+   "clause_id": "BJ-PU-2",
+   "title": "Pickup fee under $50",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/about/ordering/curbside-pickup/",
+   "source_title": "Curbside Pickup",
+   "text": "A $3.99 Pickup Fee applies if your order is under $50 for Club and One Mastercard members; free for Club+ and One+ members."
+  },
+  {
+   "clause_id": "BJ-PU-3",
+   "title": "Charged at pickup, holds released",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/about/ordering/curbside-pickup/",
+   "source_title": "Curbside Pickup",
+   "text": "Your credit card will be charged after you have picked up your order at the Club, only for the items you actually pick up. Authorization holds are released within 3-5 business days. You will not be charged for a canceled order."
+  },
+  {
+   "clause_id": "BJ-PU-4",
+   "title": "Order not ready after on-time check-in (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/about/ordering/curbside-pickup/",
+   "source_title": "Curbside Pickup (promise) + illustrative remedy",
+   "text": "Curbside page: after check-in your order is brought out within a few minutes. ILLUSTRATIVE remedy: when the order is ready 30 or more minutes after an on-time check-in, the pickup fee is refunded."
+  },
+  {
+   "clause_id": "BJ-CPN-1",
+   "title": "Digital coupons apply automatically",
+   "tier": "commitment",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/26881128498836",
+   "source_title": "How to clip digital coupons",
+   "text": "Clipped coupons apply automatically at checkout in-club and online. ExpressPay accepts only digitally clipped coupons."
+  },
+  {
+   "clause_id": "BJ-CPN-2",
+   "title": "Clipped coupon that failed to apply (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "practice://bjs/coupon-not-applied",
+   "source_title": "Illustrative practice rule",
+   "text": "ILLUSTRATIVE: a coupon clipped to the membership before the purchase, valid on the item at checkout, that did not apply is refunded at its face value. No published BJ's policy covers retroactive coupons."
+  },
+  {
+   "clause_id": "BJ-CPN-3",
+   "title": "TV price match, day of purchase only",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/price-match/",
+   "source_title": "TV Price Match Guarantee",
+   "text": "BJ's will match the current online or in-store TV price for Eligible TVs at listed competitors on the day of purchase. No general post-purchase price-adjustment policy is published."
+  },
+  {
+   "clause_id": "BJ-MEM-1",
+   "title": "Membership fees and Easy Renewal",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/membership-terms/",
+   "source_title": "Membership Terms",
+   "text": "Club $60/year, Club+ $120/year. With Easy Renewal the then-current fee is charged to the payment method on record on the first day of the month in which the membership is set to expire. Cancel Easy Renewal any time in-club, on BJs.com or by phone."
+  },
+  {
+   "clause_id": "BJ-MEM-2",
+   "title": "Membership money-back guarantee",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/membership-terms/",
+   "source_title": "Membership Terms",
+   "text": "The primary member may cancel at any time and receive a refund of the membership fee paid for the current period. Refunds will not be paid for second or subsequent cancellations. Upgrade and add-on fees are not refundable."
+  },
+  {
+   "clause_id": "BJ-MEM-3",
+   "title": "Club+ benefits",
+   "tier": "contract",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://www.bjs.com/info/membership-terms/",
+   "source_title": "Membership Terms",
+   "text": "Club+ members earn 2% back in rewards (up to $500 per 12 months), an instant 5 cents off each gallon at BJ's Gas, and two same-day deliveries per year with no standard delivery fee on orders of $50 or more."
+  },
+  {
+   "clause_id": "BJ-PAY-1",
+   "title": "Authorization holds are not charges",
+   "tier": "commitment",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/26775603484564-Why-is-there-more-than-one-charge-on-my-credit-debit-card",
+   "source_title": "More than one charge on my card",
+   "text": "These are not separate charges. Once your order is fulfilled, all pending holds are removed and a single final charge is made. If you still see a pending authorization after 7 business days, contact your financial institution."
+  },
+  {
+   "clause_id": "BJ-PAY-2",
+   "title": "BJ's Gas pre-authorization",
+   "tier": "commitment",
+   "confirmed": true,
+   "fetched_at": "2026-10-28",
+   "source_url": "https://help.bjs.com/hc/en-us/articles/31302563852564-Why-is-there-a-hold-on-my-credit-card-from-BJ-s-Gas",
+   "source_title": "Hold from BJ's Gas",
+   "text": "Debit and Amex: $100 hold for fuel transactions; $1 for other cards. The hold is released when the transaction settles. Select credit instead of debit to prevent large preauthorization amounts."
+  },
+  {
+   "clause_id": "BJ-PAY-3",
+   "title": "True duplicate capture (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "practice://bjs/duplicate-capture",
+   "source_title": "Illustrative practice rule",
+   "text": "ILLUSTRATIVE: when two posted captures exist for one order, the duplicate is reversed through the processor to the original card."
+  },
+  {
+   "clause_id": "BJ-AGT-1",
+   "title": "Agent-placed order with a recorded intent mismatch (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-10-28",
+   "source_url": "practice://bjs/agent-intent-mismatch",
+   "source_title": "Illustrative practice rule (uses the Umpyr Check record)",
+   "text": "ILLUSTRATIVE: when an order was placed by an attested agent and the Umpyr Check record shows a material intent mismatch whose step-up was confirmed by the platform rather than the member, the excess quantity is returnable and refunded; it is not treated as the member's bulk buy and fault rests with the agent."
+  }
+ ],
+ "rules": [
+  {
+   "rule_id": "BJ-SDD-3.r1",
+   "clause_id": "BJ-SDD-3",
+   "tier": "commitment",
+   "priority": 2,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "missing_item"
+   ],
+   "requires": [
+    "item.condition",
+    "fulfilment.method",
+    "fulfilment.picked_by",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.condition"
+       },
+       "missing"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.method"
+       },
+       "same_day_delivery"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.picked_by"
+       },
+       "third_party_shopper"
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "third_party",
+    "note": "The missing item is refunded in full to the original card."
+   },
+   "description": "Item missing from a same-day delivery picked by a third-party shopper: refund the line.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-SDD-3.r2",
+   "clause_id": "BJ-SDD-3",
+   "tier": "commitment",
+   "priority": 1,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "missing_item"
+   ],
+   "requires": [
+    "item.condition",
+    "fulfilment.method",
+    "fulfilment.picked_by",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.condition"
+       },
+       "missing"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.method"
+       },
+       "same_day_delivery"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.picked_by"
+       },
+       "bjs_team_member"
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "merchant",
+    "note": "The missing item is refunded in full to the original card."
+   },
+   "description": "Item missing from a same-day delivery picked by a BJ's team member: refund the line.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-SDD-2.r1",
+   "clause_id": "BJ-SDD-2",
+   "tier": "commitment",
+   "priority": 1,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "substituted_item"
+   ],
+   "requires": [
+    "item.condition",
+    "fulfilment.substitutions_allowed"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.condition"
+       },
+       "substituted"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.substitutions_allowed"
+       },
+       true
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Substitutions were allowed on this order and the replacement was offered by text for approval; the item can still be returned at any club."
+   },
+   "description": "Substitution on an order where substitutions were allowed: no refund; return in club remains available.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-SDD-4.r1",
+   "clause_id": "BJ-SDD-4",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "substituted_item"
+   ],
+   "requires": [
+    "item.condition",
+    "fulfilment.substitutions_allowed",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.condition"
+       },
+       "substituted"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.substitutions_allowed"
+       },
+       false
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "third_party",
+    "note": "You declined substitutions, so the replaced item is refunded in full; keep it or return it at any club."
+   },
+   "description": "Substitution made although the member declined substitutions: refund the line.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-2.r1",
+   "clause_id": "BJ-RET-2",
+   "tier": "contract",
+   "priority": 2,
+   "categories": [
+    "perishable_damaged"
+   ],
+   "claim_reasons": [
+    "spoiled",
+    "damaged"
+   ],
+   "requires": [
+    "item.is_perishable",
+    "claim.reported_within_hours",
+    "claim.has_photos",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.is_perishable"
+       },
+       true
+      ]
+     },
+     {
+      "<=": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       2160
+      ]
+     },
+     {
+      "or": [
+       {
+        "<=": [
+         {
+          "var": "claim.reported_within_hours"
+         },
+         72
+        ]
+       },
+       {
+        "==": [
+         {
+          "var": "claim.has_photos"
+         },
+         true
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "merchant",
+    "note": "Perishable item refunded in full; no need to bring it back."
+   },
+   "description": "Spoiled or damaged perishable within 90 days, reported promptly or with a photo: refund the line.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-2.r2",
+   "clause_id": "BJ-RET-2",
+   "tier": "contract",
+   "priority": 3,
+   "categories": [
+    "perishable_damaged"
+   ],
+   "claim_reasons": [
+    "spoiled",
+    "damaged"
+   ],
+   "requires": [
+    "claim.reported_within_hours"
+   ],
+   "when": {
+    ">": [
+     {
+      "var": "claim.reported_within_hours"
+     },
+     2160
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Grocery returns are accepted up to 90 days from purchase."
+   },
+   "description": "Grocery claim after 90 days: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-7.r1",
+   "clause_id": "BJ-RET-7",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "perishable_damaged"
+   ],
+   "claim_reasons": [
+    "spoiled",
+    "damaged"
+   ],
+   "requires": [
+    "claim.reported_within_hours",
+    "claim.has_photos"
+   ],
+   "when": {
+    "and": [
+     {
+      ">": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       72
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "claim.has_photos"
+       },
+       false
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "indeterminate",
+    "note": "Reported after 72 hours without a photo; send a photo of the item and we will look again."
+   },
+   "description": "Late-reported perishable damage without evidence: decline pending a photo.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PU-4.r1",
+   "clause_id": "BJ-PU-4",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "pickup_issue"
+   ],
+   "claim_reasons": [
+    "pickup_not_ready"
+   ],
+   "requires": [
+    "fulfilment.ready_delay_minutes",
+    "order.fees_total"
+   ],
+   "when": {
+    "and": [
+     {
+      ">=": [
+       {
+        "var": "fulfilment.ready_delay_minutes"
+       },
+       30
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "order.fees_total"
+       },
+       0
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "order.fees_total"
+    },
+    "fault": "merchant",
+    "note": "Your order was ready well after check-in, so the pickup fee is refunded. Items not picked up were never charged."
+   },
+   "description": "Pickup ready 30+ minutes after on-time check-in: refund the pickup fee.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PU-4.r2",
+   "clause_id": "BJ-PU-3",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "pickup_issue"
+   ],
+   "claim_reasons": [
+    "pickup_not_ready"
+   ],
+   "requires": [
+    "fulfilment.ready_delay_minutes"
+   ],
+   "when": {
+    "<": [
+     {
+      "var": "fulfilment.ready_delay_minutes"
+     },
+     30
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "merchant",
+    "note": "Items not picked up were never charged and any hold releases within 3-5 business days; the pickup fee stands."
+   },
+   "description": "Short delay at pickup: explain charging rules; no refund.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PU-1.r1",
+   "clause_id": "BJ-PU-1",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "pickup_issue"
+   ],
+   "claim_reasons": [
+    "pickup_cancelled_late"
+   ],
+   "requires": [
+    "claim.reported_within_hours"
+   ],
+   "when": {
+    ">": [
+     {
+      "var": "claim.reported_within_hours"
+     },
+     0
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Pickup orders are held until the close of business the day after the scheduled time; after that they are cancelled and the pickup handling fee applies. You were not charged for the items."
+   },
+   "description": "Order cancelled after the hold window: handling fee stands.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-CPN-2.r1",
+   "clause_id": "BJ-CPN-2",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "coupon_price_adjust"
+   ],
+   "claim_reasons": [
+    "coupon_not_applied"
+   ],
+   "requires": [
+    "item.coupon_id",
+    "claim.coupon_id",
+    "item.coupon_value"
+   ],
+   "when": {
+    "==": [
+     {
+      "var": "item.coupon_id"
+     },
+     {
+      "var": "claim.coupon_id"
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": {
+     "var": "item.coupon_value"
+    },
+    "fault": "merchant",
+    "note": "The clipped coupon was valid at checkout and should have applied automatically; its value is refunded."
+   },
+   "description": "Clipped coupon matching the item did not apply: refund coupon value.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-CPN-2.r2",
+   "clause_id": "BJ-CPN-1",
+   "tier": "commitment",
+   "priority": 1,
+   "categories": [
+    "coupon_price_adjust"
+   ],
+   "claim_reasons": [
+    "coupon_not_applied"
+   ],
+   "requires": [
+    "item.coupon_id",
+    "claim.coupon_id"
+   ],
+   "when": {
+    "!=": [
+     {
+      "var": "item.coupon_id"
+     },
+     {
+      "var": "claim.coupon_id"
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "The coupon clipped does not match this item; clipped coupons apply automatically when they match."
+   },
+   "description": "Coupon does not match the item: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-CPN-3.r1",
+   "clause_id": "BJ-CPN-3",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "coupon_price_adjust"
+   ],
+   "claim_reasons": [
+    "price_adjustment"
+   ],
+   "requires": [
+    "item.name",
+    "claim.reported_within_hours",
+    "claim.advertised_price",
+    "item.price"
+   ],
+   "when": {
+    "and": [
+     {
+      "in": [
+       "TV",
+       {
+        "var": "item.name"
+       }
+      ]
+     },
+     {
+      "<=": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       24
+      ]
+     },
+     {
+      "<": [
+       {
+        "var": "claim.advertised_price"
+       },
+       {
+        "var": "item.price"
+       }
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "partial_refund",
+    "amount": {
+     "-": [
+      {
+       "var": "item.price"
+      },
+      {
+       "var": "claim.advertised_price"
+      }
+     ]
+    },
+    "fault": "merchant",
+    "note": "TV price matched on the day of purchase."
+   },
+   "description": "TV price match requested on the day of purchase: refund the difference.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-CPN-3.r2",
+   "clause_id": "BJ-CPN-3",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "coupon_price_adjust"
+   ],
+   "claim_reasons": [
+    "price_adjustment"
+   ],
+   "requires": [
+    "item.name",
+    "claim.reported_within_hours"
+   ],
+   "when": {
+    "and": [
+     {
+      "in": [
+       "TV",
+       {
+        "var": "item.name"
+       }
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       24
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "The TV price match must be requested on the day of purchase."
+   },
+   "description": "TV price match after the day of purchase: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-MEM-2.r1",
+   "clause_id": "BJ-MEM-2",
+   "tier": "contract",
+   "priority": 2,
+   "categories": [
+    "membership_renewal"
+   ],
+   "claim_reasons": [
+    "membership_refund"
+   ],
+   "requires": [
+    "member.prior_fee_refunds",
+    "claim.wants_cancel_membership",
+    "member.fee_paid"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "member.prior_fee_refunds"
+       },
+       0
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "claim.wants_cancel_membership"
+       },
+       true
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "member.fee_paid"
+    },
+    "fault": "customer",
+    "note": "Under the money-back guarantee the fee for the current period is refunded and the membership is cancelled; Club+ rewards and the gas discount end with it."
+   },
+   "description": "First cancellation: refund the current period's fee.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-MEM-2.r2",
+   "clause_id": "BJ-MEM-2",
+   "tier": "contract",
+   "priority": 3,
+   "categories": [
+    "membership_renewal"
+   ],
+   "claim_reasons": [
+    "membership_refund"
+   ],
+   "requires": [
+    "member.prior_fee_refunds",
+    "claim.wants_cancel_membership"
+   ],
+   "when": {
+    "and": [
+     {
+      ">=": [
+       {
+        "var": "member.prior_fee_refunds"
+       },
+       1
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "claim.wants_cancel_membership"
+       },
+       true
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "A refund was already paid on an earlier cancellation of this membership; the guarantee does not apply to second or subsequent cancellations. The membership stays active until the end of the paid period."
+   },
+   "description": "Second or subsequent cancellation: no refund.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-MEM-1.r1",
+   "clause_id": "BJ-MEM-1",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "membership_renewal"
+   ],
+   "claim_reasons": [
+    "membership_refund"
+   ],
+   "requires": [
+    "claim.wants_cancel_membership"
+   ],
+   "when": {
+    "==": [
+     {
+      "var": "claim.wants_cancel_membership"
+     },
+     false
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "The renewal was charged under Easy Renewal; it can be turned off under My Account so next year is not charged."
+   },
+   "description": "Member keeps the membership: no refund, explain Easy Renewal.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-5.r1",
+   "clause_id": "BJ-RET-5",
+   "tier": "contract",
+   "priority": 10,
+   "categories": [
+    "return_eligibility"
+   ],
+   "claim_reasons": [
+    "change_of_mind"
+   ],
+   "requires": [
+    "item.is_non_returnable"
+   ],
+   "when": {
+    "==": [
+     {
+      "var": "item.is_non_returnable"
+     },
+     true
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "This item is final sale and cannot be returned."
+   },
+   "description": "Non-returnable item: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-3.r1",
+   "clause_id": "BJ-RET-3",
+   "tier": "contract",
+   "priority": 5,
+   "categories": [
+    "return_eligibility"
+   ],
+   "claim_reasons": [
+    "change_of_mind"
+   ],
+   "requires": [
+    "claim.reported_within_hours",
+    "item.is_non_returnable",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "!=": [
+       {
+        "var": "item.return_window_days"
+       },
+       null
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "item.is_non_returnable"
+       },
+       false
+      ]
+     },
+     {
+      "<=": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       {
+        "*": [
+         {
+          "var": "item.return_window_days"
+         },
+         24
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "customer",
+    "note": "Within the category window; bring it to any club with the receipt for a refund to the original payment."
+   },
+   "description": "Category-window item (electronics 90 days, home 30 days) still inside its window: returnable.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-3.r2",
+   "clause_id": "BJ-RET-3",
+   "tier": "contract",
+   "priority": 5,
+   "categories": [
+    "return_eligibility"
+   ],
+   "claim_reasons": [
+    "change_of_mind"
+   ],
+   "requires": [
+    "claim.reported_within_hours"
+   ],
+   "when": {
+    "and": [
+     {
+      "!=": [
+       {
+        "var": "item.return_window_days"
+       },
+       null
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       {
+        "*": [
+         {
+          "var": "item.return_window_days"
+         },
+         24
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Televisions and other electronics must be returned within 90 days of purchase; this one is outside that window."
+   },
+   "description": "Category-window item outside its window: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-1.r1",
+   "clause_id": "BJ-RET-1",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "return_eligibility"
+   ],
+   "claim_reasons": [
+    "change_of_mind"
+   ],
+   "requires": [
+    "claim.reported_within_hours",
+    "item.is_non_returnable",
+    "item.line_total"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.return_window_days"
+       },
+       null
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "item.is_non_returnable"
+       },
+       false
+      ]
+     },
+     {
+      "<=": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       8760
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "item.line_total"
+    },
+    "fault": "customer",
+    "note": "Within 365 days in new condition; return at any club for a refund to the original payment."
+   },
+   "description": "General item within 365 days: returnable.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-1.r2",
+   "clause_id": "BJ-RET-1",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "return_eligibility"
+   ],
+   "claim_reasons": [
+    "change_of_mind"
+   ],
+   "requires": [
+    "claim.reported_within_hours"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "item.return_window_days"
+       },
+       null
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "claim.reported_within_hours"
+       },
+       8760
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Items purchased more than one year ago are not eligible for return."
+   },
+   "description": "General item after 365 days: decline.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-RET-5.r2",
+   "clause_id": "BJ-RET-5",
+   "tier": "contract",
+   "priority": 1,
+   "categories": [
+    "agent_order_error"
+   ],
+   "claim_reasons": [
+    "agent_quantity_error"
+   ],
+   "requires": [
+    "item.quantity",
+    "item.line_total",
+    "order.placed_by",
+    "order.check.confirmation_by"
+   ],
+   "when": {
+    "and": [
+     {
+      ">=": [
+       {
+        "var": "item.quantity"
+       },
+       10
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "item.line_total"
+       },
+       1000
+      ]
+     },
+     {
+      "!": {
+       "and": [
+        {
+         "==": [
+          {
+           "var": "order.placed_by"
+          },
+          "agent"
+         ]
+        },
+        {
+         "==": [
+          {
+           "var": "order.check.confirmation_by"
+          },
+          "agent_platform"
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "customer",
+    "note": "Online bulk buys of 10 or more units totalling over $1,000 are final sale."
+   },
+   "description": "Bulk online buy (10+ units, over $1,000) confirmed by the member: final sale.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-AGT-1.r1",
+   "clause_id": "BJ-AGT-1",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "agent_order_error"
+   ],
+   "claim_reasons": [
+    "agent_quantity_error"
+   ],
+   "requires": [
+    "order.placed_by",
+    "order.check.intent_outcome",
+    "order.check.confirmation_by",
+    "claim.cases_to_keep",
+    "item.quantity",
+    "item.price"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "order.placed_by"
+       },
+       "agent"
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "order.check.intent_outcome"
+       },
+       "material_mismatch"
+      ]
+     },
+     {
+      "!=": [
+       {
+        "var": "order.check.confirmation_by"
+       },
+       "member"
+      ]
+     },
+     {
+      "<": [
+       {
+        "var": "claim.cases_to_keep"
+       },
+       {
+        "var": "item.quantity"
+       }
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "*": [
+      {
+       "-": [
+        {
+         "var": "item.quantity"
+        },
+        {
+         "var": "claim.cases_to_keep"
+        }
+       ]
+      },
+      {
+       "var": "item.price"
+      }
+     ]
+    },
+    "fault": "agent",
+    "note": "Umpyr Check recorded that the cart did not match your instruction and that the step-up was answered by the agent platform, not by you. The unopened cases are collected and refunded; you keep what you asked for."
+   },
+   "description": "Agent-placed order with recorded intent mismatch confirmed by the platform: collect and refund the excess.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PAY-3.r1",
+   "clause_id": "BJ-PAY-3",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "duplicate_charge_hold"
+   ],
+   "claim_reasons": [
+    "duplicate_charge"
+   ],
+   "requires": [
+    "order.payments.posted_captures",
+    "order.payments.posted_capture_amount"
+   ],
+   "when": {
+    ">=": [
+     {
+      "var": "order.payments.posted_captures"
+     },
+     2
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "order.payments.posted_capture_amount"
+    },
+    "fault": "third_party",
+    "note": "Two settled charges exist for one order; the duplicate is reversed to your card."
+   },
+   "description": "Two posted captures for one order: reverse the duplicate.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PAY-3.r2",
+   "clause_id": "BJ-PAY-1",
+   "tier": "commitment",
+   "priority": 1,
+   "categories": [
+    "duplicate_charge_hold"
+   ],
+   "claim_reasons": [
+    "duplicate_charge"
+   ],
+   "requires": [
+    "order.payments.posted_captures"
+   ],
+   "when": {
+    "<": [
+     {
+      "var": "order.payments.posted_captures"
+     },
+     2
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "indeterminate",
+    "note": "Only one charge has settled; the other line is a pending authorization that drops off within 7 business days."
+   },
+   "description": "One posted capture plus a pending hold: explain, no refund.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PAY-2.r1",
+   "clause_id": "BJ-PAY-2",
+   "tier": "commitment",
+   "priority": 3,
+   "categories": [
+    "duplicate_charge_hold"
+   ],
+   "claim_reasons": [
+    "preauth_hold"
+   ],
+   "requires": [
+    "fulfilment.method",
+    "claim.hold_age_hours"
+   ],
+   "when": {
+    "and": [
+     {
+      "==": [
+       {
+        "var": "fulfilment.method"
+       },
+       "gas"
+      ]
+     },
+     {
+      "<=": [
+       {
+        "var": "claim.hold_age_hours"
+       },
+       216
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "indeterminate",
+    "note": "BJ's Gas places a $100 pre-authorization on debit and Amex cards; it is released when the fuel transaction settles. Choosing credit at the pump avoids it next time."
+   },
+   "description": "Gas pump pre-authorization, recent: explain the hold.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PAY-1.r1",
+   "clause_id": "BJ-PAY-1",
+   "tier": "commitment",
+   "priority": 2,
+   "categories": [
+    "duplicate_charge_hold"
+   ],
+   "claim_reasons": [
+    "preauth_hold"
+   ],
+   "requires": [
+    "claim.hold_age_hours"
+   ],
+   "when": {
+    "<=": [
+     {
+      "var": "claim.hold_age_hours"
+     },
+     216
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "indeterminate",
+    "note": "Pending authorizations are not charges; when the order is fulfilled the holds drop off and a single final charge posts."
+   },
+   "description": "Recent authorization hold: explain, no refund.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-PAY-1.r2",
+   "clause_id": "BJ-PAY-1",
+   "tier": "commitment",
+   "priority": 2,
+   "categories": [
+    "duplicate_charge_hold"
+   ],
+   "claim_reasons": [
+    "preauth_hold"
+   ],
+   "requires": [
+    "claim.hold_age_hours"
+   ],
+   "when": {
+    ">": [
+     {
+      "var": "claim.hold_age_hours"
+     },
+     216
+    ]
+   },
+   "effect": {
+    "decision": "escalate",
+    "remedy": null,
+    "amount": null,
+    "fault": "third_party",
+    "note": "A hold older than 7 business days should have released; BJ's confirms the release to your bank."
+   },
+   "description": "Hold older than 7 business days: a person confirms the release with the issuer.",
+   "enabled": true
+  }
+ ],
+ "conflicts": [
+  {
+   "rules": [
+    "BJ-RET-5.r2",
+    "BJ-AGT-1.r1"
+   ],
+   "note": "Bulk final-sale clause vs agent-mismatch practice: resolved by the exception written into BJ-RET-5.r2 (platform-confirmed step-up is not the member's bulk buy)."
+  }
+ ]
+}

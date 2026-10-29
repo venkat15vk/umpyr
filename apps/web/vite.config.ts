@@ -6,6 +6,6 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   envDir: "../..",
-  server: { port: 5173 },
+  server: { port: 5173, fs: { allow: ["../.."] } }, // demo fixtures live in ../../samples
   test: { environment: "jsdom", setupFiles: ["./src/test.setup.ts"], globals: true },
 });

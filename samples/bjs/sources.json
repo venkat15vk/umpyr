@@ -1,0 +1,23 @@
+{
+  "workspace": "bjs",
+  "name": "BJ's Wholesale Club (illustrative demo, not affiliated)",
+  "fetched_at": "2026-10-28",
+  "note": "bjs.com returns 403 to server-side fetches; pages were read in a browser on 2026-10-28 and quoted verbatim where marked confirmed. Clauses marked confirmed=false are illustrative practice rules for the demo and are labelled as such in the UI.",
+  "sources": [
+    {"id": "bjs-returns", "url": "https://www.bjs.com/info/returns/", "tier": "contract", "title": "BJ's Return Policy"},
+    {"id": "bjs-membership-terms", "url": "https://www.bjs.com/info/membership-terms/", "tier": "contract", "title": "BJ's Membership Terms (dated 9/19/2025)"},
+    {"id": "bjs-delivery-terms", "url": "https://www.bjs.com/info/delivery-terms/", "tier": "contract", "title": "BJ's Delivery and Pickup Terms (as of 6/12/2025)"},
+    {"id": "bjs-curbside", "url": "https://www.bjs.com/about/ordering/curbside-pickup/", "tier": "commitment", "title": "Curbside Pickup"},
+    {"id": "bjs-price-match", "url": "https://www.bjs.com/info/price-match/", "tier": "contract", "title": "TV Price Match Guarantee"},
+    {"id": "help-sdd-what", "url": "https://help.bjs.com/hc/en-us/articles/26908276909844-What-is-Same-Day-Delivery", "tier": "commitment", "title": "What is Same-Day Delivery"},
+    {"id": "help-sdd-partners", "url": "https://help.bjs.com/hc/en-us/articles/26908852016660-Same-Day-Delivery-Third-Party-Partners-Terms-of-Service", "tier": "contract", "title": "Same-Day Delivery Third-Party Partners"},
+    {"id": "help-sdd-oos", "url": "https://help.bjs.com/hc/en-us/articles/26909684026260-What-happens-if-an-item-I-ordered-is-out-of-stock", "tier": "commitment", "title": "Out-of-stock items on Same-Day Delivery"},
+    {"id": "help-sdd-issue", "url": "https://help.bjs.com/hc/en-us/articles/26908723486100-What-should-I-do-if-I-have-an-issue-with-my-Same-Day-Delivery-order", "tier": "commitment", "title": "Issues with a Same-Day Delivery order"},
+    {"id": "help-holds", "url": "https://help.bjs.com/hc/en-us/articles/26775603484564-Why-is-there-more-than-one-charge-on-my-credit-debit-card", "tier": "commitment", "title": "More than one charge on my card"},
+    {"id": "help-gas-hold", "url": "https://help.bjs.com/hc/en-us/articles/31302563852564-Why-is-there-a-hold-on-my-credit-card-from-BJ-s-Gas", "tier": "commitment", "title": "Hold from BJ's Gas"},
+    {"id": "help-coupons", "url": "https://help.bjs.com/hc/en-us/articles/26892557159060", "tier": "contract", "title": "Coupon acceptance policy (effective 6/22/2020)"},
+    {"id": "help-clip", "url": "https://help.bjs.com/hc/en-us/articles/26881128498836", "tier": "commitment", "title": "How to clip digital coupons"},
+    {"id": "help-mem-refund", "url": "https://help.bjs.com/hc/en-us/articles/26709903274004", "tier": "contract", "title": "Membership refund"},
+    {"id": "help-pickup-fee", "url": "https://www.bjs.com/about/ordering/curbside-pickup/", "tier": "contract", "title": "Pickup fee"}
+  ]
+}

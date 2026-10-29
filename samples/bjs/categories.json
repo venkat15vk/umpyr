@@ -1,0 +1,50 @@
+[
+ {
+  "key": "sdd_missing_substituted",
+  "name": "Missing or substituted item on same-day delivery",
+  "description": "An item on a same-day delivery order was not delivered, or was replaced without the member's approval.",
+  "lifecycle_note": "Closure: picker accuracy logged against the delivery partner; substitution-without-approval counted toward the partner's service-level review."
+ },
+ {
+  "key": "perishable_damaged",
+  "name": "Damaged or spoiled bulk or perishable goods",
+  "description": "Fresh, frozen or bulk goods arrived spoiled, crushed or leaking.",
+  "lifecycle_note": "Closure: no return of perishables; item recorded as shrink with the cause (cold chain, handling, pack damage) so loss is attributed, not just refunded."
+ },
+ {
+  "key": "pickup_issue",
+  "name": "Pickup order not ready, partially filled or cancelled",
+  "description": "Curbside or in-club pickup was late, incomplete, or cancelled after the hold window.",
+  "lifecycle_note": "Closure: late-ready and out-of-stock events feed the club's pick-rate and inventory accuracy scorecards; cancelled orders are restocked the same day."
+ },
+ {
+  "key": "coupon_price_adjust",
+  "name": "Coupon not applied or price adjustment",
+  "description": "A clipped digital coupon did not apply at checkout, or the member asks for a price adjustment after a price drop.",
+  "lifecycle_note": "Closure: coupon-application failures are reported to the digital coupon team with the coupon id; no inventory action."
+ },
+ {
+  "key": "membership_renewal",
+  "name": "Membership renewal or fee refund",
+  "description": "The membership auto-renewed unexpectedly or the member asks for the annual fee back.",
+  "lifecycle_note": "Closure: retention first. A refund closes the membership; the reply states what is lost (gas discount, rewards) before the member decides."
+ },
+ {
+  "key": "return_eligibility",
+  "name": "Return eligibility (category exceptions)",
+  "description": "Can this item still be returned, given the category window and the house-brand guarantee?",
+  "lifecycle_note": "Closure: returned goods dispositioned at the club (restock, open-box, vendor return); gift cards and final-sale items never re-enter inventory."
+ },
+ {
+  "key": "agent_order_error",
+  "name": "Agent-placed order gone wrong (quantity or pack size)",
+  "description": "A personal AI agent ordered the wrong quantity or pack size versus what the member asked for.",
+  "lifecycle_note": "Closure: unopened cases returned to stock; the agent fingerprint's drift record updates in Umpyr Check so the next order from that agent is scored with this history."
+ },
+ {
+  "key": "duplicate_charge_hold",
+  "name": "Duplicate charge or pre-authorization hold",
+  "description": "The member sees two charges or a pending hold larger than the purchase.",
+  "lifecycle_note": "Closure: true duplicates are reversed through the processor and logged for reconciliation; holds are explained with the release window, not refunded."
+ }
+]
