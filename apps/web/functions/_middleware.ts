@@ -71,7 +71,7 @@ function loginPage(next: string, error = ""): Response {
   ${error ? `<p class="err">${error}</p>` : ""}
   <button type="submit">Enter</button>
 </form></body></html>`;
-  return new Response(html, { status: error ? 401 : 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+  return new Response(html, { status: error ? 401 : 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex, nofollow" } });
 }
 
 async function proxyApi(request: Request, env: Env, url: URL): Promise<Response> {
@@ -118,7 +118,7 @@ export const onRequest: PagesFunction<Env>[] = [
       return proxyApi(request, env, url);
     }
     if (!authed) {
-      return new Response(null, { status: 302, headers: { location: `/login?next=${encodeURIComponent(path + url.search)}` } });
+      return new Response(null, { status: 302, headers: { location: `/login?next=${encodeURIComponent(path + url.search)}`, "x-robots-tag": "noindex, nofollow" } });
     }
     const res = await next();
     const h = new Headers(res.headers);
