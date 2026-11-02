@@ -41,7 +41,7 @@ describe("json logic", () => {
 
 describe("Check scenarios", () => {
   const scenarios = (scenariosJson as { scenarios: { id: string; expected: string; ordinary_expected: string; request: CheckRequest }[] }).scenarios;
-  it("has 8 scenarios", () => expect(scenarios.length).toBe(8));
+  it("has 6 scenarios", () => expect(scenarios.length).toBe(6));
   for (const s of scenarios) {
     it(`${s.id}: umpyr=${s.expected} ordinary=${s.ordinary_expected}`, () => {
       const d = decide(s.request, 1, "0".repeat(64));
@@ -53,14 +53,14 @@ describe("Check scenarios", () => {
     });
   }
   it("flips pack-size drift to approve when the cart unit is corrected", () => {
-    const s = scenarios.find((x) => x.id === "pack_size_drift")!;
+    const s = scenarios.find((x) => x.id === "pack_size_vs_quantity")!;
     const req = JSON.parse(JSON.stringify(s.request)) as CheckRequest;
-    req.cart.lines[0] = { ...req.cart.lines[0], unit: "pack", unit_price: "24.99", line_total: "49.98", sku: "BTY-PT-12" };
-    req.cart.total = (49.98 + 11.99 + 9.99).toFixed(2);
+    req.cart.lines[0] = { ...req.cart.lines[0], unit: "pack", unit_price: "8.99", line_total: "89.90", sku: "WF-PLT-12" };
+    req.cart.total = (89.9 + 11.99 + 9.99).toFixed(2);
     expect(decide(req).decision).toBe("approve");
   });
   it("flips clean to decline when the signature fails", () => {
-    const s = scenarios.find((x) => x.id === "clean_restock")!;
+    const s = scenarios.find((x) => x.id === "clean_order")!;
     const req = JSON.parse(JSON.stringify(s.request)) as CheckRequest;
     req.mandate.signature.valid = false;
     expect(decide(req).decision).toBe("decline");
@@ -83,7 +83,7 @@ describe("Resolve tickets", () => {
       const r = runCase(t, ctx, { ...base, channel: t.channel });
       expect(r.ruling.decision).toBe(expected[t.ticket_id]);
       expect(r.steps.length).toBe(12);
-      expect(r.pack_version).toBe("2026-10-28.1");
+      expect(r.pack_version).toBe("2026-11-01.1");
       if (r.ruling.decision === "approve") expect(r.ruling.winning_rule_id).toBeTruthy();
       expect(r.audit.hash).toBe(sha256Hex(canonical(r.audit.record)));
       for (const s of r.steps) expect(Object.keys(s.raci).length).toBeGreaterThan(0);

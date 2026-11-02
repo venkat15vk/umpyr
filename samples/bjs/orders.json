@@ -842,13 +842,23 @@
    ]
   },
   "coupons_clipped": [],
-  "check_decision_id": "chk_ad328846aa18",
   "check": {
-   "decision_id": "chk_ad328846aa18",
+   "scenario_id": "pack_size_vs_quantity",
+   "request_id": "req_ad328846aa18",
+   "order_ref": "BJ-AGT-9102",
+   "at": "2026-10-26T10:01:40Z",
+   "mandate_id": "m_ad328846",
    "decision": "step_up",
    "intent_outcome": "material_mismatch",
    "confirmation_by": "agent_platform",
-   "note": "Step-up answered by the platform's auto-confirm; no member-signed checkout mandate on file."
+   "confirmation": {
+    "type": "checkout_mandate",
+    "signed_by": "platform auto-confirm",
+    "kid": "kid_platform_autoconf",
+    "at": "2026-10-26T10:01:52Z",
+    "member_signature": false
+   },
+   "note": "Step-up answered by the platform's auto-confirm 12 s later; no member-signed checkout mandate on file. Umpyr Check recorded that."
   },
   "payments": {
    "posted_captures": 1,
@@ -1176,6 +1186,420 @@
   "payments": {
    "posted_captures": 0,
    "posted_capture_amount": null,
+   "pending_holds": 0,
+   "largest_pending_hold": null
+  }
+ },
+ {
+  "order_id": "BJ-7011",
+  "placed_at": "2026-10-28T14:02:30Z",
+  "placed_by": "agent",
+  "agent_id": "muse_agt_f55ff16f",
+  "status": "delivered",
+  "subtotal": "62.03",
+  "fees_total": "9.99",
+  "tax_total": "0.00",
+  "total": "72.02",
+  "payment_method": "card",
+  "fulfilment": {
+   "method": "same_day_delivery",
+   "partner": "Instacart",
+   "picked_by": "third_party_shopper",
+   "substitutions_allowed": false,
+   "promised_at": "2026-10-28T18:00:00Z",
+   "ready_at": null,
+   "delivered_at": "2026-10-28T17:20:00Z",
+   "window_start": "2026-10-28T16:00:00Z",
+   "window_end": "2026-10-28T18:00:00Z",
+   "club_id": "club-0042"
+  },
+  "items": [
+   {
+    "item_id": "L1",
+    "sku": "WF-CHK-6",
+    "name": "Wellsley Farms Boneless Chicken Breast, 6 lb",
+    "department": "fresh",
+    "brand": "Wellsley Farms",
+    "unit": "each",
+    "pack_size": null,
+    "units_per_case": null,
+    "price": "19.98",
+    "quantity": 1,
+    "line_total": "19.98",
+    "is_perishable": true,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   },
+   {
+    "item_id": "L2",
+    "sku": "BAN-3",
+    "name": "Bananas, 3 lb",
+    "department": "fresh",
+    "brand": null,
+    "unit": "each",
+    "pack_size": null,
+    "units_per_case": null,
+    "price": "1.89",
+    "quantity": 2,
+    "line_total": "3.78",
+    "is_perishable": true,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   },
+   {
+    "item_id": "L3",
+    "sku": "BJ-WAT-40",
+    "name": "Berkley Jensen Purified Water, 40 pk",
+    "department": "grocery",
+    "brand": "Berkley Jensen",
+    "unit": "pack",
+    "pack_size": 40,
+    "units_per_case": null,
+    "price": "4.49",
+    "quantity": 1,
+    "line_total": "4.49",
+    "is_perishable": false,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   },
+   {
+    "item_id": "L4",
+    "sku": "BJ-EGG-24",
+    "name": "Wellsley Farms Large Eggs, 24 ct",
+    "department": "fresh",
+    "brand": "Wellsley Farms",
+    "unit": "each",
+    "pack_size": null,
+    "units_per_case": null,
+    "price": "5.79",
+    "quantity": 1,
+    "line_total": "5.79",
+    "is_perishable": true,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "substituted",
+    "substituted_with": "Eggland's Best Large Eggs, 18 ct",
+    "coupon_id": null,
+    "coupon_value": null
+   },
+   {
+    "item_id": "L5",
+    "sku": "TIDE-POD-112",
+    "name": "Tide PODS Laundry Detergent, 112 ct",
+    "department": "household",
+    "brand": "Tide",
+    "unit": "each",
+    "pack_size": null,
+    "units_per_case": null,
+    "price": "27.99",
+    "quantity": 1,
+    "line_total": "27.99",
+    "is_perishable": false,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "missing",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   }
+  ],
+  "charges": [
+   {
+    "charge_id": "ch_f4da132569",
+    "kind": "capture",
+    "amount": "72.02",
+    "status": "posted",
+    "at": "2026-10-28T14:02:30Z",
+    "card_token": "card_00c2bc50"
+   }
+  ],
+  "member": {
+   "prior_fee_refunds": 0,
+   "member_token": "mem_ca0df2c95a",
+   "tier": "club",
+   "fee_paid": "60.00",
+   "joined_at": "2023-04-02",
+   "renewed_at": null,
+   "renewal_charged_at": null,
+   "auto_renew": true,
+   "tenure_days": 1298,
+   "prior_claims_12m": 0,
+   "fingerprints_30d": 1,
+   "regions_30d": [
+    "MA"
+   ]
+  },
+  "coupons_clipped": [],
+  "check": {
+   "scenario_id": "clean_order",
+   "request_id": "req_e8bc163c82ee",
+   "order_ref": "BJ-AGT-9101",
+   "at": "2026-10-28T14:02:11Z",
+   "mandate_id": "m_e8bc163c",
+   "decision": "approve",
+   "intent_outcome": "match",
+   "confirmation_by": "member",
+   "confirmation": {
+    "type": "checkout_mandate",
+    "signed_by": "member via Muse",
+    "kid": "kid_fc59708e",
+    "at": "2026-10-28T13:58:40Z",
+    "member_signature": true
+   },
+   "note": "Approved on a member-signed checkout mandate with substitutions off. The eggs were swapped and the Tide left out at picking, after payment."
+  },
+  "payments": {
+   "posted_captures": 1,
+   "posted_capture_amount": "72.02",
+   "pending_holds": 0,
+   "largest_pending_hold": null
+  }
+ },
+ {
+  "order_id": "BJ-7012",
+  "placed_at": "2026-10-27T09:31:00Z",
+  "placed_by": "agent",
+  "agent_id": "muse_agt_f37508d2",
+  "status": "delivered",
+  "subtotal": "1090.79",
+  "fees_total": "9.99",
+  "tax_total": "0.00",
+  "total": "1100.78",
+  "payment_method": "card",
+  "fulfilment": {
+   "method": "same_day_delivery",
+   "partner": "DoorDash",
+   "picked_by": "third_party_shopper",
+   "substitutions_allowed": true,
+   "promised_at": "2026-10-27T15:00:00Z",
+   "ready_at": null,
+   "delivered_at": "2026-10-27T14:10:00Z",
+   "window_start": "2026-10-27T13:00:00Z",
+   "window_end": "2026-10-27T15:00:00Z",
+   "club_id": "club-0042"
+  },
+  "items": [
+   {
+    "item_id": "L1",
+    "sku": "WF-PLT-CASE",
+    "name": "Wellsley Farms Heavy-Duty Paper Plates, case of 12 packs",
+    "department": "paper",
+    "brand": "Wellsley Farms",
+    "unit": "case",
+    "pack_size": 12,
+    "units_per_case": 12,
+    "price": "107.88",
+    "quantity": 10,
+    "line_total": "1078.80",
+    "is_perishable": false,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   },
+   {
+    "item_id": "L2",
+    "sku": "WF-CUP-2",
+    "name": "Wellsley Farms Plastic Cups, 2 pk",
+    "department": "paper",
+    "brand": "Wellsley Farms",
+    "unit": "pack",
+    "pack_size": 2,
+    "units_per_case": null,
+    "price": "11.99",
+    "quantity": 1,
+    "line_total": "11.99",
+    "is_perishable": false,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": null,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   }
+  ],
+  "charges": [
+   {
+    "charge_id": "ch_23b372351c",
+    "kind": "capture",
+    "amount": "1100.78",
+    "status": "posted",
+    "at": "2026-10-27T09:31:00Z",
+    "card_token": "card_463849ce"
+   }
+  ],
+  "member": {
+   "prior_fee_refunds": 0,
+   "member_token": "mem_a8274014a4",
+   "tier": "club_plus",
+   "fee_paid": "120.00",
+   "joined_at": "2019-06-14",
+   "renewed_at": null,
+   "renewal_charged_at": null,
+   "auto_renew": true,
+   "tenure_days": 2690,
+   "prior_claims_12m": 0,
+   "fingerprints_30d": 1,
+   "regions_30d": [
+    "MA"
+   ]
+  },
+  "coupons_clipped": [],
+  "check": {
+   "scenario_id": "pack_size_vs_quantity",
+   "request_id": "req_ff521c8648fd",
+   "order_ref": "BJ-AGT-9112",
+   "at": "2026-10-27T09:30:41Z",
+   "mandate_id": "m_ff521c86",
+   "decision": "step_up",
+   "intent_outcome": "material_mismatch",
+   "confirmation_by": "member",
+   "confirmation": {
+    "type": "checkout_mandate",
+    "signed_by": "member via Muse",
+    "kid": "kid_f429a0e8",
+    "at": "2026-10-27T09:30:58Z",
+    "member_signature": true,
+    "lines_shown": [
+     "10 case of Wellsley Farms Heavy-Duty Paper Plates (12 packs per case = 120 packs), $1,078.80",
+     "total $1,100.78 vs ceiling $120.00"
+    ]
+   },
+   "note": "Step-up showed the member the changed lines through Muse; the member returned a signed checkout mandate confirming 10 cases and the $1,100.78 total. Umpyr Check recorded that."
+  },
+  "payments": {
+   "posted_captures": 1,
+   "posted_capture_amount": "1100.78",
+   "pending_holds": 0,
+   "largest_pending_hold": null
+  }
+ },
+ {
+  "order_id": "BJ-7013",
+  "placed_at": "2026-10-22T08:42:00Z",
+  "placed_by": "agent",
+  "agent_id": "muse_agt_30537068",
+  "status": "picked_up",
+  "subtotal": "449.99",
+  "fees_total": "0.00",
+  "tax_total": "0.00",
+  "total": "449.99",
+  "payment_method": "card",
+  "fulfilment": {
+   "method": "club_pickup",
+   "partner": null,
+   "ready_delay_minutes": 0,
+   "substitutions_allowed": false,
+   "promised_at": "2026-10-22T15:00:00Z",
+   "ready_at": "2026-10-22T14:40:00Z",
+   "delivered_at": null,
+   "window_start": "2026-10-22T15:00:00Z",
+   "window_end": "2026-10-22T17:00:00Z",
+   "club_id": "club-0042"
+  },
+  "items": [
+   {
+    "item_id": "L1",
+    "sku": "DYS-V12",
+    "name": "Dyson V12 Detect Slim Cordless Vacuum",
+    "department": "electronics",
+    "brand": "Dyson",
+    "unit": "each",
+    "pack_size": null,
+    "units_per_case": null,
+    "price": "449.99",
+    "quantity": 1,
+    "line_total": "449.99",
+    "is_perishable": false,
+    "is_fuel": false,
+    "is_final_sale": false,
+    "is_non_returnable": false,
+    "return_window_days": 90,
+    "condition": "ok",
+    "substituted_with": null,
+    "coupon_id": null,
+    "coupon_value": null
+   }
+  ],
+  "charges": [
+   {
+    "charge_id": "ch_a371c23987",
+    "kind": "capture",
+    "amount": "449.99",
+    "status": "posted",
+    "at": "2026-10-22T08:42:00Z",
+    "card_token": "card_5744141c"
+   }
+  ],
+  "member": {
+   "prior_fee_refunds": 0,
+   "member_token": "mem_eff39ccb22",
+   "tier": "club",
+   "fee_paid": "60.00",
+   "joined_at": "2024-07-25",
+   "renewed_at": null,
+   "renewal_charged_at": null,
+   "auto_renew": true,
+   "tenure_days": 820,
+   "prior_claims_12m": 0,
+   "fingerprints_30d": 1,
+   "regions_30d": [
+    "MA"
+   ]
+  },
+  "coupons_clipped": [],
+  "check": {
+   "scenario_id": "price_ceiling_exceeded",
+   "request_id": "req_1d7aaccdd203",
+   "order_ref": "BJ-AGT-9113",
+   "at": "2026-10-22T08:41:05Z",
+   "mandate_id": "m_1d7aaccd",
+   "decision": "step_up",
+   "intent_outcome": "material_mismatch",
+   "confirmation_by": "member",
+   "confirmation": {
+    "type": "checkout_mandate",
+    "signed_by": "member via Muse",
+    "kid": "kid_1761d9b0",
+    "at": "2026-10-22T08:41:40Z",
+    "member_signature": true,
+    "lines_shown": [
+     "Dyson V12 Detect Slim, $449.99 (mandate maximum $400.00)"
+    ]
+   },
+   "note": "The member raised the ceiling to $449.99 with a signed checkout mandate. Umpyr Check recorded the price the member agreed to pay."
+  },
+  "payments": {
+   "posted_captures": 1,
+   "posted_capture_amount": "449.99",
    "pending_holds": 0,
    "largest_pending_hold": null
   }

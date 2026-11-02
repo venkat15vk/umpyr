@@ -1,6 +1,6 @@
 {
  "workspace": "bjs",
- "version": "2026-10-28.1",
+ "version": "2026-11-01.1",
  "clauses": [
   {
    "clause_id": "BJ-SDD-1",
@@ -261,6 +261,16 @@
    "source_url": "practice://bjs/agent-intent-mismatch",
    "source_title": "Illustrative practice rule (uses the Umpyr Check record)",
    "text": "ILLUSTRATIVE: when an order was placed by an attested agent and the Umpyr Check record shows a material intent mismatch whose step-up was confirmed by the platform rather than the member, the excess quantity is returnable and refunded; it is not treated as the member's bulk buy and fault rests with the agent."
+  },
+  {
+   "clause_id": "BJ-SDD-6",
+   "title": "Delivery fee on a materially incomplete same-day delivery (practice)",
+   "tier": "goodwill",
+   "confirmed": false,
+   "fetched_at": "2026-11-01",
+   "source_url": "practice://bjs/sdd-fee-partial-delivery",
+   "source_title": "Illustrative practice rule",
+   "text": "ILLUSTRATIVE: when two or more lines of a same-day delivery were missing or substituted without the member's approval, the delivery fee is refunded with the lines; a single affected line does not refund the fee."
   }
  ],
  "rules": [
@@ -1612,6 +1622,107 @@
     "note": "A hold older than 7 business days should have released; BJ's confirms the release to your bank."
    },
    "description": "Hold older than 7 business days: a person confirms the release with the issuer.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-SDD-6.r1",
+   "clause_id": "BJ-SDD-6",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "delivery_fee"
+   ],
+   "requires": [
+    "claim.lines_affected",
+    "fulfilment.method",
+    "order.fees_total"
+   ],
+   "when": {
+    "and": [
+     {
+      ">=": [
+       {
+        "var": "claim.lines_affected"
+       },
+       2
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.method"
+       },
+       "same_day_delivery"
+      ]
+     },
+     {
+      ">": [
+       {
+        "var": "order.fees_total"
+       },
+       0
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "approve",
+    "remedy": "refund",
+    "amount": {
+     "var": "order.fees_total"
+    },
+    "fault": "third_party",
+    "note": "Two or more lines were missing or replaced without approval, so the delivery fee is refunded as well."
+   },
+   "description": "Delivery fee refunded when two or more lines of a same-day delivery were missing or substituted without approval.",
+   "enabled": true
+  },
+  {
+   "rule_id": "BJ-SDD-6.r2",
+   "clause_id": "BJ-SDD-6",
+   "tier": "goodwill",
+   "priority": 1,
+   "categories": [
+    "sdd_missing_substituted"
+   ],
+   "claim_reasons": [
+    "delivery_fee"
+   ],
+   "requires": [
+    "claim.lines_affected",
+    "fulfilment.method"
+   ],
+   "when": {
+    "and": [
+     {
+      "<": [
+       {
+        "var": "claim.lines_affected"
+       },
+       2
+      ]
+     },
+     {
+      "==": [
+       {
+        "var": "fulfilment.method"
+       },
+       "same_day_delivery"
+      ]
+     }
+    ]
+   },
+   "effect": {
+    "decision": "deny",
+    "remedy": null,
+    "amount": null,
+    "fault": "indeterminate",
+    "note": "The affected line is refunded; the delivery fee stands when only one line was affected."
+   },
+   "description": "Single affected line: the delivery fee is not refunded.",
    "enabled": true
   }
  ],

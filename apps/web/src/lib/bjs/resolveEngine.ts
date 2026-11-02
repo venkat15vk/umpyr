@@ -256,8 +256,8 @@ export function runCase(ticket: Ticket, ctx: { pack: RulePack; procedures: Proce
   return { case_id, ticket, order, category, facts, checks, ruling, procedure, pdp, terms: { terms, hash: termsHash, status: termsStatus, confirmation }, execution, audit: { record, hash: auditHash, signature, kid: DEMO_KID }, steps, reply, agent_reply, lifecycle_note: lifecycle, pack_version: ctx.pack.version };
 }
 
-function friendly(path: string): string {
-  const m: Record<string, string> = { "claim.has_photos": "a photo of the item", "claim.reported_within_hours": "when you noticed the problem", "claim.quantity_intended": "how many you meant to order", "claim.quantity_received": "how many you received", "claim.coupon_id": "which coupon you clipped", "claim.advertised_price": "the price you saw", "claim.used_benefits_since_renewal": "whether you have shopped since the renewal", "claim.wants_cancel_membership": "whether you want to cancel the membership", "claim.hold_age_hours": "when the pending charge appeared" };
+export function friendly(path: string): string {
+  const m: Record<string, string> = { "claim.has_photos": "a photo of the item", "claim.reported_within_hours": "when you noticed the problem", "claim.quantity_intended": "how many you meant to order", "claim.quantity_received": "how many you received", "claim.coupon_id": "which coupon you clipped", "claim.advertised_price": "the price you saw", "claim.used_benefits_since_renewal": "whether you have shopped since the renewal", "claim.wants_cancel_membership": "whether you want to cancel the membership", "claim.hold_age_hours": "when the pending charge appeared", "claim.cases_to_keep": "how many cases the member keeps", "claim.lines_affected": "how many lines were missing or substituted" };
   return m[path] ?? path;
 }
 

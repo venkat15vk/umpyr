@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, PUBLIC_DEMO, type Health, type Spend, type Workspace } from "../lib/api";
 
-/** Demo hub: four separate pages. Check and Resolve share one ontology but are demoed as separate silos. */
-const DEMOS = [
-  { to: "/rockler", merchant: "Rockler", product: "Resolve", line: "Woodworking retailer. Live chat ruled by compiled return, guarantee and backorder policy; ops view shows every step.", live: true },
-  { to: "/alaska", merchant: "Alaska Airlines", product: "Resolve", line: "Refunds, delays, bag guarantee and DOT rules in precedence order; options turns when the passenger must choose.", live: true },
-  { to: "/bjs", merchant: "BJ's Wholesale Club", product: "Resolve", line: "Eight dispute categories on email and agent channels: rule fired, fault, PDP, terms-hash confirmation, mock BJ's execution, signed audit.", live: false },
-  { to: "/bjs/check", merchant: "BJ's Wholesale Club", product: "Check Risk & Intent", line: "Risk and intent on agentic orders before payment: mandate vs cart, fraud, abuse and agent scores, step-up, hash commitment.", live: false },
+/** Demo hub. Rockler and Alaska run live; the three BJ's cards tell one story: a Muse order before payment, after the order, and end to end. */
+const DEMOS: { to: string; title: string; product: string; line: string; live: boolean }[] = [
+  { to: "/rockler", title: "Rockler", product: "Resolve", line: "Woodworking retailer. Live chat ruled by compiled return, guarantee and backorder policy; ops view shows every step.", live: true },
+  { to: "/alaska", title: "Alaska Airlines", product: "Resolve", line: "Refunds, delays, bag guarantee and DOT rules in precedence order; options turns when the passenger must choose.", live: true },
+  { to: "/bjs/check", title: "BJ's: Muse order lifecycle, Part 1, Check (before payment)", product: "Check", line: "A Muse order arrives over the protocol adapter: intent mandate vs cart, risk score (table stakes), intent verdict, approve / step-up / decline, and a hash-committed decision record kept for Part 2.", live: false },
+  { to: "/bjs", title: "BJ's: Muse order lifecycle, Part 2, Resolve (after the order)", product: "Resolve", line: "A Muse complaint arrives; Umpyr's agent pulls the Check record and mandate as evidence and negotiates with the member's agent turn by turn: offers, holds, concessions, fault, terms hash, BJ's executes, signed audit.", live: false },
+  { to: "/bjs/lifecycle", title: "BJ's: End-to-end Muse order, agent-to-agent", product: "Lifecycle", line: "One order on one timeline: ask Muse, adapter, Check, payment by BJ's processor, delivery outside Umpyr, question, dispute, negotiation, execution, audit. RACI per step.", live: false },
 ];
 
 export function Home() {
@@ -33,8 +34,8 @@ export function Home() {
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {DEMOS.map((d) => (
             <li key={d.to} className="panel p-3">
-              <Link to={d.to} className="flex items-center gap-2 font-medium">
-                <span>{d.merchant}</span>
+              <Link to={d.to} className="flex flex-wrap items-center gap-2 font-medium">
+                <span>{d.title}</span>
                 <span className="badge">{d.product}</span>
                 {!d.live && <span className="badge badge-amber">fixtures</span>}
               </Link>
@@ -43,7 +44,7 @@ export function Home() {
             </li>
           ))}
         </ul>
-        <p className="muted mt-3 text-xs">All demo data is synthetic. BJ's pages are illustrative and not affiliated with BJ's Wholesale Club.</p>
+        <p className="muted mt-3 text-xs">All demo data is synthetic. BJ's pages are illustrative and not affiliated with BJ's Wholesale Club; BJ's is not live on Muse. Umpyr connects to Muse over an existing open protocol and owns the order from the intent check before payment to the signed audit after the dispute; shipping and logistics stay with the merchant.</p>
         {!PUBLIC_DEMO && <div className="mt-3"><Link className="btn" to="/try">Try your data</Link></div>}
         {workspaces.length > 0 && !PUBLIC_DEMO && (
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">

@@ -1,18 +1,19 @@
 # BJ's Wholesale Club sandbox (illustrative demo, not affiliated)
 
-Fixtures for the two BJ's demo pages: `/bjs` (Umpyr Resolve) and `/bjs/check` (Umpyr Check). Everything here is
+Fixtures for the three BJ's demo pages: `/bjs/check` (Part 1, Check before payment), `/bjs` (Part 2, Resolve after the order) and `/bjs/lifecycle` (one Muse order end to end). BJ's is not live on Muse; the connection is modelled as a swappable protocol adapter (`apps/web/src/lib/bjs/protocol.ts`). Everything here is
 synthetic: members, orders, agents, tickets, cards, hashes. No real customer data, no BJ's logos or trademarks
 beyond the name in text. Built 2026-10-28 for a partner presentation; no model calls, no engine, no spend.
 
 | file | what |
 |---|---|
 | `sources.json` | public BJ's pages the clauses cite, with fetch date and a note on how they were read |
-| `rule_pack.json` | compiled policy pack `2026-10-28.1`: 26 clauses, 29 JSON Logic rules, same schema as `samples/rockler/rule_pack.json` plus a `confirmed` flag per clause |
+| `rule_pack.json` | compiled policy pack `2026-11-01.1`: 27 clauses, 31 JSON Logic rules, same schema as `samples/rockler/rule_pack.json` plus a `confirmed` flag per clause |
 | `procedures.json` | approved procedure library, one per category (8) |
 | `categories.json` | the 8 dispute categories with a BJ's-specific lifecycle-closure note each |
-| `orders.json` | 10 synthetic orders (same-day delivery, curbside, in-club, membership, gas, agent-placed) |
+| `orders.json` | 13 synthetic orders; BJ-7007, BJ-7011, BJ-7012 and BJ-7013 were placed by a Muse agent and carry a `check` link (which Check scenario produced their decision, and who answered the step-up) |
 | `tickets.json` | 16 synthetic tickets: 8 categories x 2 channels (forwarded email, member's AI agent) with the facts the extractor pulls |
-| `check_scenarios.json` | 8 `umpyr-check/0.1` requests (agent, mandate, cart, masked member, context) with the expected decision |
+| `check_scenarios.json` | 6 `umpyr-check/0.1` requests from a Muse agent: clean order, pack size vs quantity, price ceiling exceeded, substitution not allowed, membership expired, duplicate agent retry; three are the Check records orders carry into Resolve |
+| `agent_cases.json` | 4 agent-to-agent Resolve cases (Muse complaint, issues, Muse's scripted moves); Umpyr's turns are computed from the pack at run time by `lib/bjs/negotiation.ts` |
 | `history.json` | 48 synthetic closed cases (6 per category, 9 drifting from policy) used for neighbour cases, the historical planner and precedent on pushback; shape follows `samples/rockler/cases.jsonl` |
 
 ## Confirmed vs illustrative
@@ -21,7 +22,7 @@ Clauses with `confirmed: true` quote a bjs.com or help.bjs.com page read in a br
 403 to server-side fetches; the URL is on each clause). Clauses with `confirmed: false` have a `practice://` source and
 are **illustrative practice rules** the UI labels as such: unapproved-substitution refund (BJ-SDD-4), late perishable
 damage needs a photo (BJ-RET-7), pickup-fee refund when the order is ready 30+ minutes after check-in (BJ-PU-4),
-clipped-coupon refund (BJ-CPN-2), duplicate capture reversal (BJ-PAY-3), agent intent-mismatch handling (BJ-AGT-1).
+clipped-coupon refund (BJ-CPN-2), duplicate capture reversal (BJ-PAY-3), agent intent-mismatch handling (BJ-AGT-1), delivery fee on a materially incomplete same-day delivery (BJ-SDD-6). The Check page's membership hard stop and the duplicate-retry rule are illustrative too.
 BJ's publishes no general post-purchase price-adjustment policy (only a day-of-purchase TV price match), so the
 price-adjustment ticket escalates to a person by design.
 
@@ -60,3 +61,14 @@ same fixtures. No model calls.
 `RemoteCheckAdapter` call `POST /workspaces/bjs/cases/replay` and `POST /check/decisions` with the same shapes.
 Hash commitments are real SHA-256 over sorted-key canonical JSON (`sha256.ts`, FIPS vectors in `bjs.test.ts`); the
 audit signature is HMAC-SHA256 with a demo key, labelled as such (production: per-tenant Ed25519).
+
+## Muse order lifecycle (2026-11-01)
+
+One system across the lifecycle: the mandate and the Check decision captured before payment are the evidence Resolve uses
+later to decide fault. `lib/bjs/checkLink.ts` recomputes an order's Check decision from the scenario it names, so the
+decision id and hash Resolve cites are the ones Check committed. `lib/bjs/negotiation.ts` runs the agent-to-agent
+negotiation: every open issue is a ticket through `runCase`, Umpyr's position per turn (opening, held, conceded, changed on
+new evidence) follows from the rules, Muse's moves come from `agent_cases.json`, and the auto-approve ceiling, the mode
+and a what-if on who answered the Check step-up change the path. Terms are hashed, the member's agent signs the hash,
+BJ's executes (mock), and the whole negotiation is in one signed audit record. Shipping and logistics are outside Umpyr
+and marked as such on the lifecycle page.

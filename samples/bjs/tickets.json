@@ -106,7 +106,7 @@
    "protocol": "umpyr-resolve/0.2",
    "type": "claim",
    "agent": {
-    "platform": "Google Gemini",
+    "platform": "Other personal agent",
     "agent_id": "gem_agt_2c3a4249",
     "attested": true
    },
@@ -177,7 +177,7 @@
    "protocol": "umpyr-resolve/0.2",
    "type": "claim",
    "agent": {
-    "platform": "OpenAI Dots",
+    "platform": "Other personal agent",
     "agent_id": "dots_agt_f46dd28a",
     "attested": true
    },
@@ -322,7 +322,7 @@
    "protocol": "umpyr-resolve/0.2",
    "type": "claim",
    "agent": {
-    "platform": "Google Gemini",
+    "platform": "Other personal agent",
     "agent_id": "gem_agt_66220e71",
     "attested": true
    },
@@ -395,7 +395,7 @@
    "protocol": "umpyr-resolve/0.2",
    "type": "claim",
    "agent": {
-    "platform": "OpenAI Dots",
+    "platform": "Other personal agent",
     "agent_id": "dots_agt_730bea4f",
     "attested": true
    },
@@ -540,7 +540,7 @@
    "protocol": "umpyr-resolve/0.2",
    "type": "claim",
    "agent": {
-    "platform": "OpenAI Dots",
+    "platform": "Other personal agent",
     "agent_id": "dots_agt_2b12242f",
     "attested": true
    },

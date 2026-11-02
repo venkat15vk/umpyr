@@ -391,7 +391,7 @@ export function toOps(run: ResolveRun, ctx: Ctx, t: TurnCtx): Ops {
   };
 }
 
-function precedentFor(category: string, ctx: Ctx): TurnDelta["precedent"] {
+export function precedentFor(category: string, ctx: Pick<Ctx, "history">): TurnDelta["precedent"] {
   const same = ctx.history.cases.filter((h) => h.category_key === category);
   const denied = same.filter((h) => h.policy.decision === "deny");
   const goodwill = denied.filter((h) => h.staff_outcome.decision === "approve");

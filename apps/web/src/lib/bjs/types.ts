@@ -29,6 +29,8 @@ export type FulfilmentMethod = "same_day_delivery" | "club_pickup" | "curbside" 
 export type Fulfilment = {
   method: FulfilmentMethod;
   partner?: string | null; // third party that physically fulfils (e.g. delivery marketplace); illustrative
+  picked_by?: "third_party_shopper" | "team_member" | string | null;
+  ready_delay_minutes?: number | null;
   substitutions_allowed?: boolean;
   promised_at?: string | null;
   ready_at?: string | null;
@@ -93,9 +95,23 @@ export type Order = {
   charges: Charge[];
   member: Member;
   coupons_clipped?: string[];
-  check_decision_id?: string | null; // when an Umpyr Check decision preceded the order
-  check?: { decision_id: string; decision: string; intent_outcome: IntentOutcome; confirmation_by: "member" | "agent_platform" | "agent"; note: string } | null;
+  /** The Umpyr Check record this order carries: which Check scenario produced it (the decision itself is recomputed from that request, so the hash is real) and who answered the step-up. */
+  check?: CheckLink | null;
   payments?: { posted_captures: number; posted_capture_amount: string | null; pending_holds: number; largest_pending_hold: number | null };
+};
+
+export type ConfirmationBy = "member" | "agent_platform" | "agent" | "none";
+export type CheckLink = {
+  scenario_id: string;
+  request_id: string;
+  order_ref: string;
+  at: string;
+  mandate_id: string;
+  decision: CheckDecisionKind;
+  intent_outcome: IntentOutcome;
+  confirmation_by: ConfirmationBy;
+  confirmation?: { type: string; signed_by: string; kid: string; at: string; member_signature: boolean; lines_shown?: string[] } | null;
+  note: string;
 };
 
 export type Claim = {
@@ -114,6 +130,7 @@ export type Claim = {
   used_benefits_since_renewal?: boolean | null;
   hold_age_hours?: number | null;
   cases_to_keep?: number | null; // agent order error: cases the member keeps
+  lines_affected?: number | null; // same-day delivery: lines missing or substituted without approval (fee rule)
 };
 
 export type FactBundle = { order: Order; item: Item; claim: Claim; member: Member; fulfilment: Fulfilment; agent?: AgentRecord | null; mandate?: Mandate | null; [k: string]: unknown };
@@ -154,7 +171,7 @@ export type Procedure = { category_key: string; version: number; name: string; s
 // ---------- tickets ----------
 
 export type EmailThread = { role: "customer" | "staff"; at: string; text: string }[];
-export type AgentMessage = { protocol: string; type: string; agent: { platform: string; agent_id: string }; member_token: string; order_id: string; claim: Record<string, unknown>; [k: string]: unknown };
+export type AgentMessage = { protocol: string; type: string; agent: { platform: string; agent_id: string; attested?: boolean }; member_token: string; order_id: string; claim: Record<string, unknown>; [k: string]: unknown };
 
 export type Ticket = {
   ticket_id: string;
@@ -174,8 +191,10 @@ export type Category = { key: string; name: string; description: string; lifecyc
 
 // ---------- Umpyr Check ----------
 
-export type AgentPlatform = "Meta Muse" | "OpenAI Dots" | "Google Gemini" | "Unknown";
-export type AgentProtocol = "ap2/0.1" | "acp/1.0" | "stripe-link-agent/1" | "unknown";
+/** The partner platform is named; every other personal agent is generic. */
+export type AgentPlatform = "Meta Muse" | "Other personal agent" | "Unknown";
+/** Mandate format on the wire. The transport (MCP, HTTPS) is the adapter's business, see protocol.ts. */
+export type AgentProtocol = "ap2/0.1" | "pap/0.1" | "unknown";
 export type Binding = "specified" | "delegated" | "unspecified";
 
 export type AgentRecord = {
@@ -217,7 +236,7 @@ export type MaskedCustomer = {
   device_hash: string;
   card: { bin_hash: string; last4_hash: string; issuer_country: string; funding: "credit" | "debit" | "prepaid"; age_days_on_file: number };
   velocity: { orders_24h: number; orders_30d: number; cards_7d: number; addresses_30d: number; declines_7d: number };
-  membership: { fingerprints_30d: number; regions_30d: string[]; agents_30d: number };
+  membership: { status?: "active" | "expired" | "none"; expires_at?: string | null; fingerprints_30d: number; regions_30d: string[]; agents_30d: number };
   history: { avg_basket_usd: number; typical_departments: string[]; chargebacks_12m: number; returns_rate: number; disputes_12m: number };
   shipping_region: string;
   ip_region: string;
@@ -235,7 +254,7 @@ export type CheckRequest = {
   mandate: Mandate;
   cart: Cart;
   customer: MaskedCustomer;
-  context: { peer_orders_same_sku_24h: number; sku_demand_tier: "normal" | "high" | "constrained"; promo_codes: string[]; promo_stack_depth: number };
+  context: { peer_orders_same_sku_24h: number; sku_demand_tier: "normal" | "high" | "constrained"; promo_codes: string[]; promo_stack_depth: number; prior_requests?: { request_id: string; at: string }[] };
 };
 
 export type IntentOutcome = "match" | "benign_drift" | "material_mismatch" | "unverifiable";
@@ -259,6 +278,7 @@ export type CheckDecision = {
   scores: { payment_fraud: number; account_abuse: number; agent_risk: number };
   models: ModelFire[];
   actions: { type: "capture" | "request_confirmation" | "queue_review" | "reject"; message_to_agent: Record<string, unknown> }[];
+  duplicate_of?: string | null; // decision id of the original request when this one is an agent retry
   comparison: { ordinary_fraud_tool: { decision: string; because: string }; umpyr: { decision: CheckDecisionKind; because: string } };
   latency_ms: number;
   steps: CheckStep[];

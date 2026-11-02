@@ -147,13 +147,28 @@ export function agentRiskScore(a: AgentRecord, m: Mandate, cart: Cart): { score:
 
 // ---------- decision ----------
 
-export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(64)): CheckDecision {
+/** Same mandate and cart already decided for this merchant (an agent retry): the retry is not a second order. */
+export function duplicateOf(req: CheckRequest): { original: CheckDecision; seconds_after: number } | null {
+  const priors = req.context.prior_requests ?? [];
+  for (const p of priors) {
+    const seconds = (new Date(req.at).getTime() - new Date(p.at).getTime()) / 1000;
+    if (seconds < 0 || seconds > 15 * 60) continue; // retries are seconds to minutes apart; later identical carts are new orders
+    const original = decide({ ...req, request_id: p.request_id, at: p.at, context: { ...req.context, prior_requests: [] } });
+    if (original.decision === "decline") continue; // a declined request can be corrected and resent
+    return { original, seconds_after: Math.round(seconds) };
+  }
+  return null;
+}
+
+export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(64), adapterLabel = "protocol adapter"): CheckDecision {
   const steps: CheckStep[] = [];
   const seed = req.request_id;
   const reasons: string[] = [];
 
-  // 1 intake
-  steps.push({ id: "intake", name: "Intake and protocol normalization", ms: timing(seed, 1, 2, 6), status: "pass", summary: `${req.agent.protocol} mandate + ${req.cart.lines.length}-line cart mapped into the Umpyr ontology (Agent, Mandate, Cart, MaskedCustomer).`, data: { model: MODELS.intake } });
+  // 1 intake (the adapter is the only part that knows the wire protocol; everything after this line sees the Umpyr ontology)
+  const dup = duplicateOf(req);
+  if (dup) reasons.push("DUPLICATE_AGENT_RETRY");
+  steps.push({ id: "intake", name: "Intake and protocol normalization", ms: timing(seed, 1, 2, 6), status: dup ? "warn" : "pass", summary: `${req.agent.protocol} mandate + ${req.cart.lines.length}-line cart received over the ${adapterLabel}, mapped into the Umpyr ontology (Agent, Mandate, Cart, MaskedCustomer).${dup ? ` Idempotency: same mandate ${req.mandate.mandate_id} and cart already decided ${dup.seconds_after} s ago as ${dup.original.decision_id} (${dup.original.decision}).` : ""}`, data: { model: MODELS.intake, adapter: adapterLabel, duplicate_of: dup?.original.decision_id ?? null } });
 
   // 2 mandate verification
   const now = new Date(req.at).getTime();
@@ -178,7 +193,11 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
   const pf = paymentFraudScore(req.customer, n(req.cart.total));
   steps.push({ id: "fraud", name: "Payment-fraud score", ms: timing(seed, 4, 3, 9), status: pf.score >= 70 ? "fail" : pf.score >= 45 ? "warn" : "pass", summary: `${pf.score}/100 from ${pf.contributions.length - 1} signal${pf.contributions.length === 2 ? "" : "s"} (card, device, velocity, geography).`, data: { model: MODELS.fraud, contributions: pf.contributions } });
   const ab = accountAbuseScore(req);
-  steps.push({ id: "abuse", name: "Account and abuse score", ms: timing(seed, 5, 3, 8), status: ab.score >= 70 ? "fail" : ab.score >= 45 ? "warn" : "pass", summary: `${ab.score}/100 (membership sharing, reseller / bulk-arbitrage, promo stacking).`, data: { model: MODELS.abuse, contributions: ab.contributions } });
+  // Membership standing. BJ's is a membership club (membership terms, bjs.com/info/membership-terms); treating a lapsed
+  // membership as a hard stop before capture is the demo's reading of that and is labelled illustrative in the UI.
+  const membership = req.customer.membership.status ?? "active";
+  if (membership !== "active") { ab.contributions.push({ label: membership === "expired" ? `membership expired ${req.customer.membership.expires_at ?? ""}`.trim() : "no membership behind the token", points: 0 }); reasons.push(membership === "expired" ? "MEMBERSHIP_EXPIRED" : "MEMBERSHIP_REQUIRED"); }
+  steps.push({ id: "abuse", name: "Account and abuse score", ms: timing(seed, 5, 3, 8), status: ab.score >= 70 ? "fail" : ab.score >= 45 ? "warn" : "pass", summary: `${ab.score}/100 (membership standing${membership !== "active" ? `: ${membership}` : ""}, membership sharing, reseller / bulk-arbitrage, promo stacking).`, data: { model: MODELS.abuse, contributions: ab.contributions } });
   const ag = agentRiskScore(req.agent, req.mandate, req.cart);
   steps.push({ id: "agent", name: "Agent risk score", ms: timing(seed, 6, 2, 7), status: ag.score >= 60 ? "fail" : ag.score >= 35 ? "warn" : "pass", summary: `${ag.score}/100 for fingerprint ${req.agent.fingerprint_id} (${req.agent.platform}, ${req.agent.attested ? "attested" : "unattested"}, ${req.agent.history.orders_90d} orders / 90d).`, data: { model: MODELS.agent, contributions: ag.contributions } });
   reasons.push(...ab.flags, ...ag.flags);
@@ -204,7 +223,9 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
   // 8 decision policy (ordered; first matching rule decides)
   let decision: CheckDecisionKind = "approve";
   let because = "";
-  if (!verified) { decision = "decline"; because = "Mandate cannot be verified: no trustworthy statement of what the customer authorised, so nothing can be captured."; }
+  if (dup) { decision = "decline"; because = `Duplicate of ${dup.original.decision_id}: the same signed mandate and cart were decided ${dup.seconds_after} s ago (${dup.original.decision}). One decision per mandate; the original is returned and nothing is captured twice.`; }
+  else if (!verified) { decision = "decline"; because = "Mandate cannot be verified: no trustworthy statement of what the customer authorised, so nothing can be captured."; }
+  else if (membership !== "active") { decision = "decline"; because = membership === "expired" ? `Membership behind ${req.customer.member_token} expired on ${req.customer.membership.expires_at ?? "an earlier date"}; BJ's sells to members. Remedy: renew through the member's account, then the agent retries the same mandate.` : `No active membership behind ${req.customer.member_token}; BJ's sells to members. Remedy: join or sign in to a membership, then retry.`; }
   else if (pf.score >= 70) { decision = "decline"; because = `Payment-fraud score ${pf.score} is above the decline threshold (70).`; reasons.push("FRAUD_HIGH"); }
   else if (ab.flags.includes("ABUSE_RESELLER_PATTERN")) { decision = "hold"; because = "Reseller / bulk-arbitrage pattern across memberships behind one agent fingerprint; held for merchant review (quantity limits and member terms)."; }
   else if (ab.score >= 70) { decision = "hold"; because = `Account-abuse score ${ab.score} is above the hold threshold (70).`; reasons.push("ABUSE_HIGH"); }
@@ -249,7 +270,11 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
       ? [{ type: "request_confirmation", message_to_agent: { protocol: "umpyr-check/0.1", type: "confirmation_required", decision_id: decisionId, order_ref: req.order_ref, expires_in_s: 900, present_to_customer: stepUpLines.length ? stepUpLines : [{ line: "order", authorised: req.mandate.natural_language ?? "mandate", in_cart: `$${req.cart.total} total`, why: because }], confirm_with: { method: "signed_checkout_mandate", binding: "specified", kid_hint: req.mandate.signature.kid }, message: "Before BJ's can take payment, show the customer the lines above and return a signed checkout mandate confirming them, or amend the cart to match the original mandate." } }]
       : decision === "hold"
         ? [{ type: "queue_review", message_to_agent: { protocol: "umpyr-check/0.1", type: "pending_review", decision_id: decisionId, order_ref: req.order_ref, message: "Order is pending merchant review. Do not retry or split the order; the customer will be contacted through the membership on file.", expected_within_hours: 4 } }]
-        : [{ type: "reject", message_to_agent: { protocol: "umpyr-check/0.1", type: "declined", decision_id: decisionId, order_ref: req.order_ref, reason_codes: reasons, message: "Order declined. The mandate or agent identity could not be verified. The member can place this order directly or through an attested agent." } }];
+        : dup
+          ? [{ type: "reject", message_to_agent: { protocol: "umpyr-check/0.1", type: "duplicate", decision_id: decisionId, original_decision_id: dup.original.decision_id, original_decision: dup.original.decision, order_ref: req.order_ref, reason_codes: reasons, message: `This mandate and cart were already decided ${dup.seconds_after} s ago. Use decision ${dup.original.decision_id}; do not retry or split the order. Nothing was captured twice.` } }]
+          : membership !== "active"
+            ? [{ type: "reject", message_to_agent: { protocol: "umpyr-check/0.1", type: "declined", decision_id: decisionId, order_ref: req.order_ref, reason_codes: reasons, remedy: membership === "expired" ? "renew_membership" : "join_or_sign_in", message: because } }]
+            : [{ type: "reject", message_to_agent: { protocol: "umpyr-check/0.1", type: "declined", decision_id: decisionId, order_ref: req.order_ref, reason_codes: reasons, message: "Order declined. The mandate or agent identity could not be verified. The member can place this order directly or through an attested agent." } }];
 
   return {
     protocol: "umpyr-check/0.1", decision_id: decisionId, request_id: req.request_id, merchant_id: req.merchant_id, order_ref: req.order_ref,
@@ -257,7 +282,7 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
     intent: { outcome: intent.outcome, binding: req.mandate.binding, confirmed: req.mandate.confirmed, diffs: intent.diffs },
     mandate: { verified, kid: req.mandate.signature.kid, issuer: req.mandate.signature.issuer },
     scores: { payment_fraud: pf.score, account_abuse: ab.score, agent_risk: ag.score },
-    models, actions,
+    models, actions, duplicate_of: dup?.original.decision_id ?? null,
     comparison: { ordinary_fraud_tool: { decision: ordinary, because: ordinaryWhy }, umpyr: { decision, because } },
     latency_ms: latency, steps,
     commitment: { algorithm: "sha256", canonicalization: "sorted-keys-json", hash, committed },
