@@ -8,7 +8,7 @@
    "kind": "converge",
    "order_id": "BJ-7011",
    "title": "Substituted eggs, missing detergent, warm chicken: two agents converge",
-   "tagline": "Muse opens with four asks. Umpyr's agent refunds two lines at once, asks for evidence on the third, holds the fee, then concedes it when Muse shows the delivery was materially incomplete. Eleven turns, no person.",
+   "tagline": "Four asks. Umpyr refunds two lines at once, asks for evidence on the third, holds the fee, then concedes it when Muse shows the delivery was incomplete. No person involved.",
    "complaint": {
     "adapter": "pap-mcp",
     "wire": {
@@ -69,6 +69,7 @@
     {
      "key": "eggs",
      "label": "Eggs substituted (L4)",
+     "short": "the substituted eggs",
      "category_key": "sdd_missing_substituted",
      "extracted": {
       "item_id": "L4",
@@ -83,6 +84,7 @@
     {
      "key": "tide",
      "label": "Tide PODS missing (L5)",
+     "short": "the missing Tide PODS",
      "category_key": "sdd_missing_substituted",
      "extracted": {
       "item_id": "L5",
@@ -97,6 +99,7 @@
     {
      "key": "chicken",
      "label": "Chicken warm on arrival (L1)",
+     "short": "the chicken",
      "category_key": "perishable_damaged",
      "extracted": {
       "item_id": "L1",
@@ -111,6 +114,7 @@
     {
      "key": "fee",
      "label": "Delivery fee $9.99",
+     "short": "the delivery fee",
      "category_key": "sdd_missing_substituted",
      "activate_on_counter": true,
      "extracted": {
@@ -122,24 +126,24 @@
     }
    ],
    "muse": {
-    "opening": "Claim on BJ-7011 for member mem_ca0df2c95a. Mandate m_{mandate} (signed, substitutions off) was approved by Umpyr Check at 14:02 UTC. The delivery at 17:20 had three problems: the Wellsley Farms eggs (L4) were replaced with Eggland's Best 18 ct, the Tide PODS (L5) were not delivered, and the chicken (L1) was warm to the touch and has been discarded. The member asks for a refund of all three lines and of the $9.99 delivery fee, since the delivery was incomplete.",
+    "opening": "Claim on order BJ-7011. The delivery had three problems: the eggs were replaced with another brand although substitutions were off, the Tide PODS were not delivered, and the chicken arrived warm and was discarded. The member asks for a refund of all three lines and of the $9.99 delivery fee, since the delivery was incomplete.",
     "facts_on_request": {
      "chicken": {
       "has_photos": true,
-      "_text": "Evidence for L1 attached: two photos of the chicken and its thermometer reading (sha256 {photo_hash}), taken at 17:26 UTC, six minutes after delivery."
+      "_text": "Two photos of the chicken and its thermometer reading, taken six minutes after delivery, attached."
      }
     },
     "facts_on_counter": {
      "fee": {
       "lines_affected": 2,
-      "_text": "On the fee: two of the five lines were wrong at the door (one substituted against the mandate, one missing). That is not a complete delivery, and the member paid $9.99 for a complete one. I am asking you to look at the fee again on that basis."
+      "_text": "On the fee: two of the five lines were wrong at the door. That is not a complete delivery, and the member paid for a complete one. Please look at the fee again on that basis."
      }
     },
     "counter_rounds": 1,
     "texts": {
-     "accept": "Accepted on behalf of the member: ${offer} across L1, L4, L5 and the delivery fee, with fault on the fulfilment partner. Please issue the terms.",
-     "accept_terms": "terms_accepted. Terms hash {terms_hash} verified against the terms you sent; signed with the member's delegation key. Proceed.",
-     "acknowledge": "Understood. I will record the outcome against the member's order and inform them."
+     "accept": "Accepted for the member: ${offer} across the three lines and the fee. Please issue the terms.",
+     "accept_terms": "terms_accepted. Hash verified against the terms you sent; signed with the member's delegation key.",
+     "acknowledge": "Understood. I will record the outcome and inform the member."
     }
    }
   },
@@ -148,7 +152,7 @@
    "kind": "hold_firm",
    "order_id": "BJ-7012",
    "title": "Ten cases, not ten packs: Umpyr holds firm on the Check evidence",
-   "tagline": "Same agent error as the pack-size scenario in Part 1, but here the member signed the step-up. The Check record shows exactly what was put in front of the member and that the member confirmed it. Final sale; Umpyr's agent does not move.",
+   "tagline": "Same agent error, but here the member signed the step-up. The Check record shows what the member saw and confirmed. Final sale; Umpyr does not move.",
    "complaint": {
     "adapter": "pap-mcp",
     "wire": {
@@ -190,6 +194,7 @@
     {
      "key": "plates",
      "label": "10 cases of plates instead of 10 packs (L1)",
+     "short": "the nine unopened cases",
      "category_key": "agent_order_error",
      "extracted": {
       "item_id": "L1",
@@ -206,12 +211,12 @@
     }
    ],
    "muse": {
-    "opening": "Claim on BJ-7012 for member mem_{member}. Mandate m_{mandate} asked for 10 packs of Wellsley Farms heavy-duty paper plates with a $120 ceiling. The cart I built held 10 cases of 12 packs and was charged $1,100.78. The member has one case open and asks to return the other nine unopened cases for a refund of $970.92. This was my unit error, not the member's instruction.",
+    "opening": "Claim on order BJ-7012. The mandate asked for 10 packs of paper plates under a $120 ceiling; the cart I built held 10 cases of 12 packs and was charged $1,100.78. The member keeps one case and asks to return the other nine, unopened, for $970.92. This was my unit error, not the member's instruction.",
     "pushback": [
-     "I accept that the step-up was answered, but the member was acting on my misreading. The mandate text is unambiguous: 10 packs. A unit error by the agent should not convert the member's household order into a final-sale bulk buy. I ask you to apply the agent-mismatch practice rule as you did on BJ-7007."
+     "The step-up was answered, but the member was acting on my misreading; the mandate says 10 packs. An agent's unit error should not turn a household order into a final-sale bulk buy. Please apply the agent-mismatch rule as on BJ-7007."
     ],
     "texts": {
-     "acknowledge": "Understood. The signed checkout mandate shows the member confirmed the ten cases and the total after seeing them. I will record the ruling, the decision record chk_{check_id} and the clause against the order, and explain to the member that the unopened cases can be sold or donated but not returned.",
+     "acknowledge": "Understood. The signed checkout mandate shows the member confirmed the ten cases after seeing them. I will record the ruling against the order and explain to the member that the unopened cases cannot be returned.",
      "accept_terms": "terms_accepted. Terms hash {terms_hash} verified; signed with the member's delegation key."
     }
    }
@@ -221,7 +226,7 @@
    "kind": "ceiling",
    "order_id": "BJ-7007",
    "title": "Agent self-report, refund above the auto-approve ceiling: a person approves, the agents finish",
-   "tagline": "Muse reports its own error before the member notices. The Check record shows the platform, not the member, answered the step-up, so the fault is the agent's and the excess is refundable. Muse must ask the member how many cases to keep, and $970.92 needs a BJ's approver.",
+   "tagline": "Muse reports its own error. The Check record shows the platform, not the member, answered the step-up, so the fault is the agent's. Muse must ask the member how many cases to keep, and $970.92 needs a BJ's approver.",
    "complaint": {
     "adapter": "pap-mcp",
     "wire": {
@@ -262,6 +267,7 @@
     {
      "key": "plates",
      "label": "10 cases of plates instead of 10 packs (L1)",
+     "short": "the unopened cases",
      "category_key": "agent_order_error",
      "extracted": {
       "item_id": "L1",
@@ -277,17 +283,17 @@
     }
    ],
    "muse": {
-    "opening": "Self-report on BJ-7007 for member mem_018c267d72. Mandate m_ad328846 asked for 10 packs of paper plates under a $120 ceiling; the cart I built held 10 cases of 12 packs, $1,100.78. Umpyr Check stepped up at 10:01 UTC and the step-up was answered by the platform's auto-confirm, not by the member. The order was delivered at 14:22. I am asking you to take back the unopened cases and refund them. The member has not yet told me how many to keep.",
+    "opening": "Self-report on order BJ-7007. The mandate asked for 10 packs of paper plates under a $120 ceiling; the cart I built held 10 cases of 12 packs, $1,100.78. The step-up was answered by the platform's auto-confirm, not by the member, and the order has been delivered. Please take back the unopened cases and refund them. The member has not yet told me how many to keep.",
     "member_facts": {
      "plates": {
       "cases_to_keep": 1,
-      "_refer": "How many cases the member keeps is outside my delegation for this order; I am asking the member now.",
-      "_text": "Member via Muse: keep one case for the party, collect the other nine."
+      "_refer": "How many cases to keep is outside my delegation; I am asking the member now.",
+      "_text": "Keep one case for the party, collect the other nine."
      }
     },
     "texts": {
-     "accept": "Accepted on behalf of the member: nine unopened cases collected, ${offer} refunded, fault on the agent. Please issue the terms once BJ's has approved.",
-     "accept_terms": "terms_accepted. Terms hash {terms_hash} verified; signed with the member's delegation key. Collection window confirmed with the member.",
+     "accept": "Accepted for the member: nine cases collected, ${offer} refunded. Please issue the terms once BJ's has approved.",
+     "accept_terms": "terms_accepted. Hash verified; signed with the member's delegation key. Collection window confirmed with the member.",
      "acknowledge": "Understood. I will inform the member and wait for BJ's."
     }
    }
@@ -297,7 +303,7 @@
    "kind": "policy_gap",
    "order_id": "BJ-7013",
    "title": "Price dropped after the order: no clause covers it, a person decides",
-   "tagline": "The Check record shows the member explicitly agreed to $449.99 above their own ceiling. A week later the club price is $399.99 and Muse asks for the difference. BJ's publishes a price match for TVs only, so Umpyr's agent cannot rule: it hands the case to a BJ's specialist with the evidence attached.",
+   "tagline": "The member agreed to $449.99 above their own ceiling; a week later the price is $399.99. BJ's publishes a price match for TVs only, so Umpyr hands the case to a person with the evidence attached.",
    "complaint": {
     "adapter": "pap-mcp",
     "wire": {
@@ -337,6 +343,7 @@
     {
      "key": "dyson",
      "label": "Price adjustment on the Dyson V12 (L1)",
+     "short": "a price adjustment on the Dyson",
      "category_key": "coupon_price_adjust",
      "extracted": {
       "item_id": "L1",
@@ -351,9 +358,9 @@
     }
    ],
    "muse": {
-    "opening": "Request on BJ-7013 for member mem_{member}. The member bought the Dyson V12 on 10/22 at $449.99 after confirming the price above the $400 ceiling in mandate m_{mandate}. The club price in the 10/29 coupon book is $399.99. The member asks for a price adjustment of $50.00 to the original card.",
+    "opening": "Request on order BJ-7013. The member bought the Dyson V12 at $449.99 after confirming the price above the $400 ceiling. The club price this week is $399.99; the member asks for the $50.00 difference.",
     "texts": {
-     "acknowledge": "Understood. Please notify me through this channel when the specialist decides; I will relay it to the member."
+     "acknowledge": "Understood. Notify me here when the specialist decides and I will relay it to the member."
     }
    }
   }

@@ -215,9 +215,10 @@ function AgentChannel({ caseId, onCase, mode, limit, adapter }: { caseId: string
             </div>
           </div>
           <div className="flex-1 space-y-3 overflow-y-auto p-3">
-            <div className="muted rounded-md border border-dashed p-2 text-[11px]" style={{ borderColor: "var(--border)" }}>
-              <b>Protocol adapter · {ad.name}</b> ({ad.transport}). {adapterTrace(ad, "resolve").map((s) => `${s.step}: ${s.detail}`).join(" ")}
-            </div>
+            <details className="muted rounded-md border border-dashed px-2 py-1 text-[11px]" style={{ borderColor: "var(--border)" }}>
+              <summary className="cursor-pointer">Arrived over {ad.name} ({ad.transport}); swap the adapter and nothing below changes</summary>
+              <ol className="mt-1 space-y-0.5">{adapterTrace(ad, "resolve").map((s) => <li key={s.step}><b>{s.step}</b> · {s.detail}</li>)}</ol>
+            </details>
             <Transcript turns={n.turns} shown={visible} />
             {approvalPending && (
               <div className="mx-auto flex max-w-[90%] flex-wrap items-center gap-2 rounded-lg border border-dashed px-3 py-2 text-xs" style={{ borderColor: "var(--warn)" }}>
@@ -236,7 +237,10 @@ function AgentChannel({ caseId, onCase, mode, limit, adapter }: { caseId: string
           <RulingPanel n={n} upTo={visible} />
         </div>
       </div>
-      <OpsView ops={ops} planner="procedure library, deterministic" rulingExtra={leadRun ? <div className="muted mt-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>Lead issue of {Object.keys(lastUmpyr?.runs ?? {}).length} in this negotiation: {c.issues.find((i) => i.key === leadKey)?.label}. Fault: <b>{leadRun.ruling.fault}</b> · {FAULT_TEXT[leadRun.ruling.fault]}. Lifecycle closure (BJ's side): {leadRun.lifecycle_note}</div> : null} />
+      <details className="panel px-3 py-2 text-sm">
+        <summary className="cursor-pointer font-semibold">Ops view for the lead issue{leadKey ? `: ${c.issues.find((i) => i.key === leadKey)?.label}` : ""} <span className="muted font-normal text-xs">· classification, neighbour cases, plan, procedure, ruling, governance</span></summary>
+        <div className="mt-3"><OpsView ops={ops} planner="procedure library, deterministic" rulingExtra={leadRun ? <div className="muted mt-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>Fault: <b>{leadRun.ruling.fault}</b> · {FAULT_TEXT[leadRun.ruling.fault]}. Lifecycle closure (BJ's side): {leadRun.lifecycle_note}</div> : null} /></div>
+      </details>
     </div>
   );
 }
@@ -332,7 +336,7 @@ export function BjsResolve() {
           <button className={`btn ${tab === "merchant" ? "btn-primary" : ""}`} onClick={() => setTab("merchant")}>Merchant chat</button>
         </div>
       </div>
-      <p className="muted px-1 text-xs">Umpyr handles the Muse order after payment: every question, change, return, dispute and chargeback, in one system with the intent check that preceded payment. The mandate and the Check decision captured in <Link className="underline" to="/bjs/check">Part 1</Link> are the evidence Umpyr's agent uses here to decide fault. Shipping and logistics stay with BJ's and its partners. Agent cases first; the email cases that a person still sends are under Human channel.</p>
+      <p className="muted px-1 text-xs">After payment, Umpyr handles every question, change, return, dispute and chargeback on the Muse order. The mandate and the Check decision from <Link className="underline" to="/bjs/check">Part 1</Link> are the evidence that decides fault here. Shipping and logistics stay with BJ's.</p>
 
       <MetricsStrip workspace="bjs" />
 
@@ -340,7 +344,7 @@ export function BjsResolve() {
 
       {tab === "human" && (
         <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2 px-1 text-xs"><Pill text="Human channel" tone="amber" /><span className="muted">Forwarded email from a member; same rules, same procedure library, same audit. Write as a member (orders BJ-7001 to BJ-7013) or start from an example.</span><button className="btn ml-auto !px-2 !py-0.5 text-xs" onClick={start}>New case</button></div>
+          <div className="flex flex-wrap items-center gap-2 px-1 text-xs"><Pill text="Human channel" tone="amber" /><span className="muted">Forwarded email from a member; same rules, same audit. Write as a member (orders BJ-7001 to BJ-7013) or pick an example.</span><button className="btn ml-auto !px-2 !py-0.5 text-xs" onClick={start}>New case</button></div>
           <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <section className="panel flex min-h-[70vh] min-w-0 flex-col">
               <div className="flex-1 space-y-3 overflow-y-auto p-3">

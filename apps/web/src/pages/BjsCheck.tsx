@@ -104,7 +104,7 @@ export function BjsCheck() {
           <button className="btn" onClick={() => pick(idx)}>Reset scenario</button>
         </div>
       </div>
-      <p className="muted px-1 text-xs">A personal agent (Meta Muse first) places an order at BJ's over an existing open protocol. Before BJ's takes payment, Umpyr checks the agent's intent mandate against the cart, scores risk (table stakes), reaches a verdict on intent and decides: approve, step-up to the member through their agent, or decline. The decision is hash-committed and kept, because when the same order is disputed later, <Link className="underline" to="/bjs">Part 2</Link> uses it as evidence. Onboarding to Muse is part of the service, not a separate line.</p>
+      <p className="muted px-1 text-xs">Before BJ's takes payment on a Muse order, Umpyr checks the intent mandate against the cart, scores risk (table stakes), and decides: approve, step-up to the member through their agent, or decline. The decision is hash-committed and kept; <Link className="underline" to="/bjs">Part 2</Link> uses it as evidence when the order is disputed. Onboarding to Muse is included.</p>
 
       <div className="flex flex-wrap gap-2">
         {SCENARIOS.map((s, i) => <button key={s.id} className={`btn text-xs ${i === idx ? "btn-primary" : ""}`} onClick={() => pick(i)}>{i + 1}. {s.title}</button>)}
@@ -114,11 +114,11 @@ export function BjsCheck() {
       <div className="grid gap-3 xl:grid-cols-[minmax(0,4fr)_minmax(0,5fr)_minmax(0,4fr)]">
         {/* LEFT: incoming agentic order over the adapter */}
         <div className="space-y-3 text-sm">
-          <section className="panel p-3">
-            <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold">Arrives over the adapter</h2><Pill text={ad.short} /><Pill text="swappable" tone="muted" /></div>
+          <details className="panel px-3 py-2">
+            <summary className="flex cursor-pointer flex-wrap items-center gap-2"><h2 className="font-semibold">Arrives over the adapter</h2><Pill text={ad.short} /><Pill text="swappable" tone="muted" /></summary>
             <ol className="muted mt-1 space-y-0.5 text-[11px]">{adapterTrace(ad, "check").map((s) => <li key={s.step}><b>{s.step}</b> · {s.detail}</li>)}</ol>
-            <div className="muted mt-1 text-[11px]">{ad.note} The record below (umpyr-check/0.1) is Umpyr's internal ontology, not a wire protocol.</div>
-          </section>
+            <div className="muted mt-1 text-[11px]">{ad.note} The normalised record is Umpyr's internal ontology, not a wire protocol.</div>
+          </details>
 
           <section className="panel p-3">
             <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold">Agent</h2><Pill text={req.agent.platform} /><Pill text={req.agent.protocol} tone="muted" /><Pill text={req.agent.attested ? `attested · ${req.agent.attestation_issuer}` : "unattested"} tone={req.agent.attested ? "accent" : "red"} /></div>

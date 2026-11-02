@@ -14,41 +14,41 @@ export function EvidenceChips({ evidence }: { evidence: Evidence[] }) {
   if (!evidence.length) return null;
   return (
     <details className="mt-1 text-[11px]">
-      <summary className="flex cursor-pointer flex-wrap items-center gap-1 list-none">
-        <span className="muted">cites</span>
-        {evidence.map((e, i) => (
-          <span key={i} className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5" style={{ borderColor: "var(--border)" }} title={e.detail}>
-            <Pill text={EVIDENCE_LABEL[e.kind]} tone={EVIDENCE_TONE[e.kind]} /><span className="font-mono">{e.ref}</span>
-          </span>
-        ))}
-      </summary>
+      <summary className="cursor-pointer list-none underline decoration-dotted">evidence cited ({evidence.length}): {[...new Set(evidence.map((e) => EVIDENCE_LABEL[e.kind]))].join(", ")}</summary>
       <ul className="mt-1 space-y-0.5">
-        {evidence.map((e, i) => <li key={i}><span className="font-mono">{e.ref}</span> <span className="muted">{e.detail}</span>{e.url && !e.url.startsWith("practice://") && <a className="ml-1 underline" href={e.url} target="_blank" rel="noreferrer">source</a>}</li>)}
+        {evidence.map((e, i) => <li key={i}><Pill text={EVIDENCE_LABEL[e.kind]} tone={EVIDENCE_TONE[e.kind]} /> <span>{e.ref}</span> <span className="muted">{e.detail}</span>{e.url && !e.url.startsWith("practice://") && <a className="ml-1 underline" href={e.url} target="_blank" rel="noreferrer">source</a>}</li>)}
       </ul>
     </details>
   );
 }
 
-/** Two agents side by side: the member's agent on the left, Umpyr's agent (for BJ's) on the right; people and BJ's systems in the middle. */
-export function Transcript({ turns, shown, compact = false }: { turns: Turn[]; shown: number; compact?: boolean }) {
+/** Two agents side by side: the member's agent on the left, Umpyr's agent (for BJ's) on the right; people and BJ's systems in the middle.
+ *  Plain text is what the agents said; the grey monospace block underneath is the technical trail (ids, hashes, rules). */
+export function Transcript({ turns, shown, compact = false, legend = true }: { turns: Turn[]; shown: number; compact?: boolean; legend?: boolean }) {
   return (
     <div className="space-y-3">
+      {legend && <div className="muted flex flex-wrap items-center gap-2 text-[11px]"><span className="rounded px-1.5 py-0.5" style={{ background: "var(--accent-soft)", color: "var(--text)" }}>what the agents said</span><span className="rounded px-1.5 py-0.5 font-mono" style={{ background: "var(--bg)", borderLeft: "3px solid var(--warn)" }}>ids · hashes · rules</span></div>}
       {turns.slice(0, shown).map((t) => {
         const side = t.speaker === "muse" ? "mr-auto" : t.speaker === "umpyr" ? "ml-auto" : "mx-auto";
-        const bg = t.speaker === "muse" ? "var(--bg)" : t.speaker === "umpyr" ? "var(--accent-soft)" : "var(--panel)";
+        const bg = t.speaker === "muse" ? "var(--panel)" : t.speaker === "umpyr" ? "var(--accent-soft)" : "var(--panel)";
         const border = t.speaker === "muse" || t.speaker === "umpyr" ? "1px solid var(--border)" : "1px dashed var(--border)";
         const showOffer = t.speaker === "umpyr" && t.offer && ["offer", "hold", "needs_approval", "terms"].includes(t.kind);
         return (
-          <div key={t.n} className={`${side} max-w-[90%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${compact ? "text-xs" : ""}`} style={{ background: bg, border }}>
-            <div className="muted mb-1 flex flex-wrap items-center gap-2 text-xs">
+          <div key={t.n} className={`${side} max-w-[88%] rounded-lg px-3 py-2 ${compact ? "text-xs" : "text-sm"}`} style={{ background: bg, border }}>
+            <div className="muted mb-1 flex flex-wrap items-center gap-2 text-[11px]">
               <span className="font-medium" style={{ color: "var(--text)" }}>{SPEAKER_LABEL[t.speaker]}</span>
               <span>{KIND_LABEL[t.kind]}</span>
               {t.position !== "n/a" && <Pill text={POSITION_LABEL[t.position]} tone={POSITION_TONE[t.position] ?? "muted"} />}
               {showOffer && <Pill text={`offer $${t.offer!.total}`} tone="muted" />}
-              <span className="ml-auto font-mono">turn {t.n}</span>
+              <span className="ml-auto font-mono">{t.n}</span>
             </div>
-            {t.text}
-            <EvidenceChips evidence={t.evidence} />
+            <div className="whitespace-pre-wrap">{t.text}</div>
+            {(t.tech.length > 0 || t.evidence.length > 0) && (
+              <div className="muted mt-1.5 rounded px-2 py-1 font-mono text-[11px] leading-snug" style={{ background: "var(--bg)", borderLeft: "3px solid var(--warn)" }}>
+                {t.tech.map((x, i) => <div key={i} className="break-all">{x}</div>)}
+                <EvidenceChips evidence={t.evidence} />
+              </div>
+            )}
           </div>
         );
       })}
@@ -66,8 +66,7 @@ export function StatePanel({ state, shown, total }: { state: NegotiationState; s
         <div>
           <div className="muted">Open issues</div>
           {state.open_issues.length ? <ul className="list-disc pl-4">{state.open_issues.map((x) => <li key={x}>{x}</li>)}</ul> : <div>none</div>}
-          <div className="muted mt-2">Member's agent asks for</div>
-          {state.muse_asks.length ? <ul className="list-disc pl-4">{state.muse_asks.map((x) => <li key={x}>{x}</li>)}</ul> : <div>nothing further</div>}
+          {state.muse_asks.join("|") !== state.open_issues.join("|") && <><div className="muted mt-2">Member's agent asks for</div>{state.muse_asks.length ? <ul className="list-disc pl-4">{state.muse_asks.map((x) => <li key={x}>{x}</li>)}</ul> : <div>nothing further</div>}</>}
         </div>
         <div>
           <div className="muted">Current offer from Umpyr (for BJ's)</div>
@@ -109,13 +108,12 @@ export function EvidencePanel({ check, order, whatIf, onWhatIf }: { check: Check
   return (
     <section className="panel p-3 text-sm">
       <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold">Evidence pulled from Check (Part 1)</h2><Pill text={d.decision.replace("_", "-")} tone={d.decision === "approve" ? "accent" : d.decision === "decline" ? "red" : "amber"} /><Pill text={`intent ${d.intent.outcome.replace("_", " ")}`} tone={d.intent.outcome === "match" ? "accent" : "amber"} />{check.what_if && <Pill text="what-if" tone="amber" />}</div>
-      <div className="muted mt-1 font-mono text-[11px] break-all">{d.decision_id} · sha256 {d.commitment.hash} · decided {check.request.at} · policy {d.policy_pack_version}</div>
+      <div className="muted mt-1 font-mono text-[11px] break-all">{d.decision_id} · sha256 {d.commitment.hash.slice(0, 24)}… · {check.request.at.slice(0, 16).replace("T", " ")} UTC</div>
       <div className="mt-2 grid gap-3 text-xs md:grid-cols-2">
         <div>
           <div className="muted">Intent mandate {m.mandate_id} <span className="font-mono">{m.signature.alg} kid {m.signature.kid}</span></div>
           {m.natural_language && <div className="italic">“{m.natural_language}”</div>}
-          <ul className="list-disc pl-4">{m.items.map((i, k) => <li key={k}>{i.quantity} {i.unit} {i.description}{i.max_unit_price ? ` ≤ $${i.max_unit_price}` : ""}</li>)}</ul>
-          <div className="muted">ceiling ${m.price_ceiling} · substitutions {m.substitutions_allowed ? "allowed" : "off"} · {m.kind}, {m.binding}, {m.confirmed ? "signed by the member" : "unconfirmed"}</div>
+          <div className="muted">{m.items.map((i) => `${i.quantity} ${i.unit} ${i.description}${i.max_unit_price ? ` ≤ $${i.max_unit_price}` : ""}`).join("; ")} · ceiling ${m.price_ceiling} · substitutions {m.substitutions_allowed ? "allowed" : "off"} · {m.confirmed ? "signed by the member" : "unconfirmed"}</div>
         </div>
         <div>
           <div className="muted">Cart vs mandate at decision time</div>
@@ -127,11 +125,10 @@ export function EvidencePanel({ check, order, whatIf, onWhatIf }: { check: Check
               {CONFIRMERS.map((c) => <option key={c.v} value={c.v}>{c.label}{c.v === order.check?.confirmation_by ? " (on record)" : " (what-if)"}</option>)}
             </select>
           ) : <div>{d.decision === "step_up" ? CONFIRMERS.find((c) => c.v === l.confirmation_by)?.label ?? l.confirmation_by : "no step-up: approved on the member-signed mandate"}</div>}
-          {l.confirmation?.lines_shown && <div className="muted mt-1">shown to the member: {l.confirmation.lines_shown.join("; ")}</div>}
           <div className="muted mt-1">{l.note}</div>
         </div>
       </div>
-      <div className="muted mt-2 text-xs">This is the same record Part 1 committed before payment: <Link className="underline" to={`/bjs/check?scenario=${check.scenario.id}`}>open it in Check →</Link></div>
+      <div className="muted mt-2 text-xs"><Link className="underline" to={`/bjs/check?scenario=${check.scenario.id}`}>Open this record in Part 1 →</Link></div>
     </section>
   );
 }
