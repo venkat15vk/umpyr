@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { ANON } from "./brand";
 
 type Theme = "light" | "dark";
 const ThemeCtx = createContext<{ theme: Theme; toggle: () => void }>({ theme: "light", toggle: () => {} });
@@ -10,6 +11,7 @@ function initial(): Theme {
   } catch {
     /* ignore */
   }
+  if (ANON) return "light"; // investor site: the same first look for everyone, whatever the OS theme; the toggle still works
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
