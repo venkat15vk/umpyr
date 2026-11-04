@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { merchantName } from "../lib/brand";
 import { Link, useParams } from "react-router-dom";
 import { ApiError } from "../lib/api";
 import { addPolicyUrl, approveMapping, listUploads, loadSample, policyDocs, startOnboarding, subscribeJob, summary, uploadFile, type JobEvent, type Upload } from "../lib/onboard";
@@ -119,7 +120,7 @@ export function Onboard() {
             <h1 className="text-lg font-semibold">{name}</h1>
             <span className="badge">onboarding</span>
             <span className="muted text-xs">deleted automatically after 14 days</span>
-            <button className="btn ml-auto" onClick={() => run("sample", () => loadSample(ws, "rockler"))} disabled={!!busy}>Use Rockler sample files</button>
+            <button className="btn ml-auto" onClick={() => run("sample", () => loadSample(ws, "rockler"))} disabled={!!busy}>Use {merchantName("rockler")} sample files</button>
           </div>
           {error && <p className="mt-2 text-sm text-amber-600">{error}</p>}
         </div>

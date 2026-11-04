@@ -1,3 +1,4 @@
+import { ANON } from "../../lib/brand";
 import type { ReactNode } from "react";
 import { PARTY_LABEL, PARTY_ORDER, RACI_LEGEND } from "../../lib/bjs/raci";
 import type { Party, Raci, RaciLetter } from "../../lib/bjs/types";
@@ -39,7 +40,7 @@ export function JsonBlock({ value, maxHeight = 320 }: { value: unknown; maxHeigh
 export function Disclaimer({ product }: { product: "Resolve" | "Check" }) {
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs">
-      <Pill text="Illustrative demo, not affiliated with BJ's Wholesale Club" tone="amber" />
+      <Pill text={ANON ? "Illustrative demo, stand-in merchant" : "Illustrative demo, not affiliated with BJ's Wholesale Club"} tone="amber" />
       <Pill text="all members, orders and agents are synthetic" tone="muted" />
       <Pill text={`Umpyr ${product}`} />
     </div>

@@ -10,6 +10,10 @@
 #   infra/deploy.sh web-preview build + deploy the web app to a Pages PREVIEW branch (PREVIEW_BRANCH, default bjs-preview);
 #                              production and the custom domain are untouched. Also pushes the gate secrets to the
 #                              preview environment so /login works on the *.umpyr-web.pages.dev preview URL.
+#   infra/deploy.sh web-vc     build + deploy the ANONYMOUS web app (stand-in merchant names) to the investor Pages project
+#                              (PAGES_PROJECT_VC, default umpyr-try) behind its own password (DEMO_PASSWORD_VC); demo.umpyr.org untouched.
+#   infra/deploy.sh bootstrap-vc FIRST TIME for the investor site: Pages project, secrets, build, custom domain
+#                              (PUBLIC_HOST_VC, default try.umpyr.org) + DNS. Same Railway engine; nothing on Railway changes.
 #   infra/deploy.sh secrets    push DEMO_PASSWORD / SESSION_SECRET / API_GATEWAY_SECRET / API_ORIGIN to Pages
 #                              and API_GATEWAY_SECRET / ANTHROPIC_API_KEY / CLAUDE_MODEL / DAILY_COST_CAP_USD to Railway
 #   infra/deploy.sh all        secrets, engine, web
@@ -80,8 +84,8 @@ deploy_engine() {
 
 deploy_web() {
   need CLOUDFLARE_API_TOKEN
-  echo "==> build web (public demo)"
-  ( cd apps/web && npm ci --no-audit --no-fund --silent && VITE_API_BASE_URL=/api VITE_PUBLIC_DEMO=true npm run build --silent )
+  echo "==> build web (public demo${VITE_BRAND_MODE:+, brand mode $VITE_BRAND_MODE})"
+  ( cd apps/web && npm ci --no-audit --no-fund --silent && VITE_API_BASE_URL=/api VITE_PUBLIC_DEMO=true VITE_BRAND_MODE="${VITE_BRAND_MODE:-}" npm run build --silent )
   echo "==> Cloudflare Pages: $PAGES_PROJECT"
   ( cd apps/web && $WRANGLER pages deploy --project-name "$PAGES_PROJECT" --branch main --commit-dirty=true )
 }
@@ -109,6 +113,22 @@ deploy_web_preview() {
   echo "==> Cloudflare Pages preview: $PAGES_PROJECT @ $branch"
   ( cd apps/web && $WRANGLER pages deploy --project-name "$PAGES_PROJECT" --branch "$branch" --commit-dirty=true )
   echo "   preview alias: https://$branch.$PAGES_PROJECT.pages.dev"
+}
+
+# Investor site: same engine, own Pages project, own password, anonymous build. Overrides the three knobs the
+# Cloudflare functions read and leaves infra/.deploy.state (demo.umpyr.org) alone.
+vc_env() {
+  need DEMO_PASSWORD_VC
+  export PAGES_PROJECT="${PAGES_PROJECT_VC:-umpyr-try}" PUBLIC_HOST="${PUBLIC_HOST_VC:-try.umpyr.org}" DEMO_PASSWORD="$DEMO_PASSWORD_VC" VITE_BRAND_MODE=anonymous
+  ensure_secret SESSION_SECRET; ensure_secret API_GATEWAY_SECRET
+  API_ORIGIN="${API_ORIGIN:-$(state_get API_ORIGIN)}"; export API_ORIGIN
+  echo "==> investor site: Pages project $PAGES_PROJECT, host $PUBLIC_HOST, anonymous merchant names"
+}
+deploy_web_vc() { vc_env; deploy_web; echo "   https://$PUBLIC_HOST"; }
+bootstrap_vc() {
+  vc_env
+  bootstrap_cloudflare
+  echo; echo "Done. Share: https://$PUBLIC_HOST  (password: DEMO_PASSWORD_VC from .env). Later releases: make deploy-vc"
 }
 
 push_pages_secret() { # NAME (value read from the env var of the same name)
@@ -236,7 +256,9 @@ case "${1:-}" in
   engine)    deploy_engine ;;
   web)       deploy_web ;;
   web-preview) deploy_web_preview ;;
+  web-vc)    deploy_web_vc ;;
+  bootstrap-vc) bootstrap_vc ;;
   secrets)   deploy_secrets ;;
   all)       deploy_secrets; deploy_engine; deploy_web ;;
-  *) sed -n '2,14p' "$0"; exit 1 ;;
+  *) sed -n '2,18p' "$0"; exit 1 ;;
 esac

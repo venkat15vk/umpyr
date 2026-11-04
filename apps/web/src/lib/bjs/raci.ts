@@ -1,6 +1,7 @@
+import { anonymiseDeep } from "../brand";
 import type { Party, Raci } from "./types";
 
-export const PARTY_LABEL: Record<Party, string> = {
+export const PARTY_LABEL: Record<Party, string> = anonymiseDeep({
   customer: "Member",
   customer_agent: "Member's agent",
   agent_platform: "Agent platform",
@@ -8,7 +9,7 @@ export const PARTY_LABEL: Record<Party, string> = {
   merchant: "BJ's (system)",
   merchant_staff: "BJ's staff",
   third_party: "Third party",
-};
+});
 
 export const PARTY_ORDER: Party[] = ["customer", "customer_agent", "agent_platform", "umpyr", "merchant", "merchant_staff", "third_party"];
 

@@ -1,34 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import agentCasesJson from "../../../../samples/bjs/agent_cases.json";
-import categoriesJson from "../../../../samples/bjs/categories.json";
-import scenariosJson from "../../../../samples/bjs/check_scenarios.json";
-import historyJson from "../../../../samples/bjs/history.json";
-import ordersJson from "../../../../samples/bjs/orders.json";
-import packJson from "../../../../samples/bjs/rule_pack.json";
-import proceduresJson from "../../../../samples/bjs/procedures.json";
-import ticketsJson from "../../../../samples/bjs/tickets.json";
+import { ANON, b, BJS_BASE, merchantName } from "../lib/brand";
+import { agentCases, categories, history, orders, pack, procedures, scenarios, tickets } from "../lib/bjs/fixtures";
 import { MetricsStrip } from "../components/MetricsStrip";
 import { OpsView } from "../components/OpsView";
 import { EvidencePanel, RulingPanel, StatePanel, Transcript } from "../components/bjs/Negotiation";
 import { Field, Hash, JsonBlock, Pill, RaciChips, RaciLegend } from "../components/bjs/ui";
 import { customerTurn, emptyState, merchantAnswer, rerun, toOps, type ChatState, type Ctx, type TurnResult } from "../lib/bjs/chat";
-import type { CheckScenario } from "../lib/bjs/checkLink";
-import { negotiate, type AgentCasesFile, type NegotiationCtx } from "../lib/bjs/negotiation";
+import { negotiate, type NegotiationCtx } from "../lib/bjs/negotiation";
 import { ADAPTERS, adapterById, adapterTrace, type AdapterId } from "../lib/bjs/protocol";
 import type { ResolveRun, RunOptions } from "../lib/bjs/resolveEngine";
-import type { Category, Claim, ConfirmationBy, Order, Procedure, RulePack, Ticket } from "../lib/bjs/types";
+import type { Claim, ConfirmationBy, Ticket } from "../lib/bjs/types";
 import type { CustomerBlock, Ops } from "../lib/resolve";
 
-const categories = categoriesJson as Category[];
-const orders = ordersJson as unknown as Order[];
-const pack = packJson as unknown as RulePack;
-const procedures = proceduresJson as unknown as Procedure[];
-const tickets = ticketsJson as unknown as Ticket[];
-const scenarios = (scenariosJson as { scenarios: CheckScenario[] }).scenarios;
-const agentCases = (agentCasesJson as unknown as AgentCasesFile).cases;
 // Same ctx the FastAPI engine would hold for workspace "bjs"; the deterministic runCase sits behind lib/bjs/adapters.ts.
-const ctx: Ctx = { pack, procedures, orders, categories, history: historyJson as unknown as Ctx["history"] };
+const ctx: Ctx = { pack, procedures, orders, categories, history };
 const nctx: NegotiationCtx = { ...ctx, scenarios };
 
 type Mode = RunOptions["mode"];
@@ -85,7 +71,7 @@ function FactsEditor({ run, facts, onChange }: { run: ResolveRun; facts: RunOpti
         if (meta.type === "number") return <Field key={k} label={meta.label}><input className="input" type="number" value={v === null || v === undefined ? "" : String(v)} onChange={(e) => set(k, e.target.value === "" ? null : Number(e.target.value))} /></Field>;
         return <Field key={k} label={meta.label}><input className="input" value={String(v ?? "")} onChange={(e) => set(k, e.target.value)} /></Field>;
       })}
-      <div className="muted text-[11px] sm:col-span-2 lg:col-span-3">Order, item, member and fulfilment facts come from BJ's record (read-only): {run.facts.item.name} · {run.order?.fulfilment.method.replace(/_/g, " ")} · member {run.order?.member.tier === "club_plus" ? "Club+" : "Club"} · payments {run.order?.payments ? `${run.order.payments.posted_captures} posted, ${run.order.payments.pending_holds} pending` : "n/a"}.</div>
+      <div className="muted text-[11px] sm:col-span-2 lg:col-span-3">{b("Order, item, member and fulfilment facts come from BJ's record (read-only):")} {run.facts.item.name} · {run.order?.fulfilment.method.replace(/_/g, " ")} · member {run.order?.member.tier === "club_plus" ? "Club+" : "Club"} · payments {run.order?.payments ? `${run.order.payments.posted_captures} posted, ${run.order.payments.pending_holds} pending` : "n/a"}.</div>
     </div>
   );
 }
@@ -94,7 +80,7 @@ const FAULT_TEXT: Record<string, string> = {
   customer: "the member",
   agent: "the member's AI agent (acted outside the member's instruction)",
   agent_platform: "the agent platform (attestation, protocol or mandate handling)",
-  merchant: "BJ's (club, warehouse or systems)",
+  merchant: b("BJ's (club, warehouse or systems)"),
   third_party: "a third party (delivery partner, carrier or payment processor)",
   indeterminate: "not determinable from the facts on file",
 };
@@ -106,7 +92,7 @@ function RulingExtra({ run, state, onFacts, onStaff, onConfirm }: { run: Resolve
     <div className="mt-2 space-y-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>
       <div><span className="muted">Fault:</span> <b>{run.ruling.fault}</b> · {FAULT_TEXT[run.ruling.fault]}</div>
       {run.order?.check && <div><span className="muted">Check record on this order:</span> {run.order.check.decision.replace("_", "-")} · intent {run.order.check.intent_outcome.replace("_", " ")} · step-up answered by {run.order.check.confirmation_by.replace("_", " ")}</div>}
-      {win && !win.confirmed && <div><Pill text="illustrative practice rule" tone="amber" /> <span className="muted">{win.clause_id} was not read on bjs.com; it stands in for a practice BJ's would confirm.</span></div>}
+      {win && !win.confirmed && <div><Pill text="illustrative practice rule" tone="amber" /> <span className="muted">{win.clause_id} {b("was not read on bjs.com; it stands in for a practice BJ's would confirm.")}</span></div>}
       <details>
         <summary className="muted cursor-pointer">extracted facts (edit to re-run the ruling)</summary>
         <div className="mt-2"><FactsEditor run={run} facts={state.overrides} onChange={onFacts} /></div>
@@ -114,7 +100,7 @@ function RulingExtra({ run, state, onFacts, onStaff, onConfirm }: { run: Resolve
       {run.pdp.decision === "needs_approval" && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="muted">Policy decision point: {run.pdp.reasons.join("; ")}</span>
-          {!state.staff_approved ? <button className="btn btn-primary" onClick={onStaff}>Approve as BJ's staff</button> : <Pill text="approved by BJ's staff" />}
+          {!state.staff_approved ? <button className="btn btn-primary" onClick={onStaff}>{b("Approve as BJ's staff")}</button> : <Pill text={b("approved by BJ's staff")} />}
         </div>
       )}
       {run.terms.status !== "n/a" && (
@@ -132,16 +118,16 @@ function RulingExtra({ run, state, onFacts, onStaff, onConfirm }: { run: Resolve
       )}
       {run.execution.status !== "none" && (
         <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2"><span className="muted">Execution (mock BJ's API)</span><Pill text={run.execution.status.replace("_", " ")} tone={run.execution.status === "executed" ? "accent" : run.execution.status === "shadow" ? "muted" : "amber"} /></div>
+          <div className="flex flex-wrap items-center gap-2"><span className="muted">{b("Execution (mock BJ's API)")}</span><Pill text={run.execution.status.replace("_", " ")} tone={run.execution.status === "executed" ? "accent" : run.execution.status === "shadow" ? "muted" : "amber"} /></div>
           {run.execution.request && (
             <div className="grid gap-2 md:grid-cols-2">
-              <div><div className="muted">request → BJ's</div><JsonBlock value={run.execution.request} maxHeight={200} /></div>
-              <div><div className="muted">response ← BJ's</div><JsonBlock value={run.execution.response} maxHeight={200} /></div>
+              <div><div className="muted">{b("request → BJ's")}</div><JsonBlock value={run.execution.request} maxHeight={200} /></div>
+              <div><div className="muted">{b("response ← BJ's")}</div><JsonBlock value={run.execution.response} maxHeight={200} /></div>
             </div>
           )}
         </div>
       )}
-      <div><span className="muted">Lifecycle closure (BJ's side):</span> {run.lifecycle_note}</div>
+      <div><span className="muted">{b("Lifecycle closure (BJ's side):")}</span> {run.lifecycle_note}</div>
     </div>
   );
 }
@@ -166,7 +152,7 @@ function GovernanceExtra({ run }: { run: ResolveRun }) {
           </tbody>
         </table>
       </details>
-      <div className="muted">Before payment, the same order went through <Link className="underline" to="/bjs/check">Check (Part 1) →</Link></div>
+      <div className="muted">Before payment, the same order went through <Link className="underline" to={`${BJS_BASE}/check`}>Check (Part 1) →</Link></div>
     </div>
   );
 }
@@ -222,8 +208,8 @@ function AgentChannel({ caseId, onCase, mode, limit, adapter }: { caseId: string
             <Transcript turns={n.turns} shown={visible} />
             {approvalPending && (
               <div className="mx-auto flex max-w-[90%] flex-wrap items-center gap-2 rounded-lg border border-dashed px-3 py-2 text-xs" style={{ borderColor: "var(--warn)" }}>
-                <span>BJ's approver: ${visibleState.current_offer?.total ?? ""} is above the auto-approve ceiling (${limit.toFixed(2)}).</span>
-                <button className="btn btn-primary !px-2 !py-0.5" onClick={() => { setStaffApproved(true); setShown(visible + 1); }}>Approve as BJ's staff</button>
+                <span>{merchantName("bjs")} approver: ${visibleState.current_offer?.total ?? ""} is above the auto-approve ceiling (${limit.toFixed(2)}).</span>
+                <button className="btn btn-primary !px-2 !py-0.5" onClick={() => { setStaffApproved(true); setShown(visible + 1); }}>{b("Approve as BJ's staff")}</button>
                 <span className="muted">or raise the ceiling in the header</span>
               </div>
             )}
@@ -239,7 +225,7 @@ function AgentChannel({ caseId, onCase, mode, limit, adapter }: { caseId: string
       </div>
       <details className="panel px-3 py-2 text-sm">
         <summary className="cursor-pointer font-semibold">Ops view for the lead issue{leadKey ? `: ${c.issues.find((i) => i.key === leadKey)?.label}` : ""} <span className="muted font-normal text-xs">· classification, neighbour cases, plan, procedure, ruling, governance</span></summary>
-        <div className="mt-3"><OpsView ops={ops} planner="procedure library, deterministic" rulingExtra={leadRun ? <div className="muted mt-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>Fault: <b>{leadRun.ruling.fault}</b> · {FAULT_TEXT[leadRun.ruling.fault]}. Lifecycle closure (BJ's side): {leadRun.lifecycle_note}</div> : null} /></div>
+        <div className="mt-3"><OpsView ops={ops} planner="procedure library, deterministic" rulingExtra={leadRun ? <div className="muted mt-2 border-t pt-2 text-xs" style={{ borderColor: "var(--border)" }}>Fault: <b>{leadRun.ruling.fault}</b> · {FAULT_TEXT[leadRun.ruling.fault]}. {b("Lifecycle closure (BJ's side):")} {leadRun.lifecycle_note}</div> : null} /></div>
       </details>
     </div>
   );
@@ -308,10 +294,10 @@ export function BjsResolve() {
   return (
     <div className="flex flex-col gap-3">
       <div className="panel flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
-        <span className="font-semibold">BJ's Wholesale Club</span>
+        <span className="font-semibold">{b("BJ's Wholesale Club")}</span>
         <span className="badge">Muse order lifecycle · Part 2: Resolve (after the order)</span>
         <span className="badge badge-amber">synthetic data</span>
-        <span className="badge badge-amber" title="Illustrative demo, not affiliated with BJ's Wholesale Club. BJ's is not live on Muse.">illustrative · not affiliated · BJ's is not live on Muse</span>
+        {ANON ? <span className="badge badge-amber" title="Illustrative demo; the merchant is a stand-in, not a client, and is not live on Muse.">illustrative · stand-in merchant · not live on Muse</span> : <span className="badge badge-amber" title="Illustrative demo, not affiliated with BJ's Wholesale Club. BJ's is not live on Muse.">illustrative · not affiliated · BJ's is not live on Muse</span>}
         <label className="flex items-center gap-1">
           <span className="muted">Protocol adapter</span>
           <select className="input !w-auto" value={adapter} onChange={(e) => setAdapter(e.target.value as AdapterId)} title="Swappable: the adapter is the only code that knows the wire protocol">
@@ -336,7 +322,7 @@ export function BjsResolve() {
           <button className={`btn ${tab === "merchant" ? "btn-primary" : ""}`} onClick={() => setTab("merchant")}>Merchant chat</button>
         </div>
       </div>
-      <p className="muted px-1 text-xs">After payment, Umpyr handles every question, change, return, dispute and chargeback on the Muse order. The mandate and the Check decision from <Link className="underline" to="/bjs/check">Part 1</Link> are the evidence that decides fault here. Shipping and logistics stay with BJ's.</p>
+      <p className="muted px-1 text-xs">After payment, Umpyr handles every question, change, return, dispute and chargeback on the Muse order. The mandate and the Check decision from <Link className="underline" to={`${BJS_BASE}/check`}>Part 1</Link> are the evidence that decides fault here. Shipping and logistics stay with {merchantName("bjs")}.</p>
 
       <MetricsStrip workspace="bjs" />
 
@@ -344,7 +330,7 @@ export function BjsResolve() {
 
       {tab === "human" && (
         <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2 px-1 text-xs"><Pill text="Human channel" tone="amber" /><span className="muted">Forwarded email from a member; same rules, same audit. Write as a member (orders BJ-7001 to BJ-7013) or pick an example.</span><button className="btn ml-auto !px-2 !py-0.5 text-xs" onClick={start}>New case</button></div>
+          <div className="flex flex-wrap items-center gap-2 px-1 text-xs"><Pill text="Human channel" tone="amber" /><span className="muted">Forwarded email from a member; same rules, same audit. {b("Write as a member (orders BJ-7001 to BJ-7013) or pick an example.")}</span><button className="btn ml-auto !px-2 !py-0.5 text-xs" onClick={start}>New case</button></div>
           <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <section className="panel flex min-h-[70vh] min-w-0 flex-col">
               <div className="flex-1 space-y-3 overflow-y-auto p-3">
@@ -380,7 +366,7 @@ export function BjsResolve() {
                     {m.role === "assistant" && m.customer && m.customer.citations.length > 0 && (
                       <div className="muted mt-1 text-xs">
                         Sources: {m.customer.citations.map((c, j) => (
-                          <span key={j}>{j > 0 ? "; " : ""}{c.url ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}</span>
+                          <span key={j}>{j > 0 ? "; " : ""}{c.url && !ANON ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}</span>
                         ))}
                       </div>
                     )}
@@ -389,7 +375,7 @@ export function BjsResolve() {
                 <div ref={endRef} />
               </div>
               <form className="flex gap-2 border-t p-3" style={{ borderColor: "var(--border)" }} onSubmit={(e) => { e.preventDefault(); send(input); }}>
-                <input className="input" placeholder="Describe the problem (include your order number, e.g. BJ-7002)…" value={input} onChange={(e) => setInput(e.target.value)} />
+                <input className="input" placeholder={b("Describe the problem (include your order number, e.g. BJ-7002)…")} value={input} onChange={(e) => setInput(e.target.value)} />
                 <button className="btn btn-primary" type="submit">Send</button>
               </form>
             </section>
@@ -406,7 +392,7 @@ export function BjsResolve() {
       {tab === "merchant" && (
         <section className="panel flex min-h-[70vh] min-w-0 flex-col">
           <div className="flex-1 space-y-3 overflow-y-auto p-3 text-sm">
-            <p className="muted">Ask about BJ's own data: "what drifts most?", "top categories by pain", "which rule fires most?", "how many cases come from agents?", "which clauses are illustrative?"</p>
+            <p className="muted">{b("Ask about BJ's own data:")} "what drifts most?", "top categories by pain", "which rule fires most?", "how many cases come from agents?", "which clauses are illustrative?"</p>
             {merchantLog.map((x, i) => (
               <div key={i} className="space-y-1">
                 <div className="ml-auto max-w-[85%] rounded-lg px-3 py-2" style={{ background: "var(--accent-soft)" }}>{x.q}</div>

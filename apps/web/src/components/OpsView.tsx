@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ANON } from "../lib/brand";
 import type { Citation, Ops } from "../lib/resolve";
 
 const STATUS_COLOR: Record<string, string> = { fired: "var(--accent)", ok: "var(--accent)", ready: "var(--accent)", needs_fact: "var(--warn)", pending: "var(--muted)", evaluated: "var(--muted)", placeholder: "var(--muted)", "n/a": "var(--muted)" };
@@ -16,7 +17,7 @@ function Cite({ id, cit, fallback }: { id: string; cit?: Citation; fallback?: st
   if (!cit) return <div title={fallback}><span className="font-mono">{id}</span></div>;
   return (
     <div title={cit.quote}>
-      {cit.url && !cit.url.startsWith("practice://") ? <a className="font-mono underline" href={cit.url} target="_blank" rel="noreferrer">{id}</a> : <span className="font-mono">{id}</span>}
+      {cit.url && !ANON && !cit.url.startsWith("practice://") ? <a className="font-mono underline" href={cit.url} target="_blank" rel="noreferrer">{id}</a> : <span className="font-mono">{id}</span>}
       <span className="muted"> {where(cit)}{cit.public ? "" : " · internal"}</span>
     </div>
   );

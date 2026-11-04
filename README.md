@@ -124,6 +124,26 @@ ontology extensions are described in `samples/bjs/README.md`; the engine boundar
 both channels, every Check scenario and two live flips). Preview deploy without touching production:
 `make deploy-web-preview` (alias `https://bjs-preview.umpyr-web.pages.dev`, behind the same password gate).
 
+## Investor site: try.umpyr.org (stand-in merchant names)
+
+`demo.umpyr.org` is production and names the sandbox merchants. `try.umpyr.org` is the same code built with
+`VITE_BRAND_MODE=anonymous`, shown to investors: Rockler, Alaska Airlines and BJ's become **Specialty Retailer**,
+**Major Airline** and **Warehouse Club** at `/retailer`, `/airline` and `/club` (plus `/club/check`, `/club/lifecycle`;
+the named links redirect). None of the three merchants is a client, and the named page would read as a client list.
+
+One module does it (`apps/web/src/lib/brand.ts`): `b()` for strings the UI builds, `anonymiseDeep()` on every engine
+response in `api()` and on the BJ's fixtures at load (`lib/bjs/fixtures.ts`), outbound policy links suppressed. Ids are
+rewritten too (`BJ-7007` → `WC-7007`) before any hash is computed, so Check and Resolve still agree. Workspace ids
+stay internal (API paths, metrics keys). `src/brand.test.tsx` renders every page and runs every fixture in anonymous
+mode and fails on any real name, so the investor site stays clean on every commit.
+
+```bash
+make bootstrap-vc   # once: Pages project umpyr-try, its own password (DEMO_PASSWORD_VC in .env), try.umpyr.org + DNS
+make deploy-vc      # later releases of the investor site; demo.umpyr.org untouched (make deploy-web)
+```
+
+Same Railway engine and the same $1/day public Haiku cap for both sites.
+
 ## Tests
 
 ```bash

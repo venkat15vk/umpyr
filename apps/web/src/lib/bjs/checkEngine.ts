@@ -6,6 +6,7 @@
  * number here is a fixed, explainable function of the masked request so a presenter can flip an outcome
  * live by editing a fact. Scores are 0..100.
  */
+import { b } from "../brand";
 import { canonical, sha256Hex } from "./sha256";
 import type { AgentRecord, Cart, CartLine, CheckDecision, CheckDecisionKind, CheckRequest, CheckStep, IntentOutcome, LineDiff, Mandate, MandateItem, MaskedCustomer, ModelFire } from "./types";
 
@@ -225,7 +226,7 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
   let because = "";
   if (dup) { decision = "decline"; because = `Duplicate of ${dup.original.decision_id}: the same signed mandate and cart were decided ${dup.seconds_after} s ago (${dup.original.decision}). One decision per mandate; the original is returned and nothing is captured twice.`; }
   else if (!verified) { decision = "decline"; because = "Mandate cannot be verified: no trustworthy statement of what the customer authorised, so nothing can be captured."; }
-  else if (membership !== "active") { decision = "decline"; because = membership === "expired" ? `Membership behind ${req.customer.member_token} expired on ${req.customer.membership.expires_at ?? "an earlier date"}; BJ's sells to members. Remedy: renew through the member's account, then the agent retries the same mandate.` : `No active membership behind ${req.customer.member_token}; BJ's sells to members. Remedy: join or sign in to a membership, then retry.`; }
+  else if (membership !== "active") { decision = "decline"; because = b(membership === "expired" ? `Membership behind ${req.customer.member_token} expired on ${req.customer.membership.expires_at ?? "an earlier date"}; BJ's sells to members. Remedy: renew through the member's account, then the agent retries the same mandate.` : `No active membership behind ${req.customer.member_token}; BJ's sells to members. Remedy: join or sign in to a membership, then retry.`); }
   else if (pf.score >= 70) { decision = "decline"; because = `Payment-fraud score ${pf.score} is above the decline threshold (70).`; reasons.push("FRAUD_HIGH"); }
   else if (ab.flags.includes("ABUSE_RESELLER_PATTERN")) { decision = "hold"; because = "Reseller / bulk-arbitrage pattern across memberships behind one agent fingerprint; held for merchant review (quantity limits and member terms)."; }
   else if (ab.score >= 70) { decision = "hold"; because = `Account-abuse score ${ab.score} is above the hold threshold (70).`; reasons.push("ABUSE_HIGH"); }
@@ -267,7 +268,7 @@ export function decide(req: CheckRequest, ledgerSeq = 1, prevHash = "0".repeat(6
   const actions: CheckDecision["actions"] = decision === "approve"
     ? [{ type: "capture", message_to_agent: { protocol: "umpyr-check/0.1", type: "approved", decision_id: decisionId, order_ref: req.order_ref, message: "Order approved. Proceed to payment capture.", notes: intent.outcome === "benign_drift" ? intent.diffs.map((d) => d.note) : [] } }]
     : decision === "step_up"
-      ? [{ type: "request_confirmation", message_to_agent: { protocol: "umpyr-check/0.1", type: "confirmation_required", decision_id: decisionId, order_ref: req.order_ref, expires_in_s: 900, present_to_customer: stepUpLines.length ? stepUpLines : [{ line: "order", authorised: req.mandate.natural_language ?? "mandate", in_cart: `$${req.cart.total} total`, why: because }], confirm_with: { method: "signed_checkout_mandate", binding: "specified", kid_hint: req.mandate.signature.kid }, message: "Before BJ's can take payment, show the customer the lines above and return a signed checkout mandate confirming them, or amend the cart to match the original mandate." } }]
+      ? [{ type: "request_confirmation", message_to_agent: { protocol: "umpyr-check/0.1", type: "confirmation_required", decision_id: decisionId, order_ref: req.order_ref, expires_in_s: 900, present_to_customer: stepUpLines.length ? stepUpLines : [{ line: "order", authorised: req.mandate.natural_language ?? "mandate", in_cart: `$${req.cart.total} total`, why: because }], confirm_with: { method: "signed_checkout_mandate", binding: "specified", kid_hint: req.mandate.signature.kid }, message: b("Before BJ's can take payment, show the customer the lines above and return a signed checkout mandate confirming them, or amend the cart to match the original mandate.") } }]
       : decision === "hold"
         ? [{ type: "queue_review", message_to_agent: { protocol: "umpyr-check/0.1", type: "pending_review", decision_id: decisionId, order_ref: req.order_ref, message: "Order is pending merchant review. Do not retry or split the order; the customer will be contacted through the membership on file.", expected_within_hours: 4 } }]
         : dup

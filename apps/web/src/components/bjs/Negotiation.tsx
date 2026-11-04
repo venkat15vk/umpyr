@@ -1,3 +1,4 @@
+import { ANON, anonymiseDeep, b } from "../../lib/brand";
 import { Link } from "react-router-dom";
 import type { CheckEvidence } from "../../lib/bjs/checkLink";
 import { POSITION_LABEL, SPEAKER_LABEL, TERMINATIONS, type Evidence, type Negotiation, type NegotiationState, type Turn, type TurnKind } from "../../lib/bjs/negotiation";
@@ -6,7 +7,7 @@ import { Hash, JsonBlock, Pill, RaciChips, RaciLegend } from "./ui";
 
 const EVIDENCE_LABEL: Record<Evidence["kind"], string> = { mandate: "intent mandate", check_record: "Check record", order: "order data", policy_rule: "policy rule", history: "closed cases", attachment: "attachment" };
 const EVIDENCE_TONE: Record<Evidence["kind"], "accent" | "amber" | "muted" | "red"> = { mandate: "accent", check_record: "accent", order: "muted", policy_rule: "amber", history: "muted", attachment: "muted" };
-const KIND_LABEL: Record<TurnKind, string> = { claim: "opens the claim", offer: "offers", hold: "holds its position", deny: "denies, cites policy", ask_fact: "asks for evidence", provide_fact: "supplies evidence", counter: "counter-argues", refer_to_member: "escalates to the member", member_decision: "decides", accept: "accepts", needs_approval: "needs a BJ's approver", staff_approval: "approves", terms: "issues the terms hash", terms_accepted: "signs the terms hash", execute: "executes", audit: "signs the audit record", escalate: "escalates to BJ's staff", pushback: "pushes back", acknowledge: "acknowledges" };
+const KIND_LABEL: Record<TurnKind, string> = anonymiseDeep({ claim: "opens the claim", offer: "offers", hold: "holds its position", deny: "denies, cites policy", ask_fact: "asks for evidence", provide_fact: "supplies evidence", counter: "counter-argues", refer_to_member: "escalates to the member", member_decision: "decides", accept: "accepts", needs_approval: "needs a BJ's approver", staff_approval: "approves", terms: "issues the terms hash", terms_accepted: "signs the terms hash", execute: "executes", audit: "signs the audit record", escalate: "escalates to BJ's staff", pushback: "pushes back", acknowledge: "acknowledges" });
 const POSITION_TONE: Record<string, "accent" | "amber" | "muted"> = { opening: "muted", held: "amber", conceded: "accent", changed_on_evidence: "accent", accepted: "accent" };
 
 /** Evidence cited in one turn: chips with the detail on hover, and the full list behind a toggle. */
@@ -16,7 +17,7 @@ export function EvidenceChips({ evidence }: { evidence: Evidence[] }) {
     <details className="mt-1 text-[11px]">
       <summary className="cursor-pointer list-none underline decoration-dotted">evidence cited ({evidence.length}): {[...new Set(evidence.map((e) => EVIDENCE_LABEL[e.kind]))].join(", ")}</summary>
       <ul className="mt-1 space-y-0.5">
-        {evidence.map((e, i) => <li key={i}><Pill text={EVIDENCE_LABEL[e.kind]} tone={EVIDENCE_TONE[e.kind]} /> <span>{e.ref}</span> <span className="muted">{e.detail}</span>{e.url && !e.url.startsWith("practice://") && <a className="ml-1 underline" href={e.url} target="_blank" rel="noreferrer">source</a>}</li>)}
+        {evidence.map((e, i) => <li key={i}><Pill text={EVIDENCE_LABEL[e.kind]} tone={EVIDENCE_TONE[e.kind]} /> <span>{e.ref}</span> <span className="muted">{e.detail}</span>{e.url && !ANON && !e.url.startsWith("practice://") && <a className="ml-1 underline" href={e.url} target="_blank" rel="noreferrer">source</a>}</li>)}
       </ul>
     </details>
   );
@@ -69,7 +70,7 @@ export function StatePanel({ state, shown, total }: { state: NegotiationState; s
           {state.muse_asks.join("|") !== state.open_issues.join("|") && <><div className="muted mt-2">Member's agent asks for</div>{state.muse_asks.length ? <ul className="list-disc pl-4">{state.muse_asks.map((x) => <li key={x}>{x}</li>)}</ul> : <div>nothing further</div>}</>}
         </div>
         <div>
-          <div className="muted">Current offer from Umpyr (for BJ's)</div>
+          <div className="muted">{b("Current offer from Umpyr (for BJ's)")}</div>
           {state.current_offer ? (
             <table className="w-full"><tbody>
               {state.current_offer.lines.map((l) => <tr key={l.issue} className="border-t align-top" style={{ borderColor: "var(--border)" }}><td className="py-0.5 pr-2">{l.label}</td><td className="py-0.5 pr-2">{l.decision === "approve" || l.decision === "partial" ? `${l.remedy} $${l.amount}` : l.decision}</td><td className="py-0.5 font-mono">{l.rule_id ?? "—"}</td></tr>)}
@@ -77,7 +78,7 @@ export function StatePanel({ state, shown, total }: { state: NegotiationState; s
             </tbody></table>
           ) : <div>none yet</div>}
           <div className="muted mt-2">Policy limits</div>
-          <div>auto-approve ≤ ${state.policy_limits.auto_approve_limit.toFixed(2)} · mode {state.policy_limits.mode}{state.policy_limits.ceiling_hit ? ` · ceiling hit${state.policy_limits.staff_approved ? ", approved by BJ's staff" : ", waiting for a BJ's approver"}` : ""}</div>
+          <div>auto-approve ≤ ${state.policy_limits.auto_approve_limit.toFixed(2)} · mode {state.policy_limits.mode}{state.policy_limits.ceiling_hit ? b(` · ceiling hit${state.policy_limits.staff_approved ? ", approved by BJ's staff" : ", waiting for a BJ's approver"}`) : ""}</div>
           <div className="muted mt-1">terms {state.terms_status} · execution {state.execution_status.replace(/_/g, " ")}</div>
         </div>
       </div>
@@ -162,8 +163,8 @@ export function RulingPanel({ n, upTo }: { n: Negotiation; upTo?: number }) {
       )}
       {n.execution.request && execVisible && (
         <div className="mt-2 grid gap-2 text-xs md:grid-cols-2">
-          <div><div className="muted">request → BJ's (mock API)</div><JsonBlock value={n.execution.request} maxHeight={200} /></div>
-          <div><div className="muted">response ← BJ's</div><JsonBlock value={n.execution.response} maxHeight={200} /></div>
+          <div><div className="muted">{b("request → BJ's (mock API)")}</div><JsonBlock value={n.execution.request} maxHeight={200} /></div>
+          <div><div className="muted">{b("response ← BJ's")}</div><JsonBlock value={n.execution.response} maxHeight={200} /></div>
         </div>
       )}
       {complete ? <div className="mt-2 space-y-1 text-xs">

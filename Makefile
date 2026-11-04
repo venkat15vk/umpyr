@@ -31,7 +31,7 @@ smoke:            ## one tiny Haiku call (costs < $0.001)
 	cd services/engine && uv run umpyr llm smoke
 
 # --- release (tokens from .env; run as `make deploy`, or `! make deploy` inside Claude Code) ---
-.PHONY: bootstrap bootstrap-railway bootstrap-cloudflare deploy deploy-engine deploy-web deploy-secrets
+.PHONY: bootstrap bootstrap-railway bootstrap-cloudflare deploy deploy-engine deploy-web deploy-secrets bootstrap-vc deploy-vc
 bootstrap:        ## first time: create Railway + Pages resources, domain, secrets, deploy, verify (idempotent)
 	infra/deploy.sh bootstrap
 bootstrap-railway:    ## Railway half only (project, Postgres, engine); no DNS
@@ -48,3 +48,7 @@ deploy-web-preview: ## web to a Pages preview branch (PREVIEW_BRANCH=bjs-preview
 	infra/deploy.sh web-preview
 deploy-secrets:   ## push secrets/variables from .env to Pages and Railway
 	infra/deploy.sh secrets
+bootstrap-vc:     ## first time: investor site (try.umpyr.org, stand-in merchant names, DEMO_PASSWORD_VC); same engine
+	infra/deploy.sh bootstrap-vc
+deploy-vc:        ## release the investor site only; demo.umpyr.org untouched
+	infra/deploy.sh web-vc

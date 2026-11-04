@@ -7,6 +7,7 @@
  * come from the case fixture (samples/bjs/agent_cases.json); Umpyr's are computed here, so changing the auto-approve
  * ceiling, the mode, or who answered the Check step-up changes the negotiation. Deterministic; no model calls.
  */
+import { anonymiseDeep, b, slugFor } from "../brand";
 import { precedentFor } from "./chat";
 import { checkEvidenceFor, orderWithConfirmation, type CheckEvidence, type CheckScenario } from "./checkLink";
 import { adapterById, type AdapterId } from "./protocol";
@@ -87,7 +88,7 @@ export type NegotiationCtx = { pack: RulePack; procedures: Procedure[]; orders: 
 export type NegotiationOptions = { auto_approve_limit: number; mode: "autonomous" | "assist" | "shadow"; staff_approved: boolean; confirmation_by?: ConfirmationBy | null; adapter: AdapterId };
 
 const money = (x: number) => x.toFixed(2);
-const FAULT_WHO: Record<Fault, string> = { customer: "the member", agent: "the member's agent", agent_platform: "the agent platform", merchant: "BJ's", third_party: "the fulfilment partner", indeterminate: "not determinable" };
+const FAULT_WHO: Record<Fault, string> = anonymiseDeep({ customer: "the member", agent: "the member's agent", agent_platform: "the agent platform", merchant: "BJ's", third_party: "the fulfilment partner", indeterminate: "not determinable" });
 const sum = (lines: OfferLine[]) => money(lines.reduce((s, l) => s + (l.amount ? Number(l.amount) : 0), 0));
 const isMoney = (d: Decision) => d === "approve" || d === "partial";
 
@@ -186,13 +187,14 @@ export function negotiate(c: AgentCase, ctx: NegotiationCtx, opts: NegotiationOp
     muse_asks: c.issues.filter((i) => asks.has(i.key)).map((i) => i.label),
     current_offer: offer.lines.length ? offer : null,
     policy_limits: { auto_approve_limit: opts.auto_approve_limit, mode: opts.mode, ceiling_hit: ceilingHit, staff_approved: staffApproved },
-    termination,
+    termination: termination ? anonymiseDeep(termination) : termination,
     customer_referral: referral,
     terms_status: terms?.status ?? "n/a",
     execution_status: execution.status,
   });
   const push = (speaker: Speaker, kind: TurnKind, text: string, evidence: Evidence[] = [], position: Position = "n/a", withRuns = false, tech: string[] = []) => {
     const fault = offer.lines[0]?.fault ?? null;
+    text = b(text); tech = tech.map(b); evidence = anonymiseDeep(evidence); // stand-in merchant names in the anonymous build
     turns.push({ n: turns.length + 1, speaker, kind, text, tech, evidence, position, offer: offer.lines.length ? { ...offer, lines: [...offer.lines] } : null, raci: raciFor(kind, fault), state: state(), runs: withRuns ? { ...runs } : undefined });
   };
   const short = (key: string) => { const i = c.issues.find((x) => x.key === key); return i?.short ?? i?.label ?? key; };
@@ -363,7 +365,7 @@ export function negotiate(c: AgentCase, ctx: NegotiationCtx, opts: NegotiationOp
       const endpoint = `POST /v1/orders/${order.order_id}/refunds`;
       const idem = sha256Hex(`${c.case_id}:${terms!.hash}`).slice(0, 24);
       const request = { endpoint, idempotency_key: idem, body: { order_id: order.order_id, member_token: order.member.member_token, lines: approved.map((l) => ({ item_id: c.issues.find((i) => i.key === l.issue)?.extracted.item_id, action: l.remedy, amount: l.amount, reason_clause: l.clause_id })), total: offer.total, currency: "USD", terms_hash: terms!.hash, collect: approved.filter((l) => l.fault === "agent").map((l) => ({ item_id: c.issues.find((i) => i.key === l.issue)?.extracted.item_id, note: "unopened cases collected at no charge" })) } };
-      const response = { status: "accepted", merchant_reference: `BJS-${sha256Hex(idem).slice(0, 10).toUpperCase()}`, settles_via: order.payment_method === "bjs_card" ? "BJ's co-brand card credit" : "original card", expected_posting: "3-5 business days (illustrative)", executed_by: "BJ's order service (mock)" };
+      const response = anonymiseDeep({ status: "accepted", merchant_reference: `BJS-${sha256Hex(idem).slice(0, 10).toUpperCase()}`, settles_via: order.payment_method === "bjs_card" ? "BJ's co-brand card credit" : "original card", expected_posting: "3-5 business days (illustrative)", executed_by: "BJ's order service (mock)" });
       execution = { status: "executed", request, response };
       termination = { kind: "agreement", reason: `terms ${terms!.hash.slice(0, 12)}… accepted by the member's agent; BJ's executed`, sla: null };
       push("bjs", "execute", `BJ's accepted the refund of $${offer.total} to the ${response.settles_via}${request.body.collect.length ? " and scheduled collection of the unopened cases" : ""}; it posts in 3 to 5 business days. Money never touches Umpyr.`, [{ kind: "attachment", ref: `idempotency ${idem}`, detail: "one request per terms hash; a retry returns the same reference" }], "n/a", false, [`${endpoint} → accepted · ref ${response.merchant_reference}`, `idempotency ${idem} (one request per terms hash)`]);
@@ -374,8 +376,9 @@ export function negotiate(c: AgentCase, ctx: NegotiationCtx, opts: NegotiationOp
   // audit record: the whole negotiation, hashed and signed
   const faults = Object.fromEntries(Object.entries(runs).map(([k, r]) => [k, r.ruling.fault]));
   const headline: Fault = offer.lines.length ? ([...offer.lines].sort((a, b) => Number(b.amount ?? 0) - Number(a.amount ?? 0))[0].fault) : "indeterminate";
+  if (termination) termination = anonymiseDeep(termination);
   const record = {
-    case_id: c.case_id, order_id: order.order_id, workspace: "bjs", channel: "agent", adapter: adapter.id, agent_platform: c.complaint.agent.platform, agent_id: c.complaint.agent.agent_id,
+    case_id: c.case_id, order_id: order.order_id, workspace: slugFor("bjs"), channel: "agent", adapter: adapter.id, agent_platform: c.complaint.agent.platform, agent_id: c.complaint.agent.agent_id,
     check_decision_id: check?.decision.decision_id ?? null, check_hash: check?.decision.commitment.hash ?? null, mandate_id: order.check?.mandate_id ?? null, confirmation_by: order.check?.confirmation_by ?? null, what_if: check?.what_if ?? false,
     rule_pack_version: ctx.pack.version,
     issues: Object.entries(runs).map(([k, r]) => ({ issue: k, rule_id: r.ruling.winning_rule_id, decision: r.ruling.decision, remedy: r.ruling.remedy, amount: r.ruling.amount, fault: r.ruling.fault, audit_hash: r.audit.hash })),
@@ -386,17 +389,17 @@ export function negotiate(c: AgentCase, ctx: NegotiationCtx, opts: NegotiationOp
   const hash = sha256Hex(canonical(record));
   const signature = hmacSha256Hex(DEMO_SIGNING_KEY, hash);
   const final = state();
-  const closing = termination?.kind === "agreement" ? "Case closed by agreement." : termination?.kind === "ruling_accepted" ? "Case closed: ruling accepted." : termination?.kind === "escalate_staff" ? "Case open with BJ's staff." : "Case paused with the member.";
+  const closing = b(termination?.kind === "agreement" ? "Case closed by agreement." : termination?.kind === "ruling_accepted" ? "Case closed: ruling accepted." : termination?.kind === "escalate_staff" ? "Case open with BJ's staff." : "Case paused with the member.");
   turns.push({ n: turns.length + 1, speaker: "umpyr", kind: "audit", text: `${closing} The audit record is signed.`, tech: [`audit sha256 ${hash.slice(0, 16)}… · HMAC-SHA256 kid ${DEMO_KID}`, `covers the Check record, the mandate, ${Object.keys(runs).length} ruling${Object.keys(runs).length === 1 ? "" : "s"} and ${turns.length} turns`], evidence: [{ kind: "attachment", ref: `audit ${hash.slice(0, 16)}…`, detail: `signature ${signature.slice(0, 16)}…` }], position: "n/a", offer: offer.lines.length ? offer : null, raci: raciFor("audit", headline), state: final });
 
   const leadKey = c.issues.find((i) => runs[i.key])?.key ?? null;
   return { case: c, order, check, turns, final, fault: { headline, by_issue: faults }, terms, execution, audit: { record, hash, signature, kid: DEMO_KID }, runs, lead_run: leadKey ? runs[leadKey] : null, umpyr_turn_count: turns.filter((t) => t.speaker === "umpyr").length };
 }
 
-export const SPEAKER_LABEL: Record<Speaker, string> = { muse: "Muse (member's agent)", umpyr: "Umpyr agent (for BJ's)", bjs: "BJ's order service", bjs_staff: "BJ's approver", member: "Member, via Muse" };
+export const SPEAKER_LABEL: Record<Speaker, string> = anonymiseDeep({ muse: "Muse (member's agent)", umpyr: "Umpyr agent (for BJ's)", bjs: "BJ's order service", bjs_staff: "BJ's approver", member: "Member, via Muse" });
 export const POSITION_LABEL: Record<Position, string> = { opening: "opening position", held: "held", conceded: "conceded", changed_on_evidence: "changed on new evidence", accepted: "accepted", "n/a": "" };
 export const TERMINATIONS: { kind: Termination["kind"]; label: string }[] = [
-  { kind: "agreement", label: "agreement: terms hash signed by the member's agent, BJ's executes" },
-  { kind: "escalate_staff", label: "escalate to BJ's staff: policy gap, or amount above the auto-approve ceiling" },
+  { kind: "agreement", label: b("agreement: terms hash signed by the member's agent, BJ's executes") },
+  { kind: "escalate_staff", label: b("escalate to BJ's staff: policy gap, or amount above the auto-approve ceiling") },
   { kind: "escalate_customer", label: "escalate to the customer via their agent: a choice outside the agent's delegation" },
 ];

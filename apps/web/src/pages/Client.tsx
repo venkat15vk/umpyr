@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { ApiError } from "../lib/api";
+import { ANON, merchantName, pathFor, slugFor, workspaceFor } from "../lib/brand";
 import { askMerchant, createSession, getExamples, getSummary, patchSession, sendMessage, type ChatSession, type Example, type Message, type Ops } from "../lib/resolve";
 import { Link } from "react-router-dom";
 import { OpsView } from "../components/OpsView";
 import { MetricsStrip } from "../components/MetricsStrip";
 
-const NAMES: Record<string, string> = { rockler: "Rockler", alaska: "Alaska Airlines" };
-
 export function Client() {
-  const { client = "" } = useParams();
+  const { client: slug = "" } = useParams();
+  const client = workspaceFor(slug); // workspace id behind the public segment (/airline -> alaska in the anonymous build)
   const [session, setSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -18,7 +18,7 @@ export function Client() {
   const [budgetHit, setBudgetHit] = useState(false);
   const [examples, setExamples] = useState<Example[]>([]);
   const [tab, setTab] = useState<"customer" | "merchant">("customer");
-  const [wsName, setWsName] = useState<string>(NAMES[client] ?? client);
+  const [wsName, setWsName] = useState<string>(merchantName(client));
   const [isSynthetic, setIsSynthetic] = useState(true);
   const [merchantQ, setMerchantQ] = useState("");
   const [merchantLog, setMerchantLog] = useState<{ q: string; a: string }[]>([]);
@@ -86,6 +86,8 @@ export function Client() {
   };
 
   const lastOps: Ops | undefined = [...messages].reverse().find((m) => m.ops)?.ops ?? undefined;
+
+  if (ANON && slug !== slugFor(client)) return <Navigate replace to={pathFor(client)} />;
 
   return (
     <div className="flex flex-col gap-3">
@@ -174,7 +176,7 @@ export function Client() {
                   {m.role === "assistant" && m.customer && m.customer.citations.length > 0 && (
                     <div className="muted mt-1 text-xs">
                       Sources: {m.customer.citations.map((c, j) => (
-                        <span key={j}>{j > 0 ? "; " : ""}{c.url ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}{c.page ? `, p.${c.page}` : ""}</span>
+                        <span key={j}>{j > 0 ? "; " : ""}{c.url && !ANON ? <a className="underline" href={c.url} target="_blank" rel="noreferrer">{c.document}</a> : c.document}{c.section ? `, ${c.section}` : ""}{c.page ? `, p.${c.page}` : ""}</span>
                       ))}
                     </div>
                   )}

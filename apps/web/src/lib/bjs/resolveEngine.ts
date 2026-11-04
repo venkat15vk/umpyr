@@ -6,6 +6,7 @@
  * customer's confirmation of the terms hash, execution is the merchant's, and the audit record is hashed
  * and signed. The FastAPI engine replaces `runCase` behind adapters.ts without UI changes.
  */
+import { anonymiseDeep, b, slugFor } from "../brand";
 import { apply, collectVars, getVar } from "./jsonlogic";
 import { raciFor } from "./raci";
 import { canonical, hmacSha256Hex, sha256Hex } from "./sha256";
@@ -156,14 +157,14 @@ export function authorize(ruling: Ruling, opts: RunOptions): ResolveRun["pdp"] {
 
 // ---------- the run ----------
 
-const FAULT_TEXT: Record<Fault, string> = {
+const FAULT_TEXT: Record<Fault, string> = anonymiseDeep({
   customer: "the member",
   agent: "the member's AI agent (acted outside the member's instruction)",
   agent_platform: "the agent platform (attestation, protocol or mandate handling)",
   merchant: "BJ's (club, warehouse or systems)",
   third_party: "a third party (delivery partner, carrier or payment processor)",
   indeterminate: "not determinable from the facts on file",
-};
+});
 
 function buildFacts(ticket: Ticket, order: Order | null, overrides: RunOptions["facts"]): FactBundle {
   const claim: Claim = { ...ticket.extracted, ...overrides };
@@ -179,7 +180,7 @@ export function runCase(ticket: Ticket, ctx: { pack: RulePack; procedures: Proce
   const { checks, ruling } = evaluate(ctx.pack, facts, ticket.category_key);
   const procedure = ctx.procedures.find((p) => p.category_key === ticket.category_key) ?? null;
   const pdp = authorize(ruling, opts);
-  const case_id = `BJ-${sha256Hex(ticket.ticket_id).slice(0, 8).toUpperCase()}`;
+  const case_id = b(`BJ-${sha256Hex(ticket.ticket_id).slice(0, 8).toUpperCase()}`);
   const hasPartner = !!order?.fulfilment.partner;
   const money = ruling.decision === "approve" || ruling.decision === "partial";
   const needsStaff = pdp.decision === "needs_approval";
@@ -208,13 +209,13 @@ export function runCase(ticket: Ticket, ctx: { pack: RulePack; procedures: Proce
     const endpoint = pdp.action === "refund" || pdp.action === "partial_refund" ? `POST /v1/orders/${ticket.order_id}/refunds` : pdp.action === "reship" ? `POST /v1/orders/${ticket.order_id}/redeliveries` : pdp.action === "replacement" ? `POST /v1/orders/${ticket.order_id}/replacements` : pdp.action === "release_hold" ? `POST /v1/payments/holds/release` : pdp.action === "store_credit" ? `POST /v1/members/${order?.member.member_token}/credits` : pdp.action === "cancel_order" ? `POST /v1/orders/${ticket.order_id}/cancel` : `POST /v1/orders/${ticket.order_id}/actions`;
     const idem = sha256Hex(`${case_id}:${termsHash}`).slice(0, 24);
     const request = { endpoint, idempotency_key: idem, body: { order_id: ticket.order_id, member_token: order?.member.member_token, action: pdp.action, amount: ruling.amount, currency: "USD", reason_clause: ruling.winning_clause_id, terms_hash: termsHash, item_ids: facts.claim.item_ids ?? [facts.item.item_id] } };
-    const response = { status: "accepted", merchant_reference: `BJS-${sha256Hex(idem).slice(0, 10).toUpperCase()}`, settles_via: order?.payment_method === "bjs_card" ? "BJ's co-brand card credit" : "original card", expected_posting: "3-5 business days (illustrative)", executed_by: "BJ's order service (mock)" };
+    const response = anonymiseDeep({ status: "accepted", merchant_reference: `BJS-${sha256Hex(idem).slice(0, 10).toUpperCase()}`, settles_via: order?.payment_method === "bjs_card" ? "BJ's co-brand card credit" : "original card", expected_posting: "3-5 business days (illustrative)", executed_by: "BJ's order service (mock)" });
     execution = { status: "executed", request, response };
   }
 
   // audit record, hashed and signed
   const record = {
-    case_id, ticket_id: ticket.ticket_id, channel: opts.channel, workspace: "bjs", category: category.key, order_id: ticket.order_id,
+    case_id, ticket_id: ticket.ticket_id, channel: opts.channel, workspace: slugFor("bjs"), category: category.key, order_id: ticket.order_id,
     facts_hash: sha256Hex(canonical(facts)), rule_pack_version: ctx.pack.version, procedure: procedure ? `${procedure.category_key}@${procedure.version}` : null,
     checks: checks.map((c) => ({ rule_id: c.rule_id, fired: c.fired, missing: c.missing })),
     ruling: { decision: ruling.decision, remedy: ruling.remedy, amount: ruling.amount, fault: ruling.fault, winning_rule_id: ruling.winning_rule_id, clause_ids: ruling.clause_ids },
@@ -226,19 +227,19 @@ export function runCase(ticket: Ticket, ctx: { pack: RulePack; procedures: Proce
 
   // reply
   const amountTxt = ruling.amount ? `$${ruling.amount}` : "";
-  const reply = ruling.decision === "needs_fact"
+  const reply = b(ruling.decision === "needs_fact"
     ? `Thanks for reaching out about order ${ticket.order_id}. To finish this we need one more detail: ${ruling.missing_facts.map(friendly).join(", ")}. Reply with that and we will complete the review right away.`
     : ruling.decision === "escalate"
       ? `Thanks for reaching out about order ${ticket.order_id}. This one needs a person: a BJ's specialist will review it and reply within one business day.`
       : money
         ? `Thanks for reaching out about order ${ticket.order_id}. ${ruling.note ?? ""} We will ${remedyVerb(ruling.remedy)}${amountTxt ? ` ${amountTxt}` : ""}. ${termsStatus === "confirmed" ? "You confirmed these terms, so it is now with BJ's for processing." : "Please confirm these terms so BJ's can process it."}`
-        : `Thanks for reaching out about order ${ticket.order_id}. ${ruling.note ?? ruling.explanation} If any of the details above are wrong, reply and we will look again.`;
+        : `Thanks for reaching out about order ${ticket.order_id}. ${ruling.note ?? ruling.explanation} If any of the details above are wrong, reply and we will look again.`);
   const agent_reply = opts.channel === "agent"
     ? { protocol: "umpyr-resolve/0.2", case_id, status: needsStaff && !opts.staff_approved ? "queued_for_approval" : termsStatus === "awaiting" ? "awaiting_confirmation" : ruling.decision, decision: ruling.decision, remedy: ruling.remedy, amount: ruling.amount, currency: "USD", fault: ruling.fault, clause_ids: ruling.clause_ids, required_facts: ruling.missing_facts, terms_hash: money ? termsHash : null, confirm: money && termsStatus === "awaiting" ? { type: "terms_accepted", case_id, terms_hash: termsHash } : null, message: reply, audit_hash: auditHash }
     : null;
 
   const steps: RunStep[] = [];
-  const push = (id: string, name: string, status: StepStatus, summary: string, detail?: string, data?: unknown) => steps.push({ id, n: steps.length + 1, name, status, raci: raciFor(id, rc), summary, detail, data });
+  const push = (id: string, name: string, status: StepStatus, summary: string, detail?: string, data?: unknown) => steps.push({ id, n: steps.length + 1, name: b(name), status, raci: raciFor(id, rc), summary: b(summary), detail: detail === undefined ? detail : b(detail), data });
   push("intake", "Intake", "done", opts.channel === "agent" ? `Structured claim from ${ticket.agent_message?.agent.platform ?? "agent"} (${ticket.agent_message?.protocol}); PII masked on ingest.` : "Forwarded email parsed; PII masked on ingest (emails, phones, names, cards, addresses).", undefined, { masked: ticket.thread ? ticket.thread.map((m) => ({ ...m, text: maskText(m.text, names) })) : ticket.agent_message });
   push("order_match", "Order match", order ? "done" : "blocked", order ? `${order.order_id}: ${order.items.length} line${order.items.length === 1 ? "" : "s"}, $${order.total}, ${order.fulfilment.method.replace(/_/g, " ")}${order.fulfilment.partner ? ` via ${order.fulfilment.partner}` : ""}, placed by ${order.placed_by}${order.agent_id ? ` (${order.agent_id})` : ""}, member ${order.member.member_token} (${order.member.tier === "club_plus" ? "Club+" : "Club"}).` : `No order matched ${ticket.order_id}.`, undefined, order);
   push("classification", "Classification", "done", `${category.name} · router confidence ${(0.84 + (parseInt(sha256Hex(ticket.ticket_id).slice(0, 2), 16) % 14) / 100).toFixed(2)}.`, category.description);

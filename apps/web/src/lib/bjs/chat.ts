@@ -6,6 +6,7 @@
  * Everything here is deterministic over samples/bjs fixtures: the router is keyword-weighted, the extractor is
  * regex-based, neighbours are token Jaccard over samples/bjs/history.json. No model calls.
  */
+import { b } from "../brand";
 import type { Citation, CustomerBlock, Neighbour, Ops, Plan, Step, TurnDelta } from "../resolve";
 import { runCase, type ResolveRun, type RunOptions } from "./resolveEngine";
 import { canonical, sha256Hex } from "./sha256";
@@ -47,8 +48,8 @@ const KEYWORDS: Record<string, [string, number][]> = {
 export type Classification = { category_key: string; confidence: number; source: string; probabilities: Record<string, number>; secondary: string | null };
 
 export function findOrderId(text: string): string | null {
-  const m = text.match(/\bBJ[-\s]?(\d{4})\b/i);
-  return m ? `BJ-${m[1]}` : null;
+  const m = text.match(/\b(?:BJ|WC)[-\s]?(\d{4})\b/i); // WC- is the stand-in prefix of the anonymous build
+  return m ? b(`BJ-${m[1]}`) : null;
 }
 
 function hintFromOrder(order: Order | null): string | null {
@@ -184,7 +185,7 @@ export function isPushback(text: string): boolean {
   return /unfair|ridiculous|still want|insist|not acceptable|unacceptable|escalat|manager|supervisor|dispute|chargeback|complain|really\?|seriously|come on/i.test(text);
 }
 
-const LIVE_PREFIX = "BJ-T-LIVE-";
+const LIVE_PREFIX = b("BJ-T-LIVE-");
 
 /** Build a synthetic ticket from free text (no PII leaves the browser; masking happens on intake in the engine). */
 export function ticketFromText(text: string, channel: "email" | "agent", ctx: Ctx, turnTexts: string[] = []): { ticket: Ticket; classification: Classification; order: Order | null } {
@@ -406,7 +407,7 @@ export function customerBlock(_run: ResolveRun, ops: Ops): CustomerBlock {
   const lines: string[] = [];
   for (const e of ops.status_events ?? []) { const l = STATUS_PAST[e.action]; if (l && !lines.includes(l)) lines.push(l); }
   const cits = (ops.ruling.citations ?? []).filter((c) => c.public && !!c.url && c.url.startsWith("http")).map((c) => ({ document: c.document, section: c.section, page: null, url: c.url, document_version: null, quote: c.quote }));
-  return { status_lines: lines, citations: cits, options: [], chosen_remedy: null, choices: [], proactive: [], queue: ops.status === "pending_approval" ? { sla: "within one business day", due_at: null, overdue: false } : ops.status === "escalated" ? { sla: "from a BJ's specialist within one business day", due_at: null, overdue: false } : null };
+  return { status_lines: lines, citations: cits, options: [], chosen_remedy: null, choices: [], proactive: [], queue: ops.status === "pending_approval" ? { sla: "within one business day", due_at: null, overdue: false } : ops.status === "escalated" ? { sla: b("from a BJ's specialist within one business day"), due_at: null, overdue: false } : null };
 }
 
 /** The ops narrative for a message that matched nothing: no order, no category. Same shape, so the ops view still renders. */
@@ -477,15 +478,15 @@ export function customerTurn(state: ChatState, text: string, opts: Omit<RunOptio
 
   if (!ticket || ticket.category_key === "unclassified") {
     const ops = emptyOps(text, classification ?? classify(text, null), ticket?.order_id ?? findOrderId(text), turn);
-    const reply = `Thanks for reaching out. To look this up we need your order number (it looks like BJ-7xxx) and a line on what went wrong: a missing or substituted delivery item, a damaged or spoiled product, a pickup problem, a coupon or price question, a membership renewal, a return, an order placed by your AI agent, or a charge on your card.`;
+    const reply = b(`Thanks for reaching out. To look this up we need your order number (it looks like BJ-7xxx) and a line on what went wrong: a missing or substituted delivery item, a damaged or spoiled product, a pickup problem, a coupon or price question, a membership renewal, a return, an order placed by your AI agent, or a charge on your card.`);
     return { reply, ops, customer: { status_lines: ["Received your message", "Need a couple more details"], citations: [], options: [], chosen_remedy: null, choices: [], proactive: [], queue: null }, run: null, state: next };
   }
 
   const run = runCase(ticket, ctx, { ...opts, facts: overrides, customer_confirmed: confirmed, staff_approved: state.staff_approved });
   const ops = toOps(run, ctx, { turn, prev: state.prev, factsChanged, messageCategory, pushback, classification });
   let reply = run.reply;
-  if (!run.order) reply = `Thanks for reaching out. We could not find an order ${ticket.order_id === "(none given)" ? "reference in your message" : ticket.order_id} on this membership. Reply with the order number from your receipt or the app (it looks like BJ-7xxx) and we will pick this up immediately.`;
-  else if (pushback && ops.turn_delta?.precedent?.exists) reply = `${run.reply} Because similar cases have been handled differently in the past, a BJ's specialist will take a second look and reply within one business day.`;
+  if (!run.order) reply = b(`Thanks for reaching out. We could not find an order ${ticket.order_id === "(none given)" ? "reference in your message" : ticket.order_id} on this membership. Reply with the order number from your receipt or the app (it looks like BJ-7xxx) and we will pick this up immediately.`);
+  else if (pushback && ops.turn_delta?.precedent?.exists) reply = b(`${run.reply} Because similar cases have been handled differently in the past, a BJ's specialist will take a second look and reply within one business day.`);
   const customer = customerBlock(run, ops);
   if (!run.order) { customer.status_lines = ["Received your message", "Could not match an order yet", "Need a couple more details"]; customer.citations = []; }
   return { reply, ops, customer, run, state: { ...next, prev: run } };
@@ -525,7 +526,7 @@ export function merchantAnswer(question: string, ctx: Ctx, tickets: Ticket[]): s
     for (const t of tickets) { const r = runCase(t, ctx, { channel: t.channel, mode: "autonomous", auto_approve_limit: 100, facts: {}, customer_confirmed: false, staff_approved: false }); if (r.ruling.winning_rule_id) m[r.ruling.winning_rule_id] = (m[r.ruling.winning_rule_id] ?? 0) + 1; }
     const top = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const ill = ctx.pack.clauses.filter((c) => !c.confirmed).map((c) => c.clause_id);
-    return [`Rules that decide most often (history + the ${tickets.length} open tickets), pack ${ctx.pack.version}:`, ...top.map(([id, n]) => { const r = ctx.pack.rules.find((x) => x.rule_id === id); const c = ctx.pack.clauses.find((x) => x.clause_id === r?.clause_id); return `• ${id} (${r?.tier}) ×${n}: ${r?.description ?? ""}${c && !c.confirmed ? " [illustrative clause]" : ""}`; }), "", `${ctx.pack.clauses.length} clauses, ${ctx.pack.rules.length} rules. Illustrative (not read on bjs.com): ${ill.join(", ")}.`].join("\n");
+    return [`Rules that decide most often (history + the ${tickets.length} open tickets), pack ${ctx.pack.version}:`, ...top.map(([id, n]) => { const r = ctx.pack.rules.find((x) => x.rule_id === id); const c = ctx.pack.clauses.find((x) => x.clause_id === r?.clause_id); return `• ${id} (${r?.tier}) ×${n}: ${r?.description ?? ""}${c && !c.confirmed ? " [illustrative clause]" : ""}`; }), "", b(`${ctx.pack.clauses.length} clauses, ${ctx.pack.rules.length} rules. Illustrative (not read on bjs.com): ${ill.join(", ")}.`)].join("\n");
   }
   if (/agent/.test(q)) {
     const ag = cases.filter((h) => h.channel === "agent").length;
@@ -536,9 +537,9 @@ export function merchantAnswer(question: string, ctx: Ctx, tickets: Ticket[]): s
   }
   if (/source|illustrative|confirm|polic/.test(q)) {
     const conf = ctx.pack.clauses.filter((c) => c.confirmed);
-    return [`${conf.length} clauses were read on bjs.com and carry their source URL; ${ctx.pack.clauses.length - conf.length} are illustrative practice rules (marked in every ruling that uses them).`, ...ctx.pack.clauses.map((c) => `• ${c.clause_id} ${c.title}${c.confirmed ? "" : " [illustrative]"}`)].join("\n");
+    return [b(`${conf.length} clauses were read on bjs.com and carry their source URL; ${ctx.pack.clauses.length - conf.length} are illustrative practice rules (marked in every ruling that uses them).`), ...ctx.pack.clauses.map((c) => `• ${c.clause_id} ${c.title}${c.confirmed ? "" : " [illustrative]"}`)].join("\n");
   }
-  return `I can answer from BJ's own data: "what drifts most?", "top categories by pain", "which rule fires most?", "how many cases come from agents?", "which clauses are illustrative?". ${cases.length} closed cases, ${tickets.length} open tickets, pack ${ctx.pack.version}.`;
+  return b(`I can answer from BJ's own data: "what drifts most?", "top categories by pain", "which rule fires most?", "how many cases come from agents?", "which clauses are illustrative?". ${cases.length} closed cases, ${tickets.length} open tickets, pack ${ctx.pack.version}.`);
 }
 
 function median(xs: number[]): number {

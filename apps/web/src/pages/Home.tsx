@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, PUBLIC_DEMO, type Health, type Spend, type Workspace } from "../lib/api";
+import { ANON, b, BJS_BASE, merchantName, pathFor } from "../lib/brand";
 
 /** Demo hub. Rockler and Alaska run live; the three BJ's cards tell one story: a Muse order before payment, after the order, and end to end. */
 const DEMOS: { to: string; title: string; product: string; line: string; live: boolean }[] = [
-  { to: "/rockler", title: "Rockler", product: "Resolve", line: "Woodworking retailer. Live chat ruled by compiled return, guarantee and backorder policy; ops view shows every step.", live: true },
-  { to: "/alaska", title: "Alaska Airlines", product: "Resolve", line: "Refunds, delays, bag guarantee and DOT rules in precedence order; options turns when the passenger must choose.", live: true },
-  { to: "/bjs/check", title: "BJ's: Muse order lifecycle, Part 1, Check (before payment)", product: "Check", line: "A Muse order arrives over the protocol adapter: intent mandate vs cart, risk score (table stakes), intent verdict, approve / step-up / decline, and a hash-committed decision record kept for Part 2.", live: false },
-  { to: "/bjs", title: "BJ's: Muse order lifecycle, Part 2, Resolve (after the order)", product: "Resolve", line: "A Muse complaint arrives; Umpyr's agent pulls the Check record and mandate as evidence and negotiates with the member's agent turn by turn: offers, holds, concessions, fault, terms hash, BJ's executes, signed audit.", live: false },
-  { to: "/bjs/lifecycle", title: "BJ's: End-to-end Muse order, agent-to-agent", product: "Lifecycle", line: "One order on one timeline: ask Muse, adapter, Check, payment by BJ's processor, delivery outside Umpyr, question, dispute, negotiation, execution, audit. RACI per step.", live: false },
+  { to: pathFor("rockler"), title: merchantName("rockler"), product: "Resolve", line: "Woodworking retailer. Live chat ruled by compiled return, guarantee and backorder policy; ops view shows every step.", live: true },
+  { to: pathFor("alaska"), title: merchantName("alaska"), product: "Resolve", line: "Refunds, delays, bag guarantee and DOT rules in precedence order; options turns when the passenger must choose.", live: true },
+  { to: `${BJS_BASE}/check`, title: b("BJ's: Muse order lifecycle, Part 1, Check (before payment)"), product: "Check", line: "A Muse order arrives over the protocol adapter: intent mandate vs cart, risk score (table stakes), intent verdict, approve / step-up / decline, and a hash-committed decision record kept for Part 2.", live: false },
+  { to: BJS_BASE, title: b("BJ's: Muse order lifecycle, Part 2, Resolve (after the order)"), product: "Resolve", line: b("A Muse complaint arrives; Umpyr's agent pulls the Check record and mandate as evidence and negotiates with the member's agent turn by turn: offers, holds, concessions, fault, terms hash, BJ's executes, signed audit."), live: false },
+  { to: `${BJS_BASE}/lifecycle`, title: b("BJ's: End-to-end Muse order, agent-to-agent"), product: "Lifecycle", line: b("One order on one timeline: ask Muse, adapter, Check, payment by BJ's processor, delivery outside Umpyr, question, dispute, negotiation, execution, audit. RACI per step."), live: false },
 ];
 
 export function Home() {
@@ -44,7 +45,7 @@ export function Home() {
             </li>
           ))}
         </ul>
-        <p className="muted mt-3 text-xs">All demo data is synthetic. BJ's pages are illustrative and not affiliated with BJ's Wholesale Club; BJ's is not live on Muse. Umpyr connects to Muse over an existing open protocol and owns the order from the intent check before payment to the signed audit after the dispute; shipping and logistics stay with the merchant.</p>
+        <p className="muted mt-3 text-xs">All demo data is synthetic. {ANON ? "The merchants are illustrative stand-ins, not clients; none is live on Muse." : "BJ's pages are illustrative and not affiliated with BJ's Wholesale Club; BJ's is not live on Muse."} Umpyr connects to Muse over an existing open protocol and owns the order from the intent check before payment to the signed audit after the dispute; shipping and logistics stay with the merchant.</p>
         {!PUBLIC_DEMO && <div className="mt-3"><Link className="btn" to="/try">Try your data</Link></div>}
         {workspaces.length > 0 && !PUBLIC_DEMO && (
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -83,7 +84,7 @@ export function Home() {
             {spend.blocked && <p className="mt-2 badge badge-amber">Demo budget reached for today</p>}
           </div>
         )}
-        <p className="muted mt-3 text-xs">Rockler and Alaska run on the live engine (Haiku, daily cap). The BJ's pages run deterministic simulations over versioned fixtures behind the same request/response contracts, so no model calls and no spend.</p>
+        <p className="muted mt-3 text-xs">{merchantName("rockler")} and {merchantName("alaska")} run on the live engine (Haiku, daily cap). The {merchantName("bjs")} pages run deterministic simulations over versioned fixtures behind the same request/response contracts, so no model calls and no spend.</p>
       </aside>
     </div>
   );

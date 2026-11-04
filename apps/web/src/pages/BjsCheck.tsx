@@ -1,18 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import scenariosJson from "../../../../samples/bjs/check_scenarios.json";
-import agentCasesJson from "../../../../samples/bjs/agent_cases.json";
+import { ANON, b, BJS_BASE, merchantName } from "../lib/brand";
+import { agentCases as AGENT_CASES, scenarios as SCENARIOS } from "../lib/bjs/fixtures";
 import { Disclaimer, Field, Hash, JsonBlock, Pill, StatusDot } from "../components/bjs/ui";
 import { LocalCheckAdapter, type CheckAdapter } from "../lib/bjs/adapters";
 import { CHECK_POLICY_VERSION } from "../lib/bjs/checkEngine";
-import type { CheckScenario } from "../lib/bjs/checkLink";
-import type { AgentCasesFile } from "../lib/bjs/negotiation";
 import { ADAPTERS, adapterById, adapterTrace, type AdapterId } from "../lib/bjs/protocol";
 import { sha256Hex } from "../lib/bjs/sha256";
 import type { Binding, CartLine, CheckDecision, CheckRequest, LineDiff, ModelFire } from "../lib/bjs/types";
 
-const SCENARIOS = (scenariosJson as { scenarios: CheckScenario[] }).scenarios;
-const AGENT_CASES = (agentCasesJson as unknown as AgentCasesFile).cases;
 
 // Adapter boundary: swap for RemoteCheckAdapter when the engine exposes POST /check/decisions.
 const adapter: CheckAdapter = new LocalCheckAdapter();
@@ -89,10 +85,10 @@ export function BjsCheck() {
   return (
     <div className="flex flex-col gap-3">
       <div className="panel flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
-        <span className="font-semibold">BJ's Wholesale Club</span>
+        <span className="font-semibold">{b("BJ's Wholesale Club")}</span>
         <span className="badge">Muse order lifecycle · Part 1: Check (before payment)</span>
         <Disclaimer product="Check" />
-        <span className="badge badge-amber">BJ's is not live on Muse</span>
+        <span className="badge badge-amber">{ANON ? "not live on Muse" : "BJ's is not live on Muse"}</span>
         <label className="flex items-center gap-1">
           <span className="muted">Protocol adapter</span>
           <select className="input !w-auto" value={adapterId} onChange={(e) => setAdapterId(e.target.value as AdapterId)} title="Swappable: the adapter is the only code that knows the wire protocol">
@@ -104,7 +100,7 @@ export function BjsCheck() {
           <button className="btn" onClick={() => pick(idx)}>Reset scenario</button>
         </div>
       </div>
-      <p className="muted px-1 text-xs">Before BJ's takes payment on a Muse order, Umpyr checks the intent mandate against the cart, scores risk (table stakes), and decides: approve, step-up to the member through their agent, or decline. The decision is hash-committed and kept; <Link className="underline" to="/bjs">Part 2</Link> uses it as evidence when the order is disputed. Onboarding to Muse is included.</p>
+      <p className="muted px-1 text-xs">Before {merchantName("bjs")} takes payment on a Muse order, Umpyr checks the intent mandate against the cart, scores risk (table stakes), and decides: approve, step-up to the member through their agent, or decline. The decision is hash-committed and kept; <Link className="underline" to={BJS_BASE}>Part 2</Link> uses it as evidence when the order is disputed. Onboarding to Muse is included.</p>
 
       <div className="flex flex-wrap gap-2">
         {SCENARIOS.map((s, i) => <button key={s.id} className={`btn text-xs ${i === idx ? "btn-primary" : ""}`} onClick={() => pick(i)}>{i + 1}. {s.title}</button>)}
@@ -178,7 +174,7 @@ export function BjsCheck() {
             <div className="muted mt-1 font-mono text-[11px] break-all">{req.customer.member_token} · email {req.customer.email_hash} · device {req.customer.device_hash} · card bin {req.customer.card.bin_hash} last4 {req.customer.card.last4_hash}</div>
             <div className="muted mt-1 text-xs">tenure {req.customer.tenure_days} d · card on file {req.customer.card.age_days_on_file} d · {req.customer.card.funding}, issuer {req.customer.card.issuer_country} · orders 24h/30d {req.customer.velocity.orders_24h}/{req.customer.velocity.orders_30d} · cards 7d {req.customer.velocity.cards_7d} · ship {req.customer.shipping_region}, IP {req.customer.ip_region}{req.customer.ip_is_datacenter ? " (datacenter)" : ""} · device age {req.customer.device_age_days} d · avg basket ${money(req.customer.history.avg_basket_usd)} · usual: {req.customer.history.typical_departments.join(", ")}</div>
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-2">
-              <Field label="Membership standing" hint="BJ's sells to members (membership terms); the hard stop before capture is the demo's reading, labelled illustrative"><select className="input" value={req.customer.membership.status ?? "active"} onChange={(e) => edit((r) => { r.customer.membership.status = e.target.value as "active" | "expired" | "none"; })}><option value="active">active</option><option value="expired">expired</option><option value="none">none behind the token</option></select></Field>
+              <Field label="Membership standing" hint={b("BJ's sells to members (membership terms); the hard stop before capture is the demo's reading, labelled illustrative")}><select className="input" value={req.customer.membership.status ?? "active"} onChange={(e) => edit((r) => { r.customer.membership.status = e.target.value as "active" | "expired" | "none"; })}><option value="active">active</option><option value="expired">expired</option><option value="none">none behind the token</option></select></Field>
               <Field label="Agent fingerprints on membership (30 d)"><input className="input" type="number" min={1} value={req.customer.membership.fingerprints_30d} onChange={(e) => edit((r) => { r.customer.membership.fingerprints_30d = Number(e.target.value); })} /></Field>
               <Field label="Same SKU, other memberships, same agent (24 h)"><input className="input" type="number" min={0} value={req.context.peer_orders_same_sku_24h} onChange={(e) => edit((r) => { r.context.peer_orders_same_sku_24h = Number(e.target.value); })} /></Field>
               <Field label="SKU demand"><select className="input" value={req.context.sku_demand_tier} onChange={(e) => edit((r) => { r.context.sku_demand_tier = e.target.value as CheckRequest["context"]["sku_demand_tier"]; })}><option value="normal">normal</option><option value="high">high</option><option value="constrained">constrained</option></select></Field>
@@ -216,7 +212,7 @@ export function BjsCheck() {
         {/* RIGHT: decision card */}
         <div className="space-y-3 text-sm">
           <section className="panel p-3" style={{ borderColor: decision.decision === "approve" ? "var(--accent)" : decision.decision === "decline" ? "#b91c1c" : "var(--warn)" }}>
-            <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold">Decision to BJ's</h2><Pill text={DECISION_TEXT[decision.decision]} tone={DECISION_TONE[decision.decision]} /></div>
+            <div className="flex flex-wrap items-center gap-2"><h2 className="font-semibold">Decision to {merchantName("bjs")}</h2><Pill text={DECISION_TEXT[decision.decision]} tone={DECISION_TONE[decision.decision]} /></div>
             <div className="mt-1 text-xs">{decision.comparison.umpyr.because}</div>
             <div className="mt-2 flex flex-wrap gap-1"><Pill text={`intent verdict: ${decision.intent.outcome.replace("_", " ")}`} tone={decision.intent.outcome === "match" ? "accent" : decision.intent.outcome === "benign_drift" ? "muted" : "amber"} /><Pill text={`mandate ${decision.mandate.verified ? "verified" : "unverified"}`} tone={decision.mandate.verified ? "accent" : "red"} />{decision.duplicate_of && <Pill text={`duplicate of ${decision.duplicate_of}`} tone="red" />}</div>
             <div className="muted mt-2 text-xs">Risk score (table stakes)</div>

@@ -247,6 +247,27 @@ Two things still need the dashboard once: creating the Railway Postgres and sett
 `DATABASE_URL` reference on the service (step 1), and adding the custom domain to the Pages project
 (step 2c).
 
+## 4b. Investor site: try.umpyr.org
+
+A second Pages project (`umpyr-try`) on the same engine, built with `VITE_BRAND_MODE=anonymous` so the merchants read
+Specialty Retailer, Major Airline and Warehouse Club (see README, "Investor site"). It has its own password so it can be
+rotated without touching demo.umpyr.org. Cloudflare attaches custom domains to a project's production branch only,
+which is why it is a project and not a preview branch.
+
+| Variable in `.env` | |
+|---|---|
+| `DEMO_PASSWORD_VC` | the password you give investors (required) |
+| `PUBLIC_HOST_VC` | default `try.umpyr.org` |
+| `PAGES_PROJECT_VC` | default `umpyr-try` |
+
+```bash
+make bootstrap-vc   # once: project, secrets, build, custom domain + proxied CNAME, waits for the certificate
+make deploy-vc      # every later release of the investor site
+```
+
+`infra/.deploy.state` is not changed by either command, so plain `make deploy` keeps pointing at demo.umpyr.org.
+Share `https://try.umpyr.org` and the VC password; spend shows up on the same Railway logs and `/admin/spend`.
+
 ## 5. Manual update (no tokens)
 
 ```bash
