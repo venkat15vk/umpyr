@@ -212,7 +212,7 @@ bootstrap_cloudflare() {
   local zone; zone="$(cf "$CF_API/zones?name=$ZONE_NAME" | jpy 'print(d["result"][0]["id"] if d["result"] else "")')"
   [ -n "$zone" ] || { echo "zone $ZONE_NAME not visible to this token (needs Zone:Read + DNS:Edit on it)" >&2; exit 1; }
   cf -X POST "$CF_API/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT/domains" --data "{\"name\":\"$PUBLIC_HOST\"}" \
-    | jpy 'ok=d.get("success") or any(e.get("code")==8000014 for e in d.get("errors",[])); print("   pages domain", "ok" if ok else d.get("errors")); sys.exit(0 if ok else 1)'
+    | jpy 'ok=d.get("success") or any(e.get("code") in (8000014, 8000018) for e in d.get("errors",[])); print("   pages domain", "ok" if ok else d.get("errors")); sys.exit(0 if ok else 1)'
   local target="$PAGES_PROJECT.pages.dev"
   local rec; rec="$(cf "$CF_API/zones/$zone/dns_records?name=$PUBLIC_HOST" | jpy 'r=d["result"]; print(r[0]["id"] if r else "")')"
   local body="{\"type\":\"CNAME\",\"name\":\"$PUBLIC_HOST\",\"content\":\"$target\",\"proxied\":true,\"ttl\":1}"
